@@ -4,7 +4,7 @@ from lxml import etree
 from typing import Optional, List
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
 from docx_parsers.models.document_models import Paragraph, Run
-from docx_parsers.document.numbering_parser import NumberingParser
+from docx_parsers.document.document_numbering_parser import DocumentNumberingParser
 from docx_parsers.document.run_parser import RunParser
 from docx_parsers.styles_parser import StylesParser, ParagraphStyleProperties, TabStop
 from docx_parsers.utils import convert_twips_to_points
@@ -22,7 +22,7 @@ class ParagraphParser:
         """
         pPr = extract_element(p, ".//w:pPr")
         p_properties = self.extract_paragraph_properties(pPr)
-        numbering = NumberingParser().parse(pPr)
+        numbering = DocumentNumberingParser().parse(pPr)
         runs = self.extract_runs(p)
         return Paragraph(properties=p_properties, runs=runs, numbering=numbering)
 

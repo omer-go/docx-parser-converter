@@ -5,7 +5,7 @@ from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute
 from docx_parsers.models.document_models import Numbering
 
-class NumberingParser:
+class DocumentNumberingParser:
     @staticmethod
     def parse(pPr: Optional[etree.Element]) -> Optional[Numbering]:
         """
