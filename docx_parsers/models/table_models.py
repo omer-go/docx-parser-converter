@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 from typing import Optional, List
-from docx_parsers.document_parser import Paragraph
+from docx_parsers.models.document_models import Paragraph
 
 class BorderProperties(BaseModel):
     color: Optional[str]

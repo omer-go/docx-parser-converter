@@ -3,19 +3,8 @@ from typing import List, Optional, Union
 from xml.etree.ElementTree import Element
 from docx_parsers.styles_parser import StylesParser, ParagraphStyleProperties, RunStyleProperties, TabStop
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, convert_twips_to_points
+from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE, NAMESPACE_URI
 import json
-
-NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-NAMESPACE = {'w': NAMESPACE_URI}
-W_VAL = f"{{{NAMESPACE_URI}}}val"
-W_POS = f"{{{NAMESPACE_URI}}}pos"
-W_TOP = f"{{{NAMESPACE_URI}}}top"
-W_RIGHT = f"{{{NAMESPACE_URI}}}right"
-W_BOTTOM = f"{{{NAMESPACE_URI}}}bottom"
-W_LEFT = f"{{{NAMESPACE_URI}}}left"
-W_HEADER = f"{{{NAMESPACE_URI}}}header"
-W_FOOTER = f"{{{NAMESPACE_URI}}}footer"
-W_GUTTER = f"{{{NAMESPACE_URI}}}gutter"
 
 class Numbering(BaseModel):
     ilvl: int
@@ -63,16 +52,13 @@ class DocumentParser:
             self.styles_parser = StylesParser()
             self.document_schema = None
 
-    def extract_element(self, parent: Element, path: str) -> Optional[Element]:
-        return parent.find(path, namespaces=NAMESPACE)
-
     def parse(self) -> DocumentSchema:
         margins = self.extract_margins()
         paragraphs = self.extract_paragraphs()
         return DocumentSchema(paragraphs=paragraphs, margins=margins)
 
     def extract_margins(self) -> Optional[Margins]:
-        sectPr = self.extract_element(self.root, ".//w:sectPr")
+        sectPr = extract_element(self.root, ".//w:sectPr")
         return self.parse_margins(sectPr) if sectPr is not None else None
 
     def extract_paragraphs(self) -> List[Paragraph]:
@@ -82,7 +68,7 @@ class DocumentParser:
         return paragraphs
 
     def parse_paragraph(self, p: Element) -> Paragraph:
-        pPr = self.extract_element(p, ".//w:pPr")
+        pPr = extract_element(p, ".//w:pPr")
         p_properties = self.extract_paragraph_properties(pPr)
         numbering = self.extract_numbering(pPr)
         runs = self.extract_runs(p)
@@ -101,15 +87,15 @@ class DocumentParser:
         return properties
 
     def extract_numbering(self, pPr: Optional[Element]) -> Optional[Numbering]:
-        numPr = self.extract_element(pPr, ".//w:numPr")
+        numPr = extract_element(pPr, ".//w:numPr")
         return self.parse_numbering(numPr) if numPr is not None else None
 
     def extract_style_id(self, pPr: Optional[Element]) -> Optional[str]:
-        pStyle = self.extract_element(pPr, ".//w:pStyle")
-        return pStyle.get(W_VAL) if pStyle else None
+        pStyle = extract_element(pPr, ".//w:pStyle")
+        return extract_attribute(pStyle, 'val') if pStyle else None
 
     def extract_tabs(self, pPr: Optional[Element]) -> Optional[List[TabStop]]:
-        tabs_elem = self.extract_element(pPr, ".//w:tabs")
+        tabs_elem = extract_element(pPr, ".//w:tabs")
         return self.parse_tabs(tabs_elem) if tabs_elem else None
 
     def extract_runs(self, p: Element) -> List[Run]:
@@ -119,7 +105,7 @@ class DocumentParser:
         return runs
 
     def parse_run(self, r: Element) -> Run:
-        rPr = self.extract_element(r, ".//w:rPr")
+        rPr = extract_element(r, ".//w:rPr")
         run_properties = self.styles_parser.extract_run_properties(rPr) if rPr else RunStyleProperties()
         contents = self.extract_run_contents(r)
         return Run(contents=contents, properties=run_properties)
@@ -134,31 +120,31 @@ class DocumentParser:
         return contents
 
     def parse_numbering(self, numPr: Element) -> Numbering:
-        ilvl_elem = self.extract_element(numPr, ".//w:ilvl")
-        numId_elem = self.extract_element(numPr, ".//w:numId")
-        ilvl = int(ilvl_elem.get(W_VAL)) if ilvl_elem is not None else 0
-        numId = int(numId_elem.get(W_VAL)) if numId_elem is not None else 0
+        ilvl_elem = extract_element(numPr, ".//w:ilvl")
+        numId_elem = extract_element(numPr, ".//w:numId")
+        ilvl = int(extract_attribute(ilvl_elem, 'val')) if ilvl_elem is not None else 0
+        numId = int(extract_attribute(numId_elem, 'val')) if numId_elem is not None else 0
         return Numbering(ilvl=ilvl, numId=numId)
 
     def parse_margins(self, sectPr: Optional[Element]) -> Margins:
-        pgMar = self.extract_element(sectPr, ".//w:pgMar")
+        pgMar = extract_element(sectPr, ".//w:pgMar")
         if pgMar is not None:
             return Margins(
-                top_pt=convert_twips_to_points(int(pgMar.get(W_TOP))),
-                right_pt=convert_twips_to_points(int(pgMar.get(W_RIGHT))),
-                bottom_pt=convert_twips_to_points(int(pgMar.get(W_BOTTOM))),
-                left_pt=convert_twips_to_points(int(pgMar.get(W_LEFT))),
-                header_pt=convert_twips_to_points(int(pgMar.get(W_HEADER))) if pgMar.get(W_HEADER) else None,
-                footer_pt=convert_twips_to_points(int(pgMar.get(W_FOOTER))) if pgMar.get(W_FOOTER) else None,
-                gutter_pt=convert_twips_to_points(int(pgMar.get(W_GUTTER))) if pgMar.get(W_GUTTER) else None
+                top_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'top'))),
+                right_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'right'))),
+                bottom_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'bottom'))),
+                left_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'left'))),
+                header_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'header'))) if extract_attribute(pgMar, 'header') else None,
+                footer_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'footer'))) if extract_attribute(pgMar, 'footer') else None,
+                gutter_pt=convert_twips_to_points(int(extract_attribute(pgMar, 'gutter'))) if extract_attribute(pgMar, 'gutter') else None
             )
         return Margins(top_pt=0, right_pt=0, bottom_pt=0, left_pt=0)
 
     def parse_tabs(self, tabs_elem: Element) -> List[TabStop]:
         tabs = []
         for tab in tabs_elem.findall(".//w:tab", namespaces=NAMESPACE):
-            val = tab.get(W_VAL)
-            pos = tab.get(W_POS)
+            val = extract_attribute(tab, 'val')
+            pos = extract_attribute(tab, 'pos')
             if pos is not None:
                 pos = convert_twips_to_points(int(pos))
                 tabs.append(TabStop(val=val, pos=pos))

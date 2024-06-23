@@ -3,7 +3,7 @@
 from lxml import etree
 from docx_parsers.helpers.common_helpers import extract_element, NAMESPACE
 from docx_parsers.models.table_models import TableCell
-from docx_parsers.document_parser import DocumentParser  # Assuming DocumentParser has parse_paragraph method
+from docx_parsers.document.paragraph_parser import ParagraphParser
 from docx_parsers.tables.table_cell_properties_parser import TableCellPropertiesParser
 
 class TableCellParser:
@@ -18,8 +18,8 @@ class TableCellParser:
         Returns:
             TableCell: The parsed table cell.
         """
-        document_parser = DocumentParser()
         properties_element = extract_element(cell_element, ".//w:tcPr")
         properties = TableCellPropertiesParser.parse(properties_element)
-        paragraphs = [document_parser.parse_paragraph(p) for p in cell_element.findall(".//w:p", namespaces=NAMESPACE)]
+        paragraph_parser = ParagraphParser()
+        paragraphs = [paragraph_parser.parse(p) for p in cell_element.findall(".//w:p", namespaces=NAMESPACE)]
         return TableCell(properties=properties, paragraphs=paragraphs)
