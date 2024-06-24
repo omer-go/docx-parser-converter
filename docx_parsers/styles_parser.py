@@ -1,37 +1,11 @@
+# styles_parser.py
+
 from pydantic import BaseModel
 from typing import List, Optional, Tuple
 import xml.etree.ElementTree as ET
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, convert_half_points_to_points, convert_twips_to_points
+from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE, NAMESPACE_URI
 import json
-
-# Namespace URI
-NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-
-# Constants for Namespace and References
-NAMESPACE = {'w': NAMESPACE_URI}
-
-# Style-related attributes
-W_STYLE_ID = f"{{{NAMESPACE_URI}}}styleId"
-W_VAL = f"{{{NAMESPACE_URI}}}val"
-
-# Font-related attributes
-W_FONT_ASCII = f"{{{NAMESPACE_URI}}}ascii"
-W_FONT_HANSI = f"{{{NAMESPACE_URI}}}hAnsi"
-W_FONT_EASTASIA = f"{{{NAMESPACE_URI}}}eastAsia"
-W_FONT_CS = f"{{{NAMESPACE_URI}}}cs"
-W_BIDI = f"{{{NAMESPACE_URI}}}bidi"
-
-# Paragraph-related attributes
-W_SPACING_BEFORE = f"{{{NAMESPACE_URI}}}before"
-W_SPACING_AFTER = f"{{{NAMESPACE_URI}}}after"
-W_INDENT_LEFT = f"{{{NAMESPACE_URI}}}left"
-W_INDENT_START = f"{{{NAMESPACE_URI}}}start"
-W_INDENT_RIGHT = f"{{{NAMESPACE_URI}}}right"
-W_INDENT_END = f"{{{NAMESPACE_URI}}}end"
-W_INDENT_FIRSTLINE = f"{{{NAMESPACE_URI}}}firstLine"
-W_INDENT_HANGING = f"{{{NAMESPACE_URI}}}hanging"
-W_LINE_SPACING = f"{{{NAMESPACE_URI}}}line"
-
 
 # Pydantic models for paragraph and run properties
 class SpacingProperties(BaseModel):
@@ -61,7 +35,7 @@ class TabStop(BaseModel):
     pos: float
 
 class ParagraphStyleProperties(BaseModel):
-    style_id: str = None
+    style_id: Optional[str] = None
     spacing: Optional[SpacingProperties] = None
     indent: Optional[IndentationProperties] = None
     outline_level: Optional[int] = None
@@ -131,12 +105,12 @@ class StylesParser:
         defaults = StyleDefaults()
 
         for style in self.root.findall(".//w:style", namespaces=NAMESPACE):
-            style_id = style.get(W_STYLE_ID, 'Unknown StyleId')
-            name_element = style.find(".//w:name", namespaces=NAMESPACE)
-            name = name_element.get(W_VAL) if name_element is not None else 'Unknown Name'
+            style_id = extract_attribute(style, 'styleId') or 'Unknown StyleId'
+            name_element = extract_element(style, ".//w:name")
+            name = extract_attribute(name_element, 'val') if name_element is not None else 'Unknown Name'
             
-            based_on_element = style.find(".//w:basedOn", namespaces=NAMESPACE)
-            based_on = based_on_element.get(W_VAL) if based_on_element is not None else None
+            based_on_element = extract_element(style, ".//w:basedOn")
+            based_on = extract_attribute(based_on_element, 'val') if based_on_element is not None else None
             
             paragraph_properties, run_properties = self.extract_style_properties(style)
             
@@ -150,8 +124,8 @@ class StylesParser:
             styles.append(style_obj)
 
             # Check if this style is a default style
-            if style.get(f"{{{NAMESPACE_URI}}}default") == "1":
-                style_type = style.get(f"{{{NAMESPACE_URI}}}type")
+            if extract_attribute(style, 'default') == "1":
+                style_type = extract_attribute(style, 'type')
                 if style_type == "paragraph":
                     defaults.paragraph = style_id
                 elif style_type == "character":
@@ -171,16 +145,16 @@ class StylesParser:
         return styles_schema
 
     def extract_default_rpr(self, root) -> RunStyleProperties:
-        rPr_default = root.find(".//w:rPrDefault//w:rPr", namespaces=NAMESPACE)
+        rPr_default = extract_element(root, ".//w:rPrDefault//w:rPr")
         return self.extract_run_properties(rPr_default) if rPr_default is not None else RunStyleProperties()
 
     def extract_default_ppr(self, root) -> ParagraphStyleProperties:
-        pPr_default = root.find(".//w:pPrDefault//w:pPr", namespaces=NAMESPACE)
+        pPr_default = extract_element(root, ".//w:pPrDefault//w:pPr")
         return self.extract_paragraph_properties(pPr_default) if pPr_default is not None else ParagraphStyleProperties()
 
     def extract_style_properties(self, style_element) -> Tuple[ParagraphStyleProperties, RunStyleProperties]:
-        paragraph_properties = self.extract_paragraph_properties(style_element.find(".//w:pPr", namespaces=NAMESPACE))
-        run_properties = self.extract_run_properties(style_element.find(".//w:rPr", namespaces=NAMESPACE))
+        paragraph_properties = self.extract_paragraph_properties(extract_element(style_element, ".//w:pPr"))
+        run_properties = self.extract_run_properties(extract_element(style_element, ".//w:rPr"))
         return paragraph_properties, run_properties
 
     def resolve_based_on_styles(self, styles_schema: StylesSchema) -> None:
@@ -218,67 +192,72 @@ class StylesParser:
         
         if pPr_element is not None:
             # Extract spacing
-            spacing_element = pPr_element.find("w:spacing", namespaces=NAMESPACE)
+            spacing_element = extract_element(pPr_element, "w:spacing")
             if spacing_element is not None:
                 spacing_properties = SpacingProperties()
-                if W_SPACING_BEFORE in spacing_element.attrib:
-                    spacing_properties.before_pt = convert_twips_to_points(int(spacing_element.get(W_SPACING_BEFORE)))
-                if W_SPACING_AFTER in spacing_element.attrib:
-                    spacing_properties.after_pt = convert_twips_to_points(int(spacing_element.get(W_SPACING_AFTER)))
-                if W_LINE_SPACING in spacing_element.attrib:
-                    spacing_properties.line_pt = convert_twips_to_points(int(spacing_element.get(W_LINE_SPACING)))
+                before = extract_attribute(spacing_element, 'before')
+                after = extract_attribute(spacing_element, 'after')
+                line = extract_attribute(spacing_element, 'line')
+                if before:
+                    spacing_properties.before_pt = convert_twips_to_points(int(before))
+                if after:
+                    spacing_properties.after_pt = convert_twips_to_points(int(after))
+                if line:
+                    spacing_properties.line_pt = convert_twips_to_points(int(line))
                 properties.spacing = spacing_properties
 
             # Extract indentation
-            indent_element = pPr_element.find("w:ind", namespaces=NAMESPACE)
+            indent_element = extract_element(pPr_element, "w:ind")
             if indent_element is not None:
                 indent_properties = IndentationProperties()
-                if W_INDENT_LEFT in indent_element.attrib:
-                    indent_properties.left_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_LEFT)))
-                elif W_INDENT_START in indent_element.attrib:
-                    indent_properties.left_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_START)))
-                if W_INDENT_RIGHT in indent_element.attrib:
-                    indent_properties.right_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_RIGHT)))
-                elif W_INDENT_END in indent_element.attrib:
-                    indent_properties.right_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_END)))
-                if W_INDENT_HANGING in indent_element.attrib:
-                    indent_properties.hanging_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_HANGING)))
-                if W_INDENT_FIRSTLINE in indent_element.attrib:
-                    indent_properties.firstline_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_FIRSTLINE)))
+                left = extract_attribute(indent_element, 'left') or extract_attribute(indent_element, 'start')
+                right = extract_attribute(indent_element, 'right') or extract_attribute(indent_element, 'end')
+                hanging = extract_attribute(indent_element, 'hanging')
+                firstLine = extract_attribute(indent_element, 'firstLine')
+                if left:
+                    indent_properties.left_pt = convert_twips_to_points(int(left))
+                if right:
+                    indent_properties.right_pt = convert_twips_to_points(int(right))
+                if hanging:
+                    indent_properties.hanging_pt = convert_twips_to_points(int(hanging))
+                if firstLine:
+                    indent_properties.firstline_pt = convert_twips_to_points(int(firstLine))
                 properties.indent = indent_properties
 
             # Extract outline level
-            outline_lvl_element = pPr_element.find("w:outlineLvl", namespaces=NAMESPACE)
-            if outline_lvl_element is not None and W_VAL in outline_lvl_element.attrib:
-                properties.outline_level = int(outline_lvl_element.get(W_VAL))
+            outline_lvl_element = extract_element(pPr_element, "w:outlineLvl")
+            if outline_lvl_element is not None:
+                outline_level = extract_attribute(outline_lvl_element, 'val')
+                if outline_level is not None:
+                    properties.outline_level = int(outline_level)
             
             # Extract widow control
-            widow_control_element = pPr_element.find("w:widowControl", namespaces=NAMESPACE)
-            if widow_control_element is not None and W_VAL in widow_control_element.attrib:
-                properties.widow_control = widow_control_element.get(W_VAL) == "true"
+            widow_control_element = extract_element(pPr_element, "w:widowControl")
+            if widow_control_element is not None:
+                properties.widow_control = True
             
             # Extract suppress auto hyphens
-            suppress_auto_hyphens_element = pPr_element.find("w:suppressAutoHyphens", namespaces=NAMESPACE)
-            if suppress_auto_hyphens_element is not None and W_VAL in suppress_auto_hyphens_element.attrib:
-                properties.suppress_auto_hyphens = suppress_auto_hyphens_element.get(W_VAL) == "true"
+            suppress_auto_hyphens_element = extract_element(pPr_element, "w:suppressAutoHyphens")
+            if suppress_auto_hyphens_element is not None:
+                properties.suppress_auto_hyphens = True
             
             # Extract bidi
-            bidi_element = pPr_element.find("w:bidi", namespaces=NAMESPACE)
-            if bidi_element is not None and W_VAL in bidi_element.attrib:
-                properties.bidi = bidi_element.get(W_VAL) == "true"
+            bidi_element = extract_element(pPr_element, "w:bidi")
+            if bidi_element is not None:
+                properties.bidi = True
             
             # Extract justification
-            justification_element = pPr_element.find("w:jc", namespaces=NAMESPACE)
-            if justification_element is not None and W_VAL in justification_element.attrib:
-                properties.justification = justification_element.get(W_VAL)
+            justification_element = extract_element(pPr_element, "w:jc")
+            if justification_element is not None:
+                properties.justification = extract_attribute(justification_element, 'val')
             
             # Extract keep next
-            keep_next_element = pPr_element.find("w:keepNext", namespaces=NAMESPACE)
+            keep_next_element = extract_element(pPr_element, "w:keepNext")
             if keep_next_element is not None:
                 properties.keep_next = True
             
             # Extract suppress line numbers
-            suppress_line_numbers_element = pPr_element.find("w:suppressLineNumbers", namespaces=NAMESPACE)
+            suppress_line_numbers_element = extract_element(pPr_element, "w:suppressLineNumbers")
             if suppress_line_numbers_element is not None:
                 properties.suppress_line_numbers = True
 
@@ -289,107 +268,115 @@ class StylesParser:
 
         if rPr_element is not None:
             # Extract fonts
-            font_element = rPr_element.find("w:rFonts", namespaces=NAMESPACE)
+            font_element = extract_element(rPr_element, "w:rFonts")
             if font_element is not None:
                 font_properties = FontProperties()
-                font_properties.ascii = font_element.get(W_FONT_ASCII)
-                font_properties.hAnsi = font_element.get(W_FONT_HANSI)
-                font_properties.eastAsia = font_element.get(W_FONT_EASTASIA)
-                font_properties.cs = font_element.get(W_FONT_CS)
+                font_properties.ascii = extract_attribute(font_element, 'ascii')
+                font_properties.hAnsi = extract_attribute(font_element, 'hAnsi')
+                font_properties.eastAsia = extract_attribute(font_element, 'eastAsia')
+                font_properties.cs = extract_attribute(font_element, 'cs')
                 properties.font = font_properties
 
             # Extract font size
-            size_element = rPr_element.find("w:sz", namespaces=NAMESPACE)
-            if size_element is not None and W_VAL in size_element.attrib:
-                properties.size_pt = convert_half_points_to_points(int(size_element.get(W_VAL)))
+            size_element = extract_element(rPr_element, "w:sz")
+            if size_element is not None:
+                size = extract_attribute(size_element, 'val')
+                if size:
+                    properties.size_pt = convert_half_points_to_points(int(size))
 
             # Extract font color
-            color_element = rPr_element.find("w:color", namespaces=NAMESPACE)
-            if color_element is not None and W_VAL in color_element.attrib:
-                properties.color = color_element.get(W_VAL)
+            color_element = extract_element(rPr_element, "w:color")
+            if color_element is not None:
+                properties.color = extract_attribute(color_element, 'val')
 
             # Extract bold and italic
-            bold_element = rPr_element.find("w:b", namespaces=NAMESPACE)
+            bold_element = extract_element(rPr_element, "w:b")
             if bold_element is not None:
-                properties.bold = bold_element.get(W_VAL, "true") == "true"
+                properties.bold = True
 
-            italic_element = rPr_element.find("w:i", namespaces=NAMESPACE)
+            italic_element = extract_element(rPr_element, "w:i")
             if italic_element is not None:
-                properties.italic = italic_element.get(W_VAL, "true") == "true"
+                properties.italic = True
 
             # Extract underline
-            underline_element = rPr_element.find("w:u", namespaces=NAMESPACE)
-            if underline_element is not None and W_VAL in underline_element.attrib:
-                properties.underline = underline_element.get(W_VAL)
+            underline_element = extract_element(rPr_element, "w:u")
+            if underline_element is not None:
+                properties.underline = extract_attribute(underline_element, 'val')
 
             # Extract strikethrough
-            strikethrough_element = rPr_element.find("w:strike", namespaces=NAMESPACE)
+            strikethrough_element = extract_element(rPr_element, "w:strike")
             if strikethrough_element is not None:
-                properties.strikethrough = strikethrough_element.get(W_VAL, "true") == "true"
+                properties.strikethrough = True
 
             # Extract hidden text
-            hidden_element = rPr_element.find("w:vanish", namespaces=NAMESPACE)
+            hidden_element = extract_element(rPr_element, "w:vanish")
             if hidden_element is not None:
-                properties.hidden = hidden_element.get(W_VAL, "true") == "true"
+                properties.hidden = True
 
             # Extract language settings
-            lang_element = rPr_element.find("w:lang", namespaces=NAMESPACE)
+            lang_element = extract_element(rPr_element, "w:lang")
             if lang_element is not None:
                 lang_properties = LanguageProperties()
-                lang_properties.val = lang_element.get(W_VAL)
-                lang_properties.eastAsia = lang_element.get(W_FONT_EASTASIA)
-                lang_properties.bidi = lang_element.get(W_BIDI)
+                lang_properties.val = extract_attribute(lang_element, 'val')
+                lang_properties.eastAsia = extract_attribute(lang_element, 'eastAsia')
+                lang_properties.bidi = extract_attribute(lang_element, 'bidi')
                 properties.lang = lang_properties
 
             # Extract highlight
-            highlight_element = rPr_element.find("w:highlight", namespaces=NAMESPACE)
-            if highlight_element is not None and W_VAL in highlight_element.attrib:
-                properties.highlight = highlight_element.get(W_VAL)
+            highlight_element = extract_element(rPr_element, "w:highlight")
+            if highlight_element is not None:
+                properties.highlight = extract_attribute(highlight_element, 'val')
 
             # Extract shading
-            shading_element = rPr_element.find("w:shd", namespaces=NAMESPACE)
-            if shading_element is not None and W_VAL in shading_element.attrib:
-                properties.shading = shading_element.get(W_VAL)
+            shading_element = extract_element(rPr_element, "w:shd")
+            if shading_element is not None:
+                properties.shading = extract_attribute(shading_element, 'val')
 
             # Extract text position
-            text_position_element = rPr_element.find("w:position", namespaces=NAMESPACE)
-            if text_position_element is not None and W_VAL in text_position_element.attrib:
-                properties.text_position_pt = convert_half_points_to_points(int(text_position_element.get(W_VAL)))
+            text_position_element = extract_element(rPr_element, "w:position")
+            if text_position_element is not None:
+                text_position = extract_attribute(text_position_element, 'val')
+                if text_position:
+                    properties.text_position_pt = convert_half_points_to_points(int(text_position))
 
             # Extract kerning
-            kerning_element = rPr_element.find("w:kern", namespaces=NAMESPACE)
-            if kerning_element is not None and W_VAL in kerning_element.attrib:
-                properties.kerning = int(kerning_element.get(W_VAL))
+            kerning_element = extract_element(rPr_element, "w:kern")
+            if kerning_element is not None:
+                kerning = extract_attribute(kerning_element, 'val')
+                if kerning:
+                    properties.kerning = int(kerning)
 
             # Extract character spacing
-            character_spacing_element = rPr_element.find("w:spacing", namespaces=NAMESPACE)
-            if character_spacing_element is not None and W_VAL in character_spacing_element.attrib:
-                properties.character_spacing_pt = convert_half_points_to_points(int(character_spacing_element.get(W_VAL)))
+            character_spacing_element = extract_element(rPr_element, "w:spacing")
+            if character_spacing_element is not None:
+                character_spacing = extract_attribute(character_spacing_element, 'val')
+                if character_spacing:
+                    properties.character_spacing_pt = convert_half_points_to_points(int(character_spacing))
 
             # Extract emboss
-            emboss_element = rPr_element.find("w:emboss", namespaces=NAMESPACE)
+            emboss_element = extract_element(rPr_element, "w:emboss")
             if emboss_element is not None:
-                properties.emboss = emboss_element.get(W_VAL, "true") == "true"
+                properties.emboss = True
 
             # Extract outline
-            outline_element = rPr_element.find("w:outline", namespaces=NAMESPACE)
+            outline_element = extract_element(rPr_element, "w:outline")
             if outline_element is not None:
-                properties.outline = outline_element.get(W_VAL, "true") == "true"
+                properties.outline = True
 
             # Extract shadow
-            shadow_element = rPr_element.find("w:shadow", namespaces=NAMESPACE)
+            shadow_element = extract_element(rPr_element, "w:shadow")
             if shadow_element is not None:
-                properties.shadow = shadow_element.get(W_VAL, "true") == "true"
+                properties.shadow = True
 
             # Extract all caps
-            all_caps_element = rPr_element.find("w:caps", namespaces=NAMESPACE)
+            all_caps_element = extract_element(rPr_element, "w:caps")
             if all_caps_element is not None:
-                properties.all_caps = all_caps_element.get(W_VAL, "true") == "true"
+                properties.all_caps = True
 
             # Extract small caps
-            small_caps_element = rPr_element.find("w:smallCaps", namespaces=NAMESPACE)
+            small_caps_element = extract_element(rPr_element, "w:smallCaps")
             if small_caps_element is not None:
-                properties.small_caps = small_caps_element.get(W_VAL, "true") == "true"
+                properties.small_caps = True
 
         return properties
 
@@ -398,7 +385,9 @@ class StylesParser:
 
 
 if __name__ == "__main__":
-    docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     styles_parser = StylesParser(docx_file)
