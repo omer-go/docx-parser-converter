@@ -1,12 +1,12 @@
 # styles_merger.py
 
 from typing import Optional
-from docx_parsers.document.document_parser import DocumentParser
 from docx_parsers.models.document_models import DocumentSchema, Paragraph
-from docx_parsers.styles.styles_parser import StylesParser
 from docx_parsers.models.styles_models import StylesSchema, Style, ParagraphStyleProperties
-from docx_parsers.numbering.numbering_parser import NumberingParser
 from docx_parsers.models.numbering_models import NumberingSchema
+from docx_parsers.document.document_parser import DocumentParser
+from docx_parsers.styles.styles_parser import StylesParser
+from docx_parsers.numbering.numbering_parser import NumberingParser
 from docx_parsers.utils import read_binary_from_file_path, merge_properties
 import json
 
