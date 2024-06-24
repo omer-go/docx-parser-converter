@@ -11,16 +11,16 @@ from docx_parsers.styles.paragraph_properties_parser import ParagraphPropertiesP
 from docx_parsers.utils import convert_twips_to_points
 
 class ParagraphParser:
+    """
+    A parser for extracting paragraph elements from the DOCX document structure.
+    
+    This class handles the extraction of paragraph properties, runs, 
+    styles, numbering, and tabs within a paragraph element, converting them 
+    into a structured Paragraph object for further processing or conversion 
+    to other formats like HTML.
+    """
+
     def parse(self, p: etree.Element) -> Paragraph:
-        """
-        Parses a paragraph from the given XML element.
-
-        Args:
-            p (etree.Element): The paragraph XML element.
-
-        Returns:
-            Paragraph: The parsed paragraph.
-        """
         pPr = extract_element(p, ".//w:pPr")
         p_properties = self.extract_paragraph_properties(pPr)
         numbering = DocumentNumberingParser().parse(pPr)
@@ -28,64 +28,34 @@ class ParagraphParser:
         return Paragraph(properties=p_properties, runs=runs, numbering=numbering)
 
     def extract_paragraph_properties(self, pPr: Optional[etree.Element]) -> ParagraphStyleProperties:
-        """
-        Extracts paragraph properties from the given XML element.
-
-        Args:
-            pPr (Optional[etree.Element]): The paragraph properties XML element.
-
-        Returns:
-            ParagraphStyleProperties: The extracted paragraph properties.
-        """
-        properties = ParagraphStyleProperties()
+        properties = ParagraphPropertiesParser().parse(pPr) if pPr else ParagraphStyleProperties()
+        
         if pPr:
-            # styles_parser = StylesParser()
-            # properties = styles_parser.extract_paragraph_properties(pPr)
-            properties = ParagraphPropertiesParser().parse(pPr)
             style_id = self.extract_style_id(pPr)
             if style_id is not None:
                 properties.style_id = style_id
+
             tabs = self.extract_tabs(pPr)
-            if tabs is not None:
+            if tabs:
                 properties.tabs = tabs
+
         return properties
 
     def extract_style_id(self, pPr: Optional[etree.Element]) -> Optional[str]:
-        """
-        Extracts style ID from the given paragraph properties XML element.
-
-        Args:
-            pPr (Optional[etree.Element]): The paragraph properties XML element.
-
-        Returns:
-            Optional[str]: The style ID, or None if not found.
-        """
         pStyle = extract_element(pPr, ".//w:pStyle")
-        return extract_attribute(pStyle, 'val') if pStyle else None
+        if pStyle is not None:
+            style_id = extract_attribute(pStyle, 'val')
+            if style_id is not None:
+                return style_id
+        return None
 
     def extract_tabs(self, pPr: Optional[etree.Element]) -> Optional[List[TabStop]]:
-        """
-        Extracts tabs from the given paragraph properties XML element.
-
-        Args:
-            pPr (Optional[etree.Element]): The paragraph properties XML element.
-
-        Returns:
-            Optional[List[TabStop]]: The extracted tabs, or None if not found.
-        """
         tabs_elem = extract_element(pPr, ".//w:tabs")
-        return self.parse_tabs(tabs_elem) if tabs_elem else None
+        if tabs_elem is not None:
+            return self.parse_tabs(tabs_elem)
+        return None
 
     def extract_runs(self, p: etree.Element) -> List[Run]:
-        """
-        Extracts runs from the given paragraph XML element.
-
-        Args:
-            p (etree.Element): The paragraph XML element.
-
-        Returns:
-            List[Run]: The list of parsed runs.
-        """
         runs = []
         run_parser = RunParser()
         for r in p.findall(".//w:r", namespaces=NAMESPACE):
@@ -93,15 +63,6 @@ class ParagraphParser:
         return runs
 
     def parse_tabs(self, tabs_elem: etree.Element) -> List[TabStop]:
-        """
-        Parses tabs from the given tabs XML element.
-
-        Args:
-            tabs_elem (etree.Element): The tabs XML element.
-
-        Returns:
-            List[TabStop]: The parsed tabs.
-        """
         tabs = []
         for tab in tabs_elem.findall(".//w:tab", namespaces=NAMESPACE):
             val = extract_attribute(tab, 'val')

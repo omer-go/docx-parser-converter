@@ -145,7 +145,8 @@ class StylesParser:
 
 
 if __name__ == "__main__":
-    docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
     docx_file = read_binary_from_file_path(docx_path)
 
     styles_parser = StylesParser(docx_file)

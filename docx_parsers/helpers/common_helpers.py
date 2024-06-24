@@ -45,3 +45,22 @@ def safe_int(value: Optional[str]) -> Optional[int]:
         Optional[int]: The integer value, or None if the input is None.
     """
     return int(value) if value is not None else None
+
+def extract_boolean_attribute(element: Optional[Element]) -> Optional[bool]:
+    """
+    Extracts a boolean attribute from an XML element.
+    
+    Args:
+        element (Optional[Element]): The XML element.
+
+    Returns:
+        Optional[bool]: True if the element is present and its 'val' attribute is not 'false' or '0',
+                        False if its 'val' attribute is 'false' or '0',
+                        None if the element is not present.
+    """
+    if element is not None:
+        val = element.get(f'{{{NAMESPACE_URI}}}val')
+        if val is not None:
+            return val.lower() not in ["false", "0"]
+        return True
+    return None

@@ -59,7 +59,8 @@ class DocumentParser:
 
 
 if __name__ == "__main__":
-    docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     document_parser = DocumentParser(docx_file)

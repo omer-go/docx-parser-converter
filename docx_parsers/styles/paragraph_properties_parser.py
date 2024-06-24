@@ -2,25 +2,12 @@
 
 import xml.etree.ElementTree as ET
 from typing import Optional
-from docx_parsers.helpers.common_helpers import extract_element, extract_attribute
+from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, extract_boolean_attribute
 from docx_parsers.utils import convert_twips_to_points
 from docx_parsers.models.styles_models import ParagraphStyleProperties, SpacingProperties, IndentationProperties
 
 class ParagraphPropertiesParser:
-    """
-    A parser for extracting paragraph properties from an XML element.
-    """
-
     def parse(self, pPr_element: ET.Element) -> ParagraphStyleProperties:
-        """
-        Parses paragraph properties from the given XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            ParagraphStyleProperties: The parsed paragraph style properties.
-        """
         properties = ParagraphStyleProperties()
         
         if pPr_element is not None:
@@ -37,15 +24,6 @@ class ParagraphPropertiesParser:
         return properties
 
     def extract_spacing(self, pPr_element: ET.Element) -> Optional[SpacingProperties]:
-        """
-        Extracts spacing properties from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[SpacingProperties]: The extracted spacing properties or None.
-        """
         spacing_element = extract_element(pPr_element, "w:spacing")
         if spacing_element is not None:
             spacing_properties = SpacingProperties()
@@ -62,15 +40,6 @@ class ParagraphPropertiesParser:
         return None
 
     def extract_indentation(self, pPr_element: ET.Element) -> Optional[IndentationProperties]:
-        """
-        Extracts indentation properties from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[IndentationProperties]: The extracted indentation properties or None.
-        """
         indent_element = extract_element(pPr_element, "w:ind")
         if indent_element is not None:
             indent_properties = IndentationProperties()
@@ -90,15 +59,6 @@ class ParagraphPropertiesParser:
         return None
 
     def extract_outline_level(self, pPr_element: ET.Element) -> Optional[int]:
-        """
-        Extracts the outline level from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[int]: The extracted outline level or None.
-        """
         outline_lvl_element = extract_element(pPr_element, "w:outlineLvl")
         if outline_lvl_element is not None:
             outline_level = extract_attribute(outline_lvl_element, 'val')
@@ -107,91 +67,27 @@ class ParagraphPropertiesParser:
         return None
 
     def extract_widow_control(self, pPr_element: ET.Element) -> Optional[bool]:
-        """
-        Extracts the widow control property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[bool]: The extracted widow control property or None.
-        """
         widow_control_element = extract_element(pPr_element, "w:widowControl")
-        if widow_control_element is not None:
-            return True
-        return None
+        return extract_boolean_attribute(widow_control_element)
 
     def extract_suppress_auto_hyphens(self, pPr_element: ET.Element) -> Optional[bool]:
-        """
-        Extracts the suppress auto hyphens property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[bool]: The extracted suppress auto hyphens property or None.
-        """
         suppress_auto_hyphens_element = extract_element(pPr_element, "w:suppressAutoHyphens")
-        if suppress_auto_hyphens_element is not None:
-            return True
-        return None
+        return extract_boolean_attribute(suppress_auto_hyphens_element)
 
     def extract_bidi(self, pPr_element: ET.Element) -> Optional[bool]:
-        """
-        Extracts the bidi property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[bool]: The extracted bidi property or None.
-        """
         bidi_element = extract_element(pPr_element, "w:bidi")
-        if bidi_element is not None:
-            return True
-        return None
+        return extract_boolean_attribute(bidi_element)
 
     def extract_justification(self, pPr_element: ET.Element) -> Optional[str]:
-        """
-        Extracts the justification property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[str]: The extracted justification property or None.
-        """
         justification_element = extract_element(pPr_element, "w:jc")
         if justification_element is not None:
             return extract_attribute(justification_element, 'val')
         return None
 
     def extract_keep_next(self, pPr_element: ET.Element) -> Optional[bool]:
-        """
-        Extracts the keep next property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[bool]: The extracted keep next property or None.
-        """
         keep_next_element = extract_element(pPr_element, "w:keepNext")
-        if keep_next_element is not None:
-            return True
-        return None
+        return extract_boolean_attribute(keep_next_element)
 
     def extract_suppress_line_numbers(self, pPr_element: ET.Element) -> Optional[bool]:
-        """
-        Extracts the suppress line numbers property from the paragraph properties XML element.
-
-        Args:
-            pPr_element (ET.Element): The paragraph properties XML element.
-
-        Returns:
-            Optional[bool]: The extracted suppress line numbers property or None.
-        """
         suppress_line_numbers_element = extract_element(pPr_element, "w:suppressLineNumbers")
-        if suppress_line_numbers_element is not None:
-            return True
-        return None
+        return extract_boolean_attribute(suppress_line_numbers_element)
