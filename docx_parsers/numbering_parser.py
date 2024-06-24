@@ -1,27 +1,11 @@
+# numbering_parser.py
+
 from pydantic import BaseModel
 from typing import List, Optional
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, convert_twips_to_points
-from docx_parsers.styles_parser import FontProperties, IndentationProperties
+from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
+from docx_parsers.models.styles_models import FontProperties, IndentationProperties
 import json
-
-# Namespace URI
-NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-
-# Constants for Namespace and References
-NAMESPACE = {'w': NAMESPACE_URI}
-W_VAL = f"{{{NAMESPACE_URI}}}val"
-W_ILVL = f"{{{NAMESPACE_URI}}}ilvl"
-W_POS = f"{{{NAMESPACE_URI}}}pos"
-W_NUMID = f"{{{NAMESPACE_URI}}}numId"
-W_ABSTRACTNUMID = f"{{{NAMESPACE_URI}}}abstractNumId"
-W_INDENT_LEFT = f"{{{NAMESPACE_URI}}}left"
-W_INDENT_START = f"{{{NAMESPACE_URI}}}start"
-W_INDENT_RIGHT = f"{{{NAMESPACE_URI}}}right"
-W_INDENT_END = f"{{{NAMESPACE_URI}}}end"
-W_INDENT_FIRSTLINE = f"{{{NAMESPACE_URI}}}firstLine"
-W_INDENT_HANGING = f"{{{NAMESPACE_URI}}}hanging"
-W_RPR = f"{{{NAMESPACE_URI}}}rPr"
-W_RFONTS = f"{{{NAMESPACE_URI}}}rFonts"
 
 class NumberingLevel(BaseModel):
     numId: int
@@ -51,55 +35,47 @@ class NumberingParser:
         instances = []
         
         for num in self.root.findall(".//w:num", namespaces=NAMESPACE):
-            numId = int(num.get(W_NUMID))
-            abstractNumId = int(num.find(".//w:abstractNumId", namespaces=NAMESPACE).get(W_VAL))
+            numId = int(extract_attribute(num, 'numId'))
+            abstractNumId = int(extract_attribute(extract_element(num, ".//w:abstractNumId"), 'val'))
             levels = []
 
-            abstractNum = self.root.find(f".//w:abstractNum[@{W_ABSTRACTNUMID}='{abstractNumId}']", namespaces=NAMESPACE)
+            abstractNum = extract_element(self.root, f".//w:abstractNum[@w:abstractNumId='{abstractNumId}']")
             for lvl in abstractNum.findall(".//w:lvl", namespaces=NAMESPACE):
-                ilvl = int(lvl.get(W_ILVL))
-                start = int(lvl.find(".//w:start", namespaces=NAMESPACE).get(W_VAL))
-                numFmt = lvl.find(".//w:numFmt", namespaces=NAMESPACE).get(W_VAL)
-                lvlText = lvl.find(".//w:lvlText", namespaces=NAMESPACE).get(W_VAL)
-                lvlJc = lvl.find(".//w:lvlJc", namespaces=NAMESPACE).get(W_VAL)
+                ilvl = int(extract_attribute(lvl, 'ilvl'))
+                start = int(extract_attribute(extract_element(lvl, ".//w:start"), 'val'))
+                numFmt = extract_attribute(extract_element(lvl, ".//w:numFmt"), 'val')
+                lvlText = extract_attribute(extract_element(lvl, ".//w:lvlText"), 'val')
+                lvlJc = extract_attribute(extract_element(lvl, ".//w:lvlJc"), 'val')
                 
-                pPr = lvl.find(".//w:pPr", namespaces=NAMESPACE)
+                pPr = extract_element(lvl, ".//w:pPr")
                 indent_properties = IndentationProperties()
                 tab_pt = None
 
                 if pPr is not None:
-                    indent_element = pPr.find("w:ind", namespaces=NAMESPACE)
+                    indent_element = extract_element(pPr, "w:ind")
                     if indent_element is not None:
-                        if W_INDENT_LEFT in indent_element.attrib:
-                            indent_properties.left_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_LEFT)))
-                        elif W_INDENT_START in indent_element.attrib:
-                            indent_properties.left_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_START)))
-                        if W_INDENT_RIGHT in indent_element.attrib:
-                            indent_properties.right_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_RIGHT)))
-                        elif W_INDENT_END in indent_element.attrib:
-                            indent_properties.right_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_END)))
-                        if W_INDENT_HANGING in indent_element.attrib:
-                            indent_properties.hanging_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_HANGING)))
-                        if W_INDENT_FIRSTLINE in indent_element.attrib:
-                            indent_properties.firstline_pt = convert_twips_to_points(int(indent_element.get(W_INDENT_FIRSTLINE)))
+                        indent_properties.left_pt = convert_twips_to_points(int(extract_attribute(indent_element, 'left') or extract_attribute(indent_element, 'start') or 0))
+                        indent_properties.right_pt = convert_twips_to_points(int(extract_attribute(indent_element, 'right') or extract_attribute(indent_element, 'end') or 0))
+                        indent_properties.hanging_pt = convert_twips_to_points(int(extract_attribute(indent_element, 'hanging') or 0))
+                        indent_properties.firstline_pt = convert_twips_to_points(int(extract_attribute(indent_element, 'firstLine') or 0))
                     
-                    tab_element = pPr.find(".//w:tab", namespaces=NAMESPACE)
+                    tab_element = extract_element(pPr, ".//w:tab")
                     if tab_element is not None:
-                        tab_val = tab_element.get(W_POS)
+                        tab_val = extract_attribute(tab_element, 'pos')
                         if tab_val.isdigit():
                             tab_pt = convert_twips_to_points(int(tab_val))
                 
                 # Extract font properties
                 fonts = None
-                rPr = lvl.find(".//w:rPr", namespaces=NAMESPACE)
+                rPr = extract_element(lvl, ".//w:rPr")
                 if rPr is not None:
-                    rFonts = rPr.find(".//w:rFonts", namespaces=NAMESPACE)
+                    rFonts = extract_element(rPr, "w:rFonts")
                     if rFonts is not None:
                         fonts = FontProperties(
-                            ascii=rFonts.get(f"{{{NAMESPACE_URI}}}ascii"),
-                            hAnsi=rFonts.get(f"{{{NAMESPACE_URI}}}hAnsi"),
-                            eastAsia=rFonts.get(f"{{{NAMESPACE_URI}}}eastAsia"),
-                            cs=rFonts.get(f"{{{NAMESPACE_URI}}}cs")
+                            ascii=extract_attribute(rFonts, 'ascii'),
+                            hAnsi=extract_attribute(rFonts, 'hAnsi'),
+                            eastAsia=extract_attribute(rFonts, 'eastAsia'),
+                            cs=extract_attribute(rFonts, 'cs')
                         )
 
                 level = NumberingLevel(
