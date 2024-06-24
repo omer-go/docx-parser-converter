@@ -1,6 +1,6 @@
 # styles_parser.py
 
-from typing import Optional, Tuple
+from typing import Optional
 import xml.etree.ElementTree as ET
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
@@ -8,6 +8,7 @@ from docx_parsers.models.styles_models import StylesSchema, Style, StyleDefaults
 from docx_parsers.styles.paragraph_properties_parser import ParagraphPropertiesParser
 from docx_parsers.styles.run_properties_parser import RunPropertiesParser
 import json
+
 
 class StylesParser:
     """
@@ -46,11 +47,10 @@ class StylesParser:
 
         styles_schema = StylesSchema(
             styles=styles,
-            defaults=style_type_defaults,
-            default_rpr=doc_defaults_rpr,
-            default_ppr=doc_defaults_ppr
+            style_type_defaults=style_type_defaults,
+            doc_defaults_rpr=doc_defaults_rpr,
+            doc_defaults_ppr=doc_defaults_ppr
         )
-        self.resolve_based_on_styles(styles_schema)
         return styles_schema
 
     def extract_doc_defaults_rpr(self, root) -> RunPropertiesParser:
@@ -134,36 +134,6 @@ class StylesParser:
             run_properties=run_properties
         )
 
-    def resolve_based_on_styles(self, styles_schema: StylesSchema) -> None:
-        """
-        Resolves the based-on styles, merging properties from base styles into derived styles.
-
-        Args:
-            styles_schema (StylesSchema): The styles schema to resolve.
-        """
-        styles_dict = {style.style_id: style for style in styles_schema.styles}
-
-        def merge_properties(base_props, derived_props):
-            if not base_props:
-                return derived_props
-            if not derived_props:
-                return base_props
-            base_dict = base_props.dict(exclude_unset=True)
-            derived_dict = derived_props.dict(exclude_unset=True)
-            merged_dict = {**base_dict, **derived_dict}
-            return type(base_props)(**merged_dict)
-
-        def resolve_style(style):
-            if style.based_on:
-                base_style = styles_dict.get(style.based_on)
-                if base_style:
-                    resolve_style(base_style)
-                    style.paragraph_properties = merge_properties(base_style.paragraph_properties, style.paragraph_properties)
-                    style.run_properties = merge_properties(base_style.run_properties, style.run_properties)
-
-        for style in styles_schema.styles:
-            resolve_style(style)
-    
     def get_styles_schema(self) -> StylesSchema:
         """
         Returns the parsed styles schema.
@@ -176,12 +146,10 @@ class StylesParser:
 
 if __name__ == "__main__":
     docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
-
     docx_file = read_binary_from_file_path(docx_path)
+
     styles_parser = StylesParser(docx_file)
+    styles_schema = styles_parser.get_styles_schema()
 
-    # Convert the document schema to a dictionary excluding null properties
-    filtered_schema_dict = styles_parser.get_styles_schema().model_dump(exclude_none=True)
-
-    # Output or further process the filtered schema as needed
+    filtered_schema_dict = styles_schema.model_dump(exclude_none=True)
     print(json.dumps(filtered_schema_dict, indent=2))

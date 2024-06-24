@@ -78,6 +78,6 @@ class StyleDefaults(BaseModel):
 
 class StylesSchema(BaseModel):
     styles: List[Style]
-    defaults: StyleDefaults
-    default_rpr: Optional[RunStyleProperties] = None
-    default_ppr: Optional[ParagraphStyleProperties] = None
+    style_type_defaults: StyleDefaults
+    doc_defaults_rpr: Optional[RunStyleProperties] = None
+    doc_defaults_ppr: Optional[ParagraphStyleProperties] = None
