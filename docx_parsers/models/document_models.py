@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 from typing import List, Optional, Union
-from docx_parsers.styles_parser import ParagraphStyleProperties, RunStyleProperties
+from docx_parsers.models.styles_models import ParagraphStyleProperties, RunStyleProperties
 
 class Numbering(BaseModel):
     ilvl: int

@@ -4,9 +4,10 @@ from lxml import etree
 from typing import Optional, List
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
 from docx_parsers.models.document_models import Paragraph, Run
+from docx_parsers.models.styles_models import TabStop, ParagraphStyleProperties
 from docx_parsers.document.document_numbering_parser import DocumentNumberingParser
 from docx_parsers.document.run_parser import RunParser
-from docx_parsers.styles_parser import StylesParser, ParagraphStyleProperties, TabStop
+from docx_parsers.styles.paragraph_properties_parser import ParagraphPropertiesParser
 from docx_parsers.utils import convert_twips_to_points
 
 class ParagraphParser:
@@ -38,8 +39,9 @@ class ParagraphParser:
         """
         properties = ParagraphStyleProperties()
         if pPr:
-            styles_parser = StylesParser()
-            properties = styles_parser.extract_paragraph_properties(pPr)
+            # styles_parser = StylesParser()
+            # properties = styles_parser.extract_paragraph_properties(pPr)
+            properties = ParagraphPropertiesParser().parse(pPr)
             style_id = self.extract_style_id(pPr)
             if style_id is not None:
                 properties.style_id = style_id

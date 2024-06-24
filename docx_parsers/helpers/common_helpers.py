@@ -1,6 +1,5 @@
 # common_helpers.py
 
-from lxml import etree
 from typing import Optional
 from xml.etree.ElementTree import Element
 
