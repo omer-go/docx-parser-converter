@@ -5,6 +5,7 @@ from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, safe_int
 from docx_parsers.models.table_models import TableCellProperties, TableWidth
 from docx_parsers.tables.table_properties_parser import TablePropertiesParser
+from docx_parsers.utils import convert_twips_to_points, convert_half_points_to_points
 
 class TableCellPropertiesParser:
     @staticmethod
@@ -22,7 +23,7 @@ class TableCellPropertiesParser:
             tcW=TableCellPropertiesParser.extract_table_cell_width(tcPr_element),
             tcBorders=TablePropertiesParser.extract_table_cell_borders(extract_element(tcPr_element, ".//w:tcBorders")),
             shd=TablePropertiesParser.extract_shading(extract_element(tcPr_element, ".//w:shd")),
-            tcMar=TablePropertiesParser.extract_table_cell_margins(tcPr_element),
+            tcMar=TableCellPropertiesParser.extract_table_cell_margins(tcPr_element),
             textDirection=TableCellPropertiesParser.extract_text_direction(tcPr_element),
             vAlign=TableCellPropertiesParser.extract_vertical_alignment(tcPr_element),
             hideMark=TableCellPropertiesParser.extract_hide_mark(tcPr_element),
@@ -43,9 +44,10 @@ class TableCellPropertiesParser:
         """
         width_element = extract_element(element, ".//w:tcW")
         if width_element is not None:
+            width_value = safe_int(extract_attribute(width_element, 'w'))
             return TableWidth(
                 type=extract_attribute(width_element, 'type'),
-                width=safe_int(extract_attribute(width_element, 'w'))
+                width=convert_twips_to_points(width_value) if width_value is not None else None
             )
         return None
 
@@ -118,3 +120,26 @@ class TableCellPropertiesParser:
         """
         grid_span_element = extract_element(element, ".//w:gridSpan")
         return safe_int(extract_attribute(grid_span_element, 'val'))
+
+    @staticmethod
+    def extract_table_cell_margins(element: Optional[etree.Element]) -> Optional[dict]:
+        """
+        Extracts table cell margins from the given XML element.
+
+        Args:
+            element (Optional[etree.Element]): The XML element.
+
+        Returns:
+            Optional[dict]: The table cell margins, or None if not found.
+        """
+        margins_element = extract_element(element, ".//w:tcMar")
+        if margins_element is not None:
+            margins = {}
+            for attr in ['top', 'left', 'bottom', 'right']:
+                margin_element = extract_element(margins_element, f".//w:{attr}")
+                if margin_element is not None:
+                    margin_value = safe_int(extract_attribute(margin_element, 'w'))
+                    if margin_value is not None:
+                        margins[attr] = convert_twips_to_points(margin_value)
+            return margins
+        return None

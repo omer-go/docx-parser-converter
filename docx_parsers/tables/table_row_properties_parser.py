@@ -2,9 +2,10 @@
 
 from lxml import etree
 from typing import Optional
-from docx_parsers.helpers.common_helpers import extract_element, extract_attribute
+from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, safe_int
 from docx_parsers.models.table_models import TableRowProperties
 from docx_parsers.tables.table_properties_parser import TablePropertiesParser
+from docx_parsers.utils import convert_twips_to_points
 
 class TableRowPropertiesParser:
     @staticmethod
@@ -36,11 +37,12 @@ class TableRowPropertiesParser:
             element (Optional[etree.Element]): The XML element.
 
         Returns:
-            Optional[str]: The row height, or None if not found.
+            Optional[str]: The row height in points as a string, or None if not found.
         """
         height_element = extract_element(element, ".//w:trHeight")
         if height_element is not None:
-            return extract_attribute(height_element, 'val')
+            height_value = safe_int(extract_attribute(height_element, 'val'))
+            return str(convert_twips_to_points(height_value)) if height_value is not None else None
         return None
 
     @staticmethod

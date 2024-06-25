@@ -18,18 +18,18 @@ class ShadingProperties(BaseModel):
     color: Optional[str]
 
 class MarginProperties(BaseModel):
-    top: Optional[int]
-    left: Optional[int]
-    bottom: Optional[int]
-    right: Optional[int]
+    top: Optional[float]
+    left: Optional[float]
+    bottom: Optional[float]
+    right: Optional[float]
 
 class TableWidth(BaseModel):
     type: Optional[str]
-    width: Optional[int]
+    width: Optional[float]
 
 class TableIndent(BaseModel):
     type: Optional[str]
-    width: Optional[int]
+    width: Optional[float]
 
 class TableLook(BaseModel):
     firstRow: Optional[bool]
@@ -86,7 +86,7 @@ class TableProperties(BaseModel):
     tblLook: Optional[TableLook]
 
 class TableGrid(BaseModel):
-    columns: List[int]
+    columns: List[float]
 
 class Table(BaseModel):
     properties: Optional[TableProperties]

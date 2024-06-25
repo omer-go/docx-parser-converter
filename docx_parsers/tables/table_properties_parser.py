@@ -3,7 +3,11 @@
 from lxml import etree
 from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, safe_int
-from docx_parsers.models.table_models import TableProperties, TableWidth, TableIndent, TableLook, TableCellBorders, ShadingProperties, MarginProperties, BorderProperties
+from docx_parsers.models.table_models import (
+    TableProperties, TableWidth, TableIndent, TableLook, 
+    TableCellBorders, ShadingProperties, MarginProperties, BorderProperties
+)
+from docx_parsers.utils import convert_twips_to_points, convert_half_points_to_points
 
 class TablePropertiesParser:
     @staticmethod
@@ -52,9 +56,10 @@ class TablePropertiesParser:
         """
         indent_element = extract_element(element, ".//w:tblInd")
         if indent_element is not None:
+            indent_value = safe_int(extract_attribute(indent_element, 'w'))
             return TableIndent(
                 type=extract_attribute(indent_element, 'type'),
-                width=safe_int(extract_attribute(indent_element, 'w'))
+                width=convert_twips_to_points(indent_value) if indent_value is not None else None
             )
         return None
 
@@ -71,9 +76,10 @@ class TablePropertiesParser:
         """
         width_element = extract_element(element, ".//w:tblW")
         if width_element is not None:
+            width_value = safe_int(extract_attribute(width_element, 'w'))
             return TableWidth(
                 type=extract_attribute(width_element, 'type'),
-                width=safe_int(extract_attribute(width_element, 'w'))
+                width=convert_twips_to_points(width_value) if width_value is not None else None
             )
         return None
 
@@ -127,7 +133,7 @@ class TablePropertiesParser:
         return None
 
     @staticmethod
-    def extract_margin_value(margin_element: etree.Element, side: str) -> Optional[int]:
+    def extract_margin_value(margin_element: etree.Element, side: str) -> Optional[float]:
         """
         Extracts a specific margin value from the given XML element.
 
@@ -136,10 +142,11 @@ class TablePropertiesParser:
             side (str): The side of the margin (e.g., "top", "left").
 
         Returns:
-            Optional[int]: The margin value, or None if not found.
+            Optional[float]: The margin value in points, or None if not found.
         """
         side_element = extract_element(margin_element, f".//w:{side}")
-        return safe_int(extract_attribute(side_element, 'w'))
+        margin_value = safe_int(extract_attribute(side_element, 'w'))
+        return convert_twips_to_points(margin_value) if margin_value is not None else None
 
     @staticmethod
     def extract_table_layout(element: etree.Element) -> Optional[str]:
@@ -212,9 +219,10 @@ class TablePropertiesParser:
             Optional[BorderProperties]: The parsed border properties, or None if not found.
         """
         if border_element is not None:
+            size_value = safe_int(extract_attribute(border_element, 'sz'))
             return BorderProperties(
                 color=extract_attribute(border_element, 'color'),
-                size=safe_int(extract_attribute(border_element, 'sz')),
+                size=convert_half_points_to_points(size_value) if size_value is not None else None,
                 space=safe_int(extract_attribute(border_element, 'space')),
                 val=extract_attribute(border_element, 'val')
             )

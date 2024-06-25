@@ -4,6 +4,7 @@ from lxml import etree
 from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_attribute, NAMESPACE
 from docx_parsers.models.table_models import TableGrid
+from docx_parsers.utils import convert_twips_to_points
 
 class TableGridParser:
     @staticmethod
@@ -19,6 +20,6 @@ class TableGridParser:
         """
         grid_elements = table_element.findall(".//w:gridCol", namespaces=NAMESPACE)
         if grid_elements:
-            columns = [int(extract_attribute(col, 'w')) for col in grid_elements]
+            columns = [convert_twips_to_points(int(extract_attribute(col, 'w'))) for col in grid_elements]
             return TableGrid(columns=columns)
         return None
