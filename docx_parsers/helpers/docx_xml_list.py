@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - Discount Only - FINAL.docx"
     # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
+    docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
     # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
-    docx_path = "C:/Users/omerh/Desktop/Sponsor Voting Agreement.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Sponsor Voting Agreement.docx"
     extract_docx_xml(docx_path)
