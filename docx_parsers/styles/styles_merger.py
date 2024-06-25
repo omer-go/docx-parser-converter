@@ -186,6 +186,14 @@ if __name__ == "__main__":
     numbering_schema = numbering_parser.get_numbering_schema()
     
     style_merger = StyleMerger(document_schema, styles_schema, numbering_schema)
+
+    # Print the properties of all table cells
+    for element in document_schema.elements:
+        if isinstance(element, Table):
+            for row in element.rows:
+                for cell in row.cells:
+                    print("TableCell properties:")
+                    print(json.dumps(cell.model_dump(exclude_none=True), indent=2))
     
-    filtered_schema_dict = style_merger.document_schema.model_dump(exclude_none=True)
-    print(json.dumps(filtered_schema_dict, indent=2))
+    # filtered_schema_dict = style_merger.document_schema.model_dump(exclude_none=True)
+    # print(json.dumps(filtered_schema_dict, indent=2))
