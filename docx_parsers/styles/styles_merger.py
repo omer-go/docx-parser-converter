@@ -1,5 +1,3 @@
-# styles_merger.py
-
 from typing import Optional
 from docx_parsers.models.document_models import DocumentSchema, Paragraph
 from docx_parsers.models.styles_models import StylesSchema, Style, ParagraphStyleProperties
@@ -8,6 +6,7 @@ from docx_parsers.document.document_parser import DocumentParser
 from docx_parsers.styles.styles_parser import StylesParser
 from docx_parsers.numbering.numbering_parser import NumberingParser
 from docx_parsers.utils import read_binary_from_file_path, merge_properties
+from docx_parsers.models.table_models import Table
 import json
 
 
@@ -38,7 +37,7 @@ class StyleMerger:
         Initializes the StyleMerger with document schema, styles schema, and numbering schema.
         
         Args:
-            document_schema (DocumentSchema): The schema containing paragraphs and runs from document.xml.
+            document_schema (DocumentSchema): The schema containing elements from document.xml.
             styles_schema (StylesSchema): The schema containing styles and defaults from styles.xml.
             numbering_schema (NumberingSchema): The schema containing numbering definitions from numbering.xml.
         """
@@ -77,11 +76,26 @@ class StyleMerger:
         - Then apply style properties defined in styles.xml.
         - Finally, apply default properties defined in styles.xml.
         """
-        for paragraph in self.document_schema.paragraphs:
-            if paragraph.numbering:
-                self.apply_numbering_properties(paragraph)
-            self.apply_style_properties(paragraph)
-            self.apply_default_properties(paragraph)
+        for element in self.document_schema.elements:
+            if isinstance(element, Paragraph):
+                self.merge_paragraph_styles(element)
+            elif isinstance(element, Table):
+                for row in element.rows:
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            self.merge_paragraph_styles(paragraph)
+
+    def merge_paragraph_styles(self, paragraph: Paragraph):
+        """
+        Merges styles into a paragraph.
+        
+        Args:
+            paragraph (Paragraph): The paragraph to merge styles into.
+        """
+        if paragraph.numbering:
+            self.apply_numbering_properties(paragraph)
+        self.apply_style_properties(paragraph)
+        self.apply_default_properties(paragraph)
 
     def apply_numbering_properties(self, paragraph: Paragraph):
         """
@@ -173,5 +187,5 @@ if __name__ == "__main__":
     
     style_merger = StyleMerger(document_schema, styles_schema, numbering_schema)
     
-    filtered_schema_dict = style_merger.styles_schema.model_dump(exclude_none=True)
+    filtered_schema_dict = style_merger.document_schema.model_dump(exclude_none=True)
     print(json.dumps(filtered_schema_dict, indent=2))

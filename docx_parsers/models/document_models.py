@@ -3,6 +3,7 @@
 from pydantic import BaseModel
 from typing import List, Optional, Union
 from docx_parsers.models.styles_models import ParagraphStyleProperties, RunStyleProperties
+from docx_parsers.models.table_models import Table
 
 class Numbering(BaseModel):
     ilvl: int
@@ -36,5 +37,5 @@ class Margins(BaseModel):
     gutter_pt: Optional[float] = None
 
 class DocumentSchema(BaseModel):
-    paragraphs: List[Paragraph]
+    elements: List[Union[Paragraph, Table]]
     margins: Optional[Margins]

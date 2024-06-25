@@ -1,8 +1,10 @@
 # table_models.py
 
 from pydantic import BaseModel
-from typing import Optional, List
-from docx_parsers.models.document_models import Paragraph
+from typing import Optional, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from docx_parsers.models.document_models import Paragraph
 
 class BorderProperties(BaseModel):
     color: Optional[str]
@@ -58,7 +60,7 @@ class TableCellProperties(BaseModel):
 
 class TableCell(BaseModel):
     properties: Optional[TableCellProperties]
-    paragraphs: List['Paragraph']  # 'Paragraph' needs to be defined in document_models
+    paragraphs: List['Paragraph']  # Use forward reference
 
 class TableRowProperties(BaseModel):
     trHeight: Optional[str]
@@ -86,7 +88,7 @@ class TableProperties(BaseModel):
 class TableGrid(BaseModel):
     columns: List[int]
 
-class TableSchema(BaseModel):
+class Table(BaseModel):
     properties: Optional[TableProperties]
     grid: Optional[TableGrid]
     rows: List[TableRow]

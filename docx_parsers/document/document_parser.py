@@ -1,12 +1,13 @@
-# document_parser.py
-
 import json
-from typing import Optional, List
-from docx_parsers.helpers.common_helpers import extract_element, NAMESPACE
+from typing import Optional, List, Union
+from lxml import etree
+from docx_parsers.helpers.common_helpers import NAMESPACE
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
-from docx_parsers.models.document_models import DocumentSchema, Paragraph
+from docx_parsers.models.document_models import DocumentSchema, Paragraph, Margins
+from docx_parsers.models.table_models import Table
 from docx_parsers.document.margins_parser import MarginsParser
 from docx_parsers.document.paragraph_parser import ParagraphParser
+from docx_parsers.tables.tables_parser import TablesParser
 
 class DocumentParser:
     def __init__(self, docx_file: Optional[bytes] = None):
@@ -30,23 +31,38 @@ class DocumentParser:
         Returns:
             DocumentSchema: The parsed document schema.
         """
-        sectPr = extract_element(self.root, ".//w:sectPr")
-        margins = MarginsParser().parse(sectPr)
-        paragraphs = self.extract_paragraphs()
-        return DocumentSchema(paragraphs=paragraphs, margins=margins)
+        elements = self.extract_elements()
+        margins = self.extract_margins()
+        return DocumentSchema(elements=elements, margins=margins)
 
-    def extract_paragraphs(self) -> List[Paragraph]:
+    def extract_elements(self) -> List[Union[Paragraph, Table]]:
         """
-        Extracts paragraphs from the document XML.
+        Extracts elements (paragraphs and tables) from the document XML.
 
         Returns:
-            List[Paragraph]: The list of extracted paragraphs.
+            List[Union[Paragraph, Table]]: The list of extracted elements.
         """
-        paragraphs = []
+        elements = []
         paragraph_parser = ParagraphParser()
-        for p in self.root.findall(".//w:p", namespaces=NAMESPACE):
-            paragraphs.append(paragraph_parser.parse(p))
-        return paragraphs
+        for child in self.root.find(".//w:body", namespaces=NAMESPACE):
+            if child.tag.endswith("p"):
+                elements.append(paragraph_parser.parse(child))
+            elif child.tag.endswith("tbl"):
+                tables_parser = TablesParser(child)
+                elements.append(tables_parser.parse())
+        return elements
+
+    def extract_margins(self) -> Optional[Margins]:
+        """
+        Extracts margins from the document XML.
+
+        Returns:
+            Optional[Margins]: The extracted margins or None if not found.
+        """
+        sectPr = self.root.find(".//w:body//w:sectPr", namespaces=NAMESPACE)
+        if sectPr is not None:
+            return MarginsParser().parse(sectPr)
+        return None
 
     def get_document_schema(self) -> DocumentSchema:
         """
@@ -59,15 +75,21 @@ class DocumentParser:
 
 
 if __name__ == "__main__":
-    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
     docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     document_parser = DocumentParser(docx_file)
     document_schema = document_parser.get_document_schema()
 
-    # Convert the document schema to a dictionary excluding null properties
-    filtered_schema_dict = document_schema.model_dump(exclude_none=True)
+    # # Iterate over the elements in the document schema and print them
+    # for element in document_schema.elements:
+    #     if isinstance(element, Paragraph):
+    #         print("Paragraph:")
+    #         # print(json.dumps(element.model_dump(exclude_none=True), indent=2))
+    #     elif isinstance(element, Table):
+    #         print("Table:")
+    #         # print(json.dumps(element.model_dump(exclude_none=True), indent=2))
 
     # Output or further process the filtered schema as needed
+    filtered_schema_dict = document_schema.model_dump(exclude_none=True)
     print(json.dumps(filtered_schema_dict, indent=2))
