@@ -1,5 +1,5 @@
 import os
-from docx_to_html.initialize import Initialize
+from docx_to_html.docx_processor import DocxProcessor
 from docx_to_html.html_generator import HtmlGenerator
 from docx_parsers.utils import read_binary_from_file_path
 
@@ -7,7 +7,7 @@ from docx_parsers.utils import read_binary_from_file_path
 class DocxToHtmlConverter:
     def __init__(self, docx_file: bytes, use_default_values: bool = True):
         self.docx_file = docx_file
-        self.document_schema, self.styles_schema, self.numbering_schema = Initialize.process_docx(docx_file)
+        self.document_schema, self.styles_schema, self.numbering_schema = DocxProcessor.process_docx(docx_file)
 
     def convert_to_html(self) -> str:
         return HtmlGenerator.generate_html(self.document_schema, self.numbering_schema)

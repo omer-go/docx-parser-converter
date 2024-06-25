@@ -4,7 +4,7 @@ from lxml import etree
 import json
 from docx_parsers.utils import read_binary_from_file_path, extract_xml_root_from_docx
 from docx_parsers.helpers.common_helpers import NAMESPACE
-from docx_parsers.models.table_models import Table
+from docx_parsers.models.table_models import TableSchema
 from docx_parsers.tables.table_properties_parser import TablePropertiesParser
 from docx_parsers.tables.table_grid_parser import TableGridParser
 from docx_parsers.tables.table_row_parser import TableRowParser
@@ -19,7 +19,7 @@ class TablesParser:
         """
         self.root = table_element
 
-    def parse(self) -> Table:
+    def parse(self) -> TableSchema:
         """
         Parses the table XML element into a Table object.
 
@@ -30,7 +30,7 @@ class TablesParser:
         properties = TablePropertiesParser.parse(properties_element)
         grid = TableGridParser.parse(self.root)
         rows = [TableRowParser.parse(row) for row in self.root.findall(".//w:tr", namespaces=NAMESPACE)]
-        return Table(properties=properties, grid=grid, rows=rows)
+        return TableSchema(properties=properties, grid=grid, rows=rows)
 
 if __name__ == "__main__":
     docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"

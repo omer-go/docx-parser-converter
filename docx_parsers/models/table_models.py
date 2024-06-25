@@ -86,7 +86,7 @@ class TableProperties(BaseModel):
 class TableGrid(BaseModel):
     columns: List[int]
 
-class Table(BaseModel):
+class TableSchema(BaseModel):
     properties: Optional[TableProperties]
     grid: Optional[TableGrid]
     rows: List[TableRow]

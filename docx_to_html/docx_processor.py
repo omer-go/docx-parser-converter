@@ -7,7 +7,7 @@ from docx_parsers.numbering.numbering_parser import NumberingParser
 from docx_parsers.styles.styles_merger import StyleMerger
 
 
-class Initialize:
+class DocxProcessor:
     @staticmethod
     def process_docx(docx_file: bytes) -> tuple[DocumentSchema, StylesSchema, NumberingSchema]:
         styles_schema = None
@@ -17,14 +17,14 @@ class Initialize:
             styles_schema = styles_parser.get_styles_schema()
         except Exception as e:
             print(f"Warning: Failed to parse styles.xml. Using default styles schema. Error: {e}")
-            styles_schema = Initialize.get_default_styles_schema()
+            styles_schema = DocxProcessor.get_default_styles_schema()
 
         try:
             numbering_parser = NumberingParser(docx_file)
             numbering_schema = numbering_parser.get_numbering_schema()
         except Exception as e:
             print(f"Warning: Failed to parse numbering.xml. Using default numbering schema. Error: {e}")
-            numbering_schema = Initialize.get_default_numbering_schema()
+            numbering_schema = DocxProcessor.get_default_numbering_schema()
 
         try:
             document_parser = DocumentParser(docx_file)
