@@ -222,7 +222,7 @@ class TablePropertiesParser:
             size_value = safe_int(extract_attribute(border_element, 'sz'))
             return BorderProperties(
                 color=extract_attribute(border_element, 'color'),
-                size=convert_half_points_to_points(size_value) if size_value is not None else None,
+                size=size_value if size_value is not None else None,
                 space=safe_int(extract_attribute(border_element, 'space')),
                 val=extract_attribute(border_element, 'val')
             )
