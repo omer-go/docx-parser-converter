@@ -24,7 +24,7 @@ class NumberingConverter:
             numbering_text = NumberingConverter.format_number(counter, numbering_level.numFmt)
             lvlText = numbering_level.lvlText.replace(f"%{numbering.ilvl + 1}", numbering_text)
             indent_left_pt = numbering_level.indent.left_pt if numbering_level.indent and numbering_level.indent.left_pt else 0
-            hanging_indent_pt = numbering_level.indent.hanging_pt if numbering_level.indent and numbering_level.indent.hanging_pt else 0
+            firstline_indent_pt = numbering_level.indent.firstline_pt if numbering_level.indent and numbering_level.indent.firstline_pt else 0
 
             def get_char_width(char):
                 if char.isdigit() or char.isalpha():
@@ -36,7 +36,7 @@ class NumberingConverter:
             numbering_text_length_pt = sum(get_char_width(c) for c in numbering_text)
 
             if numbering_level.tab_pt:
-                net_padding = numbering_level.tab_pt - (indent_left_pt - hanging_indent_pt) - numbering_text_length_pt
+                net_padding = numbering_level.tab_pt - (indent_left_pt + firstline_indent_pt) - numbering_text_length_pt
                 padding_style = f"padding-left:{max(net_padding, 7.2)}pt;"
                 if numbering_level.fonts and numbering_level.fonts.ascii:
                     font_style = f"font-family:{numbering_level.fonts.ascii};"

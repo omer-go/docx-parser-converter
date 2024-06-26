@@ -12,7 +12,6 @@ class IndentationProperties(BaseModel):
     left_pt: Optional[float] = None
     right_pt: Optional[float] = None
     firstline_pt: Optional[float] = None
-    hanging_pt: Optional[float] = None
 
 class FontProperties(BaseModel):
     ascii: Optional[str] = None

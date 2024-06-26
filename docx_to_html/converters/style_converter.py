@@ -45,12 +45,12 @@ class StyleConverter:
         style = ""
         if indent.left_pt is not None:
             style += f"margin-left:{indent.left_pt}pt;"
-        if indent.hanging_pt is not None:
-            style += f"text-indent:-{indent.hanging_pt}pt;"
         if indent.right_pt is not None:
             style += f"margin-right:{indent.right_pt}pt;"
         if indent.firstline_pt:
             style += f"text-indent:{indent.firstline_pt}pt;"
+        # if indent.hanging_pt is not None: # Merged with firsline_pt property
+        #     style += f"text-indent:-{indent.hanging_pt}pt;"
         return style
 
     @staticmethod
@@ -65,7 +65,7 @@ class StyleConverter:
         return f"text-align:{justification_map.get(justification, 'left')};" if justification else ""
 
     @staticmethod
-    def convert_margins(margins) -> str:
+    def convert_doc_margins(margins) -> str:
         style = f"padding-top:{margins.top_pt}pt; padding-right:{margins.right_pt}pt; padding-bottom:{margins.bottom_pt}pt; padding-left:{margins.left_pt}pt;"
         if margins.header_pt:
             style += f" padding-top:{margins.header_pt}pt;"

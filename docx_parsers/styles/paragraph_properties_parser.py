@@ -1,7 +1,5 @@
-# paragraph_properties_parser.py
-
 import xml.etree.ElementTree as ET
-from typing import Optional
+from typing import Optional, List
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, extract_boolean_attribute
 from docx_parsers.utils import convert_twips_to_points
 from docx_parsers.models.styles_models import ParagraphStyleProperties, SpacingProperties, IndentationProperties
@@ -30,11 +28,11 @@ class ParagraphPropertiesParser:
             before = extract_attribute(spacing_element, 'before')
             after = extract_attribute(spacing_element, 'after')
             line = extract_attribute(spacing_element, 'line')
-            if before:
+            if before is not None:
                 spacing_properties.before_pt = convert_twips_to_points(int(before))
-            if after:
+            if after is not None:
                 spacing_properties.after_pt = convert_twips_to_points(int(after))
-            if line:
+            if line is not None:
                 spacing_properties.line_pt = convert_twips_to_points(int(line))
             return spacing_properties
         return None
@@ -42,20 +40,27 @@ class ParagraphPropertiesParser:
     def extract_indentation(self, pPr_element: ET.Element) -> Optional[IndentationProperties]:
         indent_element = extract_element(pPr_element, "w:ind")
         if indent_element is not None:
-            indent_properties = IndentationProperties()
-            left = extract_attribute(indent_element, 'left') or extract_attribute(indent_element, 'start')
-            right = extract_attribute(indent_element, 'right') or extract_attribute(indent_element, 'end')
-            hanging = extract_attribute(indent_element, 'hanging')
-            firstLine = extract_attribute(indent_element, 'firstLine')
-            if left:
-                indent_properties.left_pt = convert_twips_to_points(int(left))
-            if right:
-                indent_properties.right_pt = convert_twips_to_points(int(right))
-            if hanging:
-                indent_properties.hanging_pt = convert_twips_to_points(int(hanging))
-            if firstLine:
-                indent_properties.firstline_pt = convert_twips_to_points(int(firstLine))
-            return indent_properties
+            left_pt = self.convert_to_points(indent_element, ['left', 'start'])
+            right_pt = self.convert_to_points(indent_element, ['right', 'end'])
+            hanging_pt = self.convert_to_points(indent_element, ['hanging'])
+            firstline_pt = self.convert_to_points(indent_element, ['firstLine'])
+
+            # Handling hanging and firstLine properties
+            if hanging_pt is not None:
+                firstline_pt = -hanging_pt
+
+            return IndentationProperties(
+                left_pt=left_pt,
+                right_pt=right_pt,
+                firstline_pt=firstline_pt
+            )
+        return None
+
+    def convert_to_points(self, element: ET.Element, attrs: List[str]) -> Optional[float]:
+        for attr in attrs:
+            value = extract_attribute(element, attr)
+            if value is not None:
+                return convert_twips_to_points(int(value))
         return None
 
     def extract_outline_level(self, pPr_element: ET.Element) -> Optional[int]:
