@@ -36,8 +36,8 @@ class DocxToTxtConverter:
 
 
 if __name__ == "__main__":
-    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
-    docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
     # docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
     txt_output_path = "C:/Users/omerh/Desktop/docx_txt.txt"

@@ -1,5 +1,4 @@
 from docx_parsers.models.document_models import DocumentSchema, Paragraph
-from docx_parsers.models.numbering_models import NumberingSchema
 from docx_to_txt.converters.paragraph_converter import ParagraphConverter
 
 
@@ -9,7 +8,7 @@ class TxtGenerator:
     """
 
     @staticmethod
-    def generate_txt(document_schema: DocumentSchema, numbering_schema: NumberingSchema, indent: bool) -> str:
+    def generate_txt(document_schema: DocumentSchema, numbering_schema, indent: bool) -> str:
         """
         Generate plain text from the document schema.
         :param document_schema: The document schema.
@@ -34,11 +33,15 @@ class TxtGenerator:
         if doc_margins:
             # Handle document margins if needed
             pass
-        
+
+        prev_paragraph = None
         for element in elements:
             if isinstance(element, Paragraph):
+                if prev_paragraph:
+                    body += ParagraphConverter.add_spacing(prev_paragraph, element)
                 paragraph_text = ParagraphConverter.convert_paragraph(element, numbering_schema, indent)
                 body += paragraph_text + "\n"
+                prev_paragraph = element
             # Handle tables in future implementation
             # elif isinstance(element, Table):
             #     table_text = TableConverter.convert_table(element)
