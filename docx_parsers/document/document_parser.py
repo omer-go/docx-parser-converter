@@ -3,7 +3,7 @@ from typing import Optional, List, Union
 from lxml import etree
 from docx_parsers.helpers.common_helpers import NAMESPACE
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
-from docx_parsers.models.document_models import DocumentSchema, Paragraph, Margins
+from docx_parsers.models.document_models import DocumentSchema, Paragraph, DocMargins
 from docx_parsers.models.table_models import Table
 from docx_parsers.document.margins_parser import MarginsParser
 from docx_parsers.document.paragraph_parser import ParagraphParser
@@ -33,7 +33,7 @@ class DocumentParser:
         """
         elements = self.extract_elements()
         margins = self.extract_margins()
-        return DocumentSchema(elements=elements, margins=margins)
+        return DocumentSchema(elements=elements, doc_margins=margins)
 
     def extract_elements(self) -> List[Union[Paragraph, Table]]:
         """
@@ -52,7 +52,7 @@ class DocumentParser:
                 elements.append(tables_parser.parse())
         return elements
 
-    def extract_margins(self) -> Optional[Margins]:
+    def extract_margins(self) -> Optional[DocMargins]:
         """
         Extracts margins from the document XML.
 
@@ -75,7 +75,8 @@ class DocumentParser:
 
 
 if __name__ == "__main__":
-    docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     document_parser = DocumentParser(docx_file)
@@ -91,5 +92,5 @@ if __name__ == "__main__":
     #         # print(json.dumps(element.model_dump(exclude_none=True), indent=2))
 
     # Output or further process the filtered schema as needed
-    filtered_schema_dict = document_schema.model_dump(exclude_none=True)
+    filtered_schema_dict = document_schema.doc_margins.model_dump(exclude_none=True)
     print(json.dumps(filtered_schema_dict, indent=2))

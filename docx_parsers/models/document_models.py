@@ -27,15 +27,15 @@ class Paragraph(BaseModel):
     runs: List[Run]
     numbering: Optional[Numbering] = None
 
-class Margins(BaseModel):
-    top_pt: float
-    right_pt: float
-    bottom_pt: float
-    left_pt: float
+class DocMargins(BaseModel):
+    top_pt: Optional[float] = None
+    right_pt: Optional[float] = None
+    bottom_pt: Optional[float] = None
+    left_pt: Optional[float] = None
     header_pt: Optional[float] = None
     footer_pt: Optional[float] = None
     gutter_pt: Optional[float] = None
 
 class DocumentSchema(BaseModel):
     elements: List[Union[Paragraph, Table]]
-    margins: Optional[Margins]
+    doc_margins: Optional[DocMargins]

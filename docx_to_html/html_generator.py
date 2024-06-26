@@ -11,16 +11,16 @@ class HtmlGenerator:
         root = etree.Element("html")
         body = etree.SubElement(root, "body")
         
-        body_html = HtmlGenerator.generate_html_body(document_schema.margins, document_schema.elements, numbering_schema)
+        body_html = HtmlGenerator.generate_html_body(document_schema.doc_margins, document_schema.elements, numbering_schema)
         body.append(body_html)
 
         return html.tostring(root, pretty_print=True, encoding="unicode")
 
     @staticmethod
-    def generate_html_body(margins, elements, numbering_schema) -> etree.Element:
+    def generate_html_body(doc_margins, elements, numbering_schema) -> etree.Element:
         div = etree.Element("div")
-        if margins:
-            margin_style = StyleConverter.convert_margins(margins)
+        if doc_margins:
+            margin_style = StyleConverter.convert_doc_margins(doc_margins)
             div.set("style", margin_style)
         
         for element in elements:
