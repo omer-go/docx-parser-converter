@@ -77,16 +77,35 @@ class TableConverter:
             cell_properties_html = TableConverter.convert_cell_properties(cell.properties, tblCellMar)
             td.set("style", cell_properties_html)
             
-            for paragraph in cell.paragraphs:
-                paragraph_html = ParagraphConverter.convert_paragraph(paragraph, None)  # Adjust numbering_schema as needed
-                td.append(html.fragment_fromstring(paragraph_html))
+            if TableConverter.is_cell_empty(cell):  # Check if the cell is empty
+                td.text = "\u00A0"
+            else:
+                for paragraph in cell.paragraphs:
+                    paragraph_html = ParagraphConverter.convert_paragraph(paragraph, None)  # Adjust numbering_schema as needed
+                    td.append(html.fragment_fromstring(paragraph_html))
             
             cell_elements.append(td)
         return cell_elements
 
     @staticmethod
+    def is_cell_empty(cell) -> bool:
+        """
+        Check if a cell is empty by verifying if all runs in all paragraphs have no contents.
+        """
+        for paragraph in cell.paragraphs:
+            for run in paragraph.runs:
+                if run.contents:
+                    return False
+        return True
+
+    @staticmethod
     def convert_cell_properties(properties, tblCellMar) -> str:  # Accept tblCellMar as a parameter
-        styles = []
+        styles = [
+            "word-wrap: break-word;",       # Allow words to be broken at arbitrary points
+            "word-break: break-all;",       # Ensure long words break and wrap into next line
+            "overflow-wrap: break-word;",   # Handle long words in tables
+            "overflow: hidden;"             # Hide overflow content
+        ]
         if properties.tcW:
             styles.append(f"width:{properties.tcW.width}pt;")
         if properties.tcBorders:

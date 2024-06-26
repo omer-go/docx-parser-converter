@@ -1,5 +1,3 @@
-# table_properties_parser.py
-
 from lxml import etree
 from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, safe_int
@@ -126,9 +124,9 @@ class TablePropertiesParser:
         if margin_element is not None:
             return MarginProperties(
                 top=TablePropertiesParser.extract_margin_value(margin_element, "top"),
-                left=TablePropertiesParser.extract_margin_value(margin_element, "left"),
+                left=TablePropertiesParser.extract_margin_value(margin_element, "left") or TablePropertiesParser.extract_margin_value(margin_element, "start"),
                 bottom=TablePropertiesParser.extract_margin_value(margin_element, "bottom"),
-                right=TablePropertiesParser.extract_margin_value(margin_element, "right")
+                right=TablePropertiesParser.extract_margin_value(margin_element, "right") or TablePropertiesParser.extract_margin_value(margin_element, "end")
             )
         return None
 
@@ -145,8 +143,10 @@ class TablePropertiesParser:
             Optional[float]: The margin value in points, or None if not found.
         """
         side_element = extract_element(margin_element, f".//w:{side}")
-        margin_value = safe_int(extract_attribute(side_element, 'w'))
-        return convert_twips_to_points(margin_value) if margin_value is not None else None
+        if side_element is not None:
+            margin_value = safe_int(extract_attribute(side_element, 'w'))
+            return convert_twips_to_points(margin_value) if margin_value is not None else None
+        return None
 
     @staticmethod
     def extract_table_layout(element: etree.Element) -> Optional[str]:
@@ -199,9 +199,9 @@ class TablePropertiesParser:
         if borders_element is not None:
             return TableCellBorders(
                 top=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:top")),
-                left=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:left")),
+                left=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:left")) or TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:start")),
                 bottom=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:bottom")),
-                right=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:right")),
+                right=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:right")) or TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:end")),
                 insideH=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:insideH")),
                 insideV=TablePropertiesParser.extract_border(extract_element(borders_element, ".//w:insideV"))
             )

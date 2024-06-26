@@ -76,7 +76,8 @@ class DocumentParser:
 
 if __name__ == "__main__":
     # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
-    docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
+    # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
+    docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     document_parser = DocumentParser(docx_file)
@@ -92,5 +93,5 @@ if __name__ == "__main__":
     #         # print(json.dumps(element.model_dump(exclude_none=True), indent=2))
 
     # Output or further process the filtered schema as needed
-    filtered_schema_dict = document_schema.doc_margins.model_dump(exclude_none=True)
+    filtered_schema_dict = document_schema.model_dump(exclude_none=True)
     print(json.dumps(filtered_schema_dict, indent=2))

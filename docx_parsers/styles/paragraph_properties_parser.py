@@ -84,9 +84,28 @@ class ParagraphPropertiesParser:
         return extract_boolean_attribute(bidi_element)
 
     def extract_justification(self, pPr_element: ET.Element) -> Optional[str]:
+        """
+        Extracts and maps the justification value from the given element.
+
+        Args:
+            pPr_element (ET.Element): The element containing the justification.
+
+        Returns:
+            Optional[str]: The mapped justification value ('left', 'right', 'justify') or None if not found.
+        """
         justification_element = extract_element(pPr_element, "w:jc")
         if justification_element is not None:
-            return extract_attribute(justification_element, 'val')
+            justification_val = extract_attribute(justification_element, 'val')
+            if justification_val is not None:
+                mapping = {
+                    "left": "left",
+                    "start": "left",
+                    "right": "right",
+                    "end": "right",
+                    "center": "center",
+                    "both": "justify"
+                }
+                return mapping.get(justification_val, "left")  # Default to left if the value is unknown
         return None
 
     def extract_keep_next(self, pPr_element: ET.Element) -> Optional[bool]:
