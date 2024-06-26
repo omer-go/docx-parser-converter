@@ -1,6 +1,14 @@
 from docx_parsers.models.document_models import Paragraph
 from docx_parsers.models.numbering_models import NumberingLevel
 
+"""
+TODO:
+Add style application of the numbering itself 
+
+(requires updating the DocumentParser and the ParagraphStyleProperties to add
+another property of RunStyleProperties, in addition to the RunStyleProperties
+that the Run model has)
+"""
 
 class NumberingConverter:
     numbering_counters = {}
@@ -9,46 +17,55 @@ class NumberingConverter:
     def convert_numbering(paragraph: Paragraph, numbering_schema) -> str:
         numbering = paragraph.numbering
         level_key = (numbering.numId, numbering.ilvl)
+        
         try:
             numbering_level = NumberingConverter.get_numbering_level(numbering_schema, numbering.numId, numbering.ilvl)
         except ValueError as e:
             print(f"Warning: {e}")
             return "•"
 
-        if level_key not in NumberingConverter.numbering_counters:
-            NumberingConverter.numbering_counters[level_key] = numbering_level.start - 1
-        NumberingConverter.numbering_counters[level_key] += 1
-        counter = NumberingConverter.numbering_counters[level_key]
+        if numbering.numId not in NumberingConverter.numbering_counters:
+            NumberingConverter.numbering_counters[numbering.numId] = [0] * 9  # Supports up to 9 levels
+        
+        NumberingConverter.numbering_counters[numbering.numId][numbering.ilvl] += 1
+        
+        # Reset counters for deeper levels if a higher level is incremented
+        for i in range(numbering.ilvl + 1, 9):
+            NumberingConverter.numbering_counters[numbering.numId][i] = 0
 
-        if numbering_level.numFmt:
-            numbering_text = NumberingConverter.format_number(counter, numbering_level.numFmt)
-            lvlText = numbering_level.lvlText.replace(f"%{numbering.ilvl + 1}", numbering_text)
-            indent_left_pt = numbering_level.indent.left_pt if numbering_level.indent and numbering_level.indent.left_pt else 0
-            firstline_indent_pt = numbering_level.indent.firstline_pt if numbering_level.indent and numbering_level.indent.firstline_pt else 0
+        counters = NumberingConverter.numbering_counters[numbering.numId][:numbering.ilvl + 1]
+        formatted_counters = [NumberingConverter.format_number(counters[i], numbering_level.numFmt) for i in range(numbering.ilvl + 1)]
+        
+        # Replace all placeholders in lvlText
+        lvlText = numbering_level.lvlText
+        for i in range(1, numbering.ilvl + 2):
+            lvlText = lvlText.replace(f"%{i}", formatted_counters[i-1])
 
-            def get_char_width(char):
-                if char.isdigit() or char.isalpha():
-                    return 7.2
-                elif char in ('.', '(', ')'):
-                    return 3.6
+        indent_left_pt = numbering_level.indent.left_pt if numbering_level.indent and numbering_level.indent.left_pt else 0
+        firstline_indent_pt = numbering_level.indent.firstline_pt if numbering_level.indent and numbering_level.indent.firstline_pt else 0
+
+        def get_char_width(char):
+            if char.isdigit() or char.isalpha():
                 return 7.2
+            elif char in ('.', '(', ')'):
+                return 3.6
+            return 7.2
 
-            numbering_text_length_pt = sum(get_char_width(c) for c in numbering_text)
+        numbering_text_length_pt = sum(get_char_width(c) for c in lvlText)
 
-            if numbering_level.tab_pt:
-                net_padding = numbering_level.tab_pt - (indent_left_pt + firstline_indent_pt) - numbering_text_length_pt
-                padding_style = f"padding-left:{max(net_padding, 7.2)}pt;"
-                if numbering_level.fonts and numbering_level.fonts.ascii:
-                    font_style = f"font-family:{numbering_level.fonts.ascii};"
-                    return f'<span style="{font_style}">{lvlText}</span><span style="{padding_style}"></span>'
-                return f'<span>{lvlText}</span><span style="{padding_style}"></span>'
-
+        if numbering_level.tab_pt:
+            net_padding = numbering_level.tab_pt - (indent_left_pt + firstline_indent_pt) - numbering_text_length_pt
+            padding_style = f"padding-left:{max(net_padding, 7.2)}pt;"
             if numbering_level.fonts and numbering_level.fonts.ascii:
                 font_style = f"font-family:{numbering_level.fonts.ascii};"
-                return f'<span style="{font_style}">{lvlText}</span><span style="padding-left:7.2pt;"></span>'
+                return f'<span style="{font_style}">{lvlText}</span><span style="{padding_style}"></span>'
+            return f'<span>{lvlText}</span><span style="{padding_style}"></span>'
 
-            return f'{lvlText}<span style="padding-left:7.2pt;"></span>'
-        return ""
+        if numbering_level.fonts and numbering_level.fonts.ascii:
+            font_style = f"font-family:{numbering_level.fonts.ascii};"
+            return f'<span style="{font_style}">{lvlText}</span><span style="padding-left:7.2pt;"></span>'
+
+        return f'{lvlText}<span style="padding-left:7.2pt;"></span>'
 
     @staticmethod
     def get_numbering_level(numbering_schema, numId: int, ilvl: int) -> NumberingLevel:
