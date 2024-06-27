@@ -55,6 +55,22 @@ class StyleMerger:
         Inheritance Rule:
         - For each style that is based on another style (base style), merge the properties of the base style into the inheriting style.
         - This process continues recursively for styles based on other styles.
+        
+        Example:
+            The following is an example of a style based on another style in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:style w:styleId="Heading1" w:type="paragraph">
+                    <w:name w:val="heading 1"/>
+                    <w:basedOn w:val="Normal"/>
+                    <w:pPr>
+                        <w:spacing w:before="240" w:after="240" w:line="360"/>
+                    </w:pPr>
+                    <w:rPr>
+                        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                    </w:rPr>
+                </w:style>
         """
         for style in self.styles_schema.styles:
             base_style_id = style.based_on
@@ -106,6 +122,21 @@ class StyleMerger:
         
         Args:
             paragraph (Paragraph): The paragraph to apply numbering properties to.
+        
+        Example:
+            The following is an example of a numbering level in a numbering.xml file:
+
+            .. code-block:: xml
+
+                <w:lvl w:ilvl="0">
+                    <w:start w:val="1"/>
+                    <w:numFmt w:val="decimal"/>
+                    <w:lvlText w:val="%1."/>
+                    <w:lvlJc w:val="left"/>
+                    <w:pPr>
+                        <w:ind w:left="720" w:hanging="360"/>
+                    </w:pPr>
+                </w:lvl>
         """
         num_id = paragraph.numbering.numId
         ilvl = paragraph.numbering.ilvl
@@ -124,6 +155,23 @@ class StyleMerger:
         
         Args:
             paragraph (Paragraph): The paragraph to apply style properties to.
+        
+        Example:
+            The following is an example of a paragraph style in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:style w:styleId="Heading1" w:type="paragraph">
+                    <w:name w:val="heading 1"/>
+                    <w:basedOn w:val="Normal"/>
+                    <w:pPr>
+                        <w:spacing w:before="240" w:after="240" w:line="360"/>
+                        <w:ind w:left="720" w:right="720" w:firstLine="720"/>
+                    </w:pPr>
+                    <w:rPr>
+                        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                    </w:rPr>
+                </w:style>
         """
         if paragraph.properties.style_id:
             style = self.find_style(paragraph.properties.style_id)
@@ -158,6 +206,25 @@ class StyleMerger:
         
         Args:
             paragraph (Paragraph): The paragraph to apply default properties to.
+        
+        Example:
+            The following is an example of document default properties in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:docDefaults>
+                    <w:rPrDefault>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                            <w:sz w:val="22"/>
+                        </w:rPr>
+                    </w:rPrDefault>
+                    <w:pPrDefault>
+                        <w:pPr>
+                            <w:spacing w:before="120" w:after="120"/>
+                        </w:pPr>
+                    </w:pPrDefault>
+                </w:docDefaults>
         """
         if not paragraph.properties.style_id and self.styles_schema.style_type_defaults.paragraph:
             default_paragraph_style = self.find_style(self.styles_schema.style_type_defaults.paragraph)

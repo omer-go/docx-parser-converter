@@ -1,5 +1,3 @@
-# styles_parser.py
-
 from typing import Optional
 import xml.etree.ElementTree as ET
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
@@ -35,6 +33,37 @@ class StylesParser:
 
         Returns:
             StylesSchema: The parsed styles schema.
+
+        Example:
+            The following is an example of a styles element in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:styles>
+                    <w:style w:styleId="Heading1" w:type="paragraph">
+                        <w:name w:val="heading 1"/>
+                        <w:basedOn w:val="Normal"/>
+                        <w:pPr>
+                            <w:spacing w:before="240" w:after="240" w:line="360"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                        </w:rPr>
+                    </w:style>
+                    <w:docDefaults>
+                        <w:rPrDefault>
+                            <w:rPr>
+                                <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                                <w:sz w:val="22"/>
+                            </w:rPr>
+                        </w:rPrDefault>
+                        <w:pPrDefault>
+                            <w:pPr>
+                                <w:spacing w:before="120" w:after="120"/>
+                            </w:pPr>
+                        </w:pPrDefault>
+                    </w:docDefaults>
+                </w:styles>
         """
         styles = []
 
@@ -62,6 +91,20 @@ class StylesParser:
 
         Returns:
             RunPropertiesParser: The parsed default run properties.
+
+        Example:
+            The following is an example of default run properties in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:docDefaults>
+                    <w:rPrDefault>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                            <w:sz w:val="22"/>
+                        </w:rPr>
+                    </w:rPrDefault>
+                </w:docDefaults>
         """
         rPr_default = extract_element(root, ".//w:rPrDefault//w:rPr")
         return RunPropertiesParser().parse(rPr_default) if rPr_default is not None else RunPropertiesParser().parse(None)
@@ -75,6 +118,19 @@ class StylesParser:
 
         Returns:
             ParagraphPropertiesParser: The parsed default paragraph properties.
+
+        Example:
+            The following is an example of default paragraph properties in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:docDefaults>
+                    <w:pPrDefault>
+                        <w:pPr>
+                            <w:spacing w:before="120" w:after="120"/>
+                        </w:pPr>
+                    </w:pPrDefault>
+                </w:docDefaults>
         """
         pPr_default = extract_element(root, ".//w:pPrDefault//w:pPr")
         return ParagraphPropertiesParser().parse(pPr_default) if pPr_default is not None else ParagraphPropertiesParser().parse(None)
@@ -88,6 +144,20 @@ class StylesParser:
 
         Returns:
             StyleDefaults: The extracted default styles.
+
+        Example:
+            The following is an example of default styles in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:styles>
+                    <w:style w:styleId="DefaultParagraphFont" w:type="character" w:default="1">
+                        <w:name w:val="Default Paragraph Font"/>
+                    </w:style>
+                    <w:style w:styleId="Normal" w:type="paragraph" w:default="1">
+                        <w:name w:val="Normal"/>
+                    </w:style>
+                </w:styles>
         """
         defaults = StyleDefaults()
 
@@ -115,6 +185,22 @@ class StylesParser:
 
         Returns:
             Style: The extracted style.
+
+        Example:
+            The following is an example of a style element in a styles.xml file:
+
+            .. code-block:: xml
+
+                <w:style w:styleId="Heading1" w:type="paragraph">
+                    <w:name w:val="heading 1"/>
+                    <w:basedOn w:val="Normal"/>
+                    <w:pPr>
+                        <w:spacing w:before="240" w:after="240" w:line="360"/>
+                    </w:pPr>
+                    <w:rPr>
+                        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+                    </w:rPr>
+                </w:style>
         """
         style_id = extract_attribute(style_element, 'styleId') or 'Unknown StyleId'
         name_element = extract_element(style_element, ".//w:name")
