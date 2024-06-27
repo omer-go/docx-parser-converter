@@ -65,12 +65,6 @@ class ParagraphConverter:
         threshold = 6
         num_newlines = int((total_spacing_points + threshold) // 12)
 
-        # Debugging output
-        print(f"Spacing after previous paragraph (points): {spacing_after}")
-        print(f"Spacing before current paragraph (points): {spacing_before}")
-        print(f"Total spacing (points): {total_spacing_points}")
-        print(f"Number of newlines added: {num_newlines}")
-
         return "\n" * num_newlines
 
     @staticmethod
