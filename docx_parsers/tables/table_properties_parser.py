@@ -5,9 +5,13 @@ from docx_parsers.models.table_models import (
     TableProperties, TableWidth, TableIndent, TableLook, 
     TableCellBorders, ShadingProperties, MarginProperties, BorderProperties
 )
-from docx_parsers.utils import convert_twips_to_points, convert_half_points_to_points
+from docx_parsers.utils import convert_twips_to_points
 
 class TablePropertiesParser:
+    """
+    A parser for extracting table properties from an XML element.
+    """
+
     @staticmethod
     def parse(tblPr_element: etree.Element) -> TableProperties:
         """
@@ -18,6 +22,33 @@ class TablePropertiesParser:
 
         Returns:
             TableProperties: The parsed table properties.
+
+        Example:
+            The following is an example of table properties in a table element:
+
+            .. code-block:: xml
+
+                <w:tblPr>
+                    <w:tblStyle w:val="TableGrid"/>
+                    <w:tblW w:w="5000" w:type="dxa"/>
+                    <w:tblInd w:w="200" w:type="dxa"/>
+                    <w:tblBorders>
+                        <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    </w:tblBorders>
+                    <w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
+                    <w:tblCellMar>
+                        <w:top w:w="100" w:type="dxa"/>
+                        <w:left w:w="100" w:type="dxa"/>
+                        <w:bottom w:w="100" w:type="dxa"/>
+                        <w:right w:w="100" w:type="dxa"/>
+                    </w:tblCellMar>
+                    <w:tblLook w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
+                </w:tblPr>
         """
         tblStyle = TablePropertiesParser.extract_table_style(tblPr_element)
         tblW = TablePropertiesParser.extract_table_width(tblPr_element)
@@ -51,6 +82,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[TableIndent]: The parsed table indent properties, or None if not found.
+
+        Example:
+            The following is an example of a table indent element:
+
+            .. code-block:: xml
+
+                <w:tblInd w:w="200" w:type="dxa"/>
         """
         indent_element = extract_element(element, ".//w:tblInd")
         if indent_element is not None:
@@ -71,6 +109,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[TableWidth]: The parsed table width properties, or None if not found.
+
+        Example:
+            The following is an example of a table width element:
+
+            .. code-block:: xml
+
+                <w:tblW w:w="5000" w:type="dxa"/>
         """
         width_element = extract_element(element, ".//w:tblW")
         if width_element is not None:
@@ -91,6 +136,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[str]: The justification, or None if not found.
+
+        Example:
+            The following is an example of a table justification element:
+
+            .. code-block:: xml
+
+                <w:jc w:val="center"/>
         """
         jc_element = extract_element(element, ".//w:jc")
         return extract_attribute(jc_element, 'val')
@@ -105,6 +157,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[str]: The table style, or None if not found.
+
+        Example:
+            The following is an example of a table style element:
+
+            .. code-block:: xml
+
+                <w:tblStyle w:val="TableGrid"/>
         """
         style_element = extract_element(element, ".//w:tblStyle")
         return extract_attribute(style_element, 'val')
@@ -119,6 +178,18 @@ class TablePropertiesParser:
 
         Returns:
             Optional[MarginProperties]: The parsed table cell margins, or None if not found.
+
+        Example:
+            The following is an example of table cell margins:
+
+            .. code-block:: xml
+
+                <w:tblCellMar>
+                    <w:top w:w="100" w:type="dxa"/>
+                    <w:left w:w="100" w:type="dxa"/>
+                    <w:bottom w:w="100" w:type="dxa"/>
+                    <w:right w:w="100" w:type="dxa"/>
+                </w:tblCellMar>
         """
         margin_element = extract_element(element, ".//w:tblCellMar")
         if margin_element is not None:
@@ -158,6 +229,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[str]: The table layout, or None if not found.
+
+        Example:
+            The following is an example of a table layout element:
+
+            .. code-block:: xml
+
+                <w:tblLayout w:type="fixed"/>
         """
         layout_element = extract_element(element, ".//w:tblLayout")
         return extract_attribute(layout_element, 'type')
@@ -172,6 +250,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[TableLook]: The parsed table look properties, or None if not found.
+
+        Example:
+            The following is an example of a table look element:
+
+            .. code-block:: xml
+
+                <w:tblLook w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="0"/>
         """
         look_element = extract_element(element, ".//w:tblLook")
         if look_element is not None:
@@ -195,6 +280,20 @@ class TablePropertiesParser:
 
         Returns:
             Optional[TableCellBorders]: The parsed table cell border properties, or None if not found.
+
+        Example:
+            The following is an example of table cell borders:
+
+            .. code-block:: xml
+
+                <w:tblBorders>
+                    <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                </w:tblBorders>
         """
         if borders_element is not None:
             return TableCellBorders(
@@ -217,6 +316,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[BorderProperties]: The parsed border properties, or None if not found.
+
+        Example:
+            The following is an example of a border element:
+
+            .. code-block:: xml
+
+                <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
         """
         if border_element is not None:
             size_value = safe_int(extract_attribute(border_element, 'sz'))
@@ -238,6 +344,13 @@ class TablePropertiesParser:
 
         Returns:
             Optional[ShadingProperties]: The parsed shading properties, or None if not found.
+
+        Example:
+            The following is an example of a shading element:
+
+            .. code-block:: xml
+
+                <w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
         """
         if shd_element is not None:
             return ShadingProperties(

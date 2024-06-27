@@ -1,5 +1,3 @@
-# table_cell_properties_parser.py
-
 from lxml import etree
 from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, safe_int
@@ -8,6 +6,10 @@ from docx_parsers.tables.table_properties_parser import TablePropertiesParser
 from docx_parsers.utils import convert_twips_to_points, convert_half_points_to_points
 
 class TableCellPropertiesParser:
+    """
+    A parser for extracting table cell properties from an XML element.
+    """
+
     @staticmethod
     def parse(tcPr_element: Optional[etree.Element]) -> TableCellProperties:
         """
@@ -18,6 +20,31 @@ class TableCellPropertiesParser:
 
         Returns:
             TableCellProperties: The parsed table cell properties.
+
+        Example:
+            The following is an example of table cell properties in a table cell element:
+
+            .. code-block:: xml
+
+                <w:tcPr>
+                    <w:tcW w:w="5000" w:type="dxa"/>
+                    <w:tcBorders>
+                        <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                        <w:right w:val="single" w:sz="4" w:space="0" w:color="000000"/>
+                    </w:tcBorders>
+                    <w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
+                    <w:tcMar>
+                        <w:top w:w="100" w:type="dxa"/>
+                        <w:left w:w="100" w:type="dxa"/>
+                        <w:bottom w:w="100" w:type="dxa"/>
+                        <w:right w:w="100" w:type="dxa"/>
+                    </w:tcMar>
+                    <w:textDirection w:val="btLr"/>
+                    <w:vAlign w:val="center"/>
+                    <w:gridSpan w:val="2"/>
+                </w:tcPr>
         """
         return TableCellProperties(
             tcW=TableCellPropertiesParser.extract_table_cell_width(tcPr_element),
@@ -41,6 +68,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[TableWidth]: The table cell width, or None if not found.
+
+        Example:
+            The following is an example of a table cell width element:
+
+            .. code-block:: xml
+
+                <w:tcW w:w="5000" w:type="dxa"/>
         """
         width_element = extract_element(element, ".//w:tcW")
         if width_element is not None:
@@ -61,6 +95,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[str]: The text direction, or None if not found.
+
+        Example:
+            The following is an example of a text direction element:
+
+            .. code-block:: xml
+
+                <w:textDirection w:val="btLr"/>
         """
         direction_element = extract_element(element, ".//w:textDirection")
         return extract_attribute(direction_element, 'val')
@@ -75,6 +116,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[str]: The vertical alignment, or None if not found.
+
+        Example:
+            The following is an example of a vertical alignment element:
+
+            .. code-block:: xml
+
+                <w:vAlign w:val="center"/>
         """
         alignment_element = extract_element(element, ".//w:vAlign")
         return extract_attribute(alignment_element, 'val')
@@ -89,6 +137,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[bool]: True if the hide mark is found, otherwise None.
+
+        Example:
+            The following is an example of a hide mark element:
+
+            .. code-block:: xml
+
+                <w:hideMark/>
         """
         hide_mark_element = extract_element(element, ".//w:hideMark")
         return hide_mark_element is not None
@@ -103,6 +158,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[str]: The cell merge value, or None if not found.
+
+        Example:
+            The following is an example of a cell merge element:
+
+            .. code-block:: xml
+
+                <w:cellMerge w:val="restart"/>
         """
         merge_element = extract_element(element, ".//w:cellMerge")
         return extract_attribute(merge_element, 'val')
@@ -117,6 +179,13 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[int]: The grid span value, or None if not found.
+
+        Example:
+            The following is an example of a grid span element:
+
+            .. code-block:: xml
+
+                <w:gridSpan w:val="2"/>
         """
         grid_span_element = extract_element(element, ".//w:gridSpan")
         return safe_int(extract_attribute(grid_span_element, 'val'))
@@ -131,6 +200,18 @@ class TableCellPropertiesParser:
 
         Returns:
             Optional[dict]: The table cell margins, or None if not found.
+
+        Example:
+            The following is an example of table cell margins:
+
+            .. code-block:: xml
+
+                <w:tcMar>
+                    <w:top w:w="100" w:type="dxa"/>
+                    <w:left w:w="100" w:type="dxa"/>
+                    <w:bottom w:w="100" w:type="dxa"/>
+                    <w:right w:w="100" w:type="dxa"/>
+                </w:tcMar>
         """
         margins_element = extract_element(element, ".//w:tcMar")
         if margins_element is not None:

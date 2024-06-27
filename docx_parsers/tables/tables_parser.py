@@ -1,5 +1,3 @@
-# tables_parser.py
-
 from lxml import etree
 import json
 from docx_parsers.utils import read_binary_from_file_path, extract_xml_root_from_docx
@@ -10,12 +8,53 @@ from docx_parsers.tables.table_grid_parser import TableGridParser
 from docx_parsers.tables.table_row_parser import TableRowParser
 
 class TablesParser:
+    """
+    A parser for extracting tables from an XML element.
+    """
+
     def __init__(self, table_element: etree._Element):
         """
         Initializes the TablesParser with the given table XML element.
 
         Args:
             table_element (etree._Element): The root XML element of the table.
+
+        Example:
+            The following is an example of a table element in a document.xml file:
+
+            .. code-block:: xml
+
+                <w:tbl>
+                    <w:tblPr>
+                        <w:tblStyle w:val="TableGrid"/>
+                        <w:tblW w:w="5000" w:type="dxa"/>
+                    </w:tblPr>
+                    <w:tblGrid>
+                        <w:gridCol w:w="5000"/>
+                        <w:gridCol w:w="5000"/>
+                    </w:tblGrid>
+                    <w:tr>
+                        <w:trPr>
+                            <w:trHeight w:val="300"/>
+                        </w:trPr>
+                        <w:tc>
+                            <w:tcPr>
+                                <w:tcW w:w="5000" w:type="dxa"/>
+                            </w:tcPr>
+                            <w:p>
+                                <!-- Paragraph content here -->
+                            </w:p>
+                        </w:tc>
+                        <w:tc>
+                            <w:tcPr>
+                                <w:tcW w:w="5000" w:type="dxa"/>
+                            </w:tcPr>
+                            <w:p>
+                                <!-- Paragraph content here -->
+                            </w:p>
+                        </w:tc>
+                    </w:tr>
+                </w:tbl>
         """
         self.root = table_element
 
