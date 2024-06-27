@@ -21,7 +21,7 @@ class ParagraphConverter:
         if paragraph.numbering:
             paragraph_text += NumberingConverter.convert_numbering(paragraph, numbering_schema)
         for run in paragraph.runs:
-            paragraph_text += RunConverter.convert_run(run, paragraph)
+            paragraph_text += RunConverter.convert_run(run)
         
         if indent and paragraph.properties and paragraph.properties.indent:
             indent_value = paragraph.properties.indent.left_pt or 0
@@ -52,7 +52,6 @@ class ParagraphConverter:
         :param curr_paragraph: The current paragraph.
         :return: Newlines to add for spacing.
         """
-        spacing_text = ""
 
         spacing_after = prev_paragraph.properties.spacing.after_pt if prev_paragraph.properties and prev_paragraph.properties.spacing and prev_paragraph.properties.spacing.after_pt is not None else 0
         spacing_before = curr_paragraph.properties.spacing.before_pt if curr_paragraph.properties and curr_paragraph.properties.spacing and curr_paragraph.properties.spacing.before_pt is not None else 0

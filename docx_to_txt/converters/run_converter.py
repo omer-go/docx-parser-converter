@@ -1,4 +1,4 @@
-from docx_parsers.models.document_models import Run, Paragraph, TextContent, TabContent
+from docx_parsers.models.document_models import Run, TextContent, TabContent
 
 
 class RunConverter:
@@ -7,7 +7,7 @@ class RunConverter:
     """
 
     @staticmethod
-    def convert_run(run: Run, paragraph: Paragraph) -> str:
+    def convert_run(run: Run) -> str:
         """
         Convert a run to plain text.
         :param run: The run object.
