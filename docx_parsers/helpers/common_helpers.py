@@ -1,5 +1,3 @@
-# common_helpers.py
-
 from typing import Optional
 from xml.etree.ElementTree import Element
 
@@ -16,6 +14,21 @@ def extract_element(parent: Element, path: str) -> Optional[Element]:
 
     Returns:
         Optional[Element]: The extracted XML element, or None if not found.
+
+    Example:
+        The following is an example of extracting a paragraph properties element 
+        from a paragraph element in a document.xml file:
+
+        .. code-block:: xml
+
+            <w:p>
+                <w:pPr>
+                    <!-- Paragraph properties here -->
+                </w:pPr>
+            </w:p>
+
+        Usage:
+            pPr = extract_element(paragraph_element, ".//w:pPr")
     """
     return parent.find(path, namespaces=NAMESPACE)
 
@@ -29,6 +42,17 @@ def extract_attribute(element: Optional[Element], attr: str) -> Optional[str]:
 
     Returns:
         Optional[str]: The attribute value, or None if not found.
+
+    Example:
+        The following is an example of extracting the 'val' attribute from a style 
+        element in a document.xml file:
+
+        .. code-block:: xml
+
+            <w:pStyle w:val="Heading1"/>
+
+        Usage:
+            style_val = extract_attribute(style_element, 'val')
     """
     if element is not None:
         return element.get(f'{{{NAMESPACE_URI}}}{attr}')
@@ -43,6 +67,14 @@ def safe_int(value: Optional[str]) -> Optional[int]:
 
     Returns:
         Optional[int]: The integer value, or None if the input is None.
+
+    Example:
+        The following is an example of safely converting a string to an integer:
+
+        .. code-block:: python
+
+            int_value = safe_int("123")  # Returns 123
+            int_value = safe_int(None)  # Returns None
     """
     return int(value) if value is not None else None
 
@@ -57,6 +89,16 @@ def extract_boolean_attribute(element: Optional[Element]) -> Optional[bool]:
         Optional[bool]: True if the element is present and its 'val' attribute is not 'false' or '0',
                         False if its 'val' attribute is 'false' or '0',
                         None if the element is not present.
+
+    Example:
+        The following is an example of extracting a boolean attribute from an element:
+
+        .. code-block:: xml
+
+            <w:b w:val="true"/>
+
+        Usage:
+            bold = extract_boolean_attribute(bold_element)  # Returns True if w:val is not 'false' or '0'
     """
     if element is not None:
         val = element.get(f'{{{NAMESPACE_URI}}}val')

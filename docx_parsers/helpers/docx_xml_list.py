@@ -2,7 +2,29 @@ import zipfile
 from pathlib import Path
 from xml.dom.minidom import parseString
 
-def extract_docx_xml(docx_path):
+def extract_docx_xml(docx_path: str):
+    """
+    Extracts and pretty prints XML files from a DOCX file.
+
+    This function extracts all XML files from a DOCX file, pretty prints the XML content, 
+    and saves each XML file's content to a .txt file in a directory named after the DOCX file.
+
+    Args:
+        docx_path (str): The file path to the DOCX file.
+
+    Raises:
+        ValueError: If the provided file is not a .docx file.
+
+    Example:
+        The following is an example of how to use this function:
+
+        .. code-block:: python
+
+            extract_docx_xml("path/to/your/document.docx")
+
+        The function will create a directory named after the DOCX file and save the extracted 
+        and pretty printed XML files as .txt files in that directory.
+    """
     # Ensure the given path is a .docx file
     if not docx_path.endswith('.docx'):
         raise ValueError("The provided file must be a .docx file")
@@ -37,6 +59,7 @@ def extract_docx_xml(docx_path):
 
 
 if __name__ == "__main__":
+    # Example usage of the extract_docx_xml function
     # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - Discount Only - FINAL.docx"
     # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
