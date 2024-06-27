@@ -16,8 +16,23 @@ class DocxProcessor:
     def process_docx(docx_file: bytes) -> tuple[DocumentSchema, StylesSchema, NumberingSchema]:
         """
         Process the DOCX file to extract document, styles, and numbering schemas.
-        :param docx_file: The DOCX file content.
-        :return: A tuple containing DocumentSchema, StylesSchema, and NumberingSchema.
+
+        Args:
+            docx_file (bytes): The DOCX file content.
+
+        Returns:
+            tuple[DocumentSchema, StylesSchema, NumberingSchema]: A tuple containing DocumentSchema, StylesSchema, and NumberingSchema.
+
+        Raises:
+            Exception: If the document.xml cannot be parsed.
+
+        Example:
+            Given a DOCX file, this method processes the file and returns the corresponding schemas:
+
+            .. code-block:: python
+
+                docx_file = read_binary_from_file_path('path_to_docx_file.docx')
+                document_schema, styles_schema, numbering_schema = DocxProcessor.process_docx(docx_file)
         """
         styles_schema = None
         numbering_schema = None
@@ -48,9 +63,31 @@ class DocxProcessor:
         return document_schema, styles_schema, numbering_schema
 
     @staticmethod
-    def get_default_styles_schema():
+    def get_default_styles_schema() -> StylesSchema:
+        """
+        Returns the default styles schema.
+
+        Returns:
+            StylesSchema: The default styles schema.
+
+        Example:
+            .. code-block:: python
+
+                default_styles_schema = DocxProcessor.get_default_styles_schema()
+        """
         pass
 
     @staticmethod
-    def get_default_numbering_schema():
+    def get_default_numbering_schema() -> NumberingSchema:
+        """
+        Returns the default numbering schema.
+
+        Returns:
+            NumberingSchema: The default numbering schema.
+
+        Example:
+            .. code-block:: python
+
+                default_numbering_schema = DocxProcessor.get_default_numbering_schema()
+        """
         pass

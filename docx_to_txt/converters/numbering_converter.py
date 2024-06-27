@@ -13,9 +13,24 @@ class NumberingConverter:
     def convert_numbering(paragraph: Paragraph, numbering_schema) -> str:
         """
         Convert numbering to plain text.
-        :param paragraph: The paragraph object.
-        :param numbering_schema: The numbering schema.
-        :return: Plain text representation of the numbering.
+
+        Args:
+            paragraph (Paragraph): The paragraph object.
+            numbering_schema: The numbering schema.
+
+        Returns:
+            str: Plain text representation of the numbering.
+
+        Example:
+            .. code-block:: python
+
+                paragraph = Paragraph(
+                    properties=properties,
+                    runs=runs,
+                    numbering=numbering
+                )
+                numbering_text = NumberingConverter.convert_numbering(paragraph, numbering_schema)
+                print(numbering_text)
         """
         numbering = paragraph.numbering
         level_key = (numbering.numId, numbering.ilvl)
@@ -47,6 +62,25 @@ class NumberingConverter:
 
     @staticmethod
     def get_numbering_level(numbering_schema, numId: int, ilvl: int) -> NumberingLevel:
+        """
+        Get the numbering level from the numbering schema.
+
+        Args:
+            numbering_schema: The numbering schema.
+            numId (int): The numbering ID.
+            ilvl (int): The indent level.
+
+        Returns:
+            NumberingLevel: The corresponding numbering level.
+
+        Raises:
+            ValueError: If the numbering level is not found.
+
+        Example:
+            .. code-block:: python
+
+                numbering_level = NumberingConverter.get_numbering_level(numbering_schema, numId, ilvl)
+        """
         instance = next((inst for inst in numbering_schema.instances if inst.numId == numId), None)
         if instance:
             level = next((lvl for lvl in instance.levels if lvl.ilvl == ilvl), None)
@@ -56,6 +90,22 @@ class NumberingConverter:
 
     @staticmethod
     def format_number(counter: int, numFmt: str) -> str:
+        """
+        Format the counter according to the specified numbering format.
+
+        Args:
+            counter (int): The counter value.
+            numFmt (str): The numbering format.
+
+        Returns:
+            str: The formatted number.
+
+        Example:
+            .. code-block:: python
+
+                formatted_number = NumberingConverter.format_number(1, 'decimal')
+                print(formatted_number)  # Output: '1'
+        """
         if numFmt == "decimal":
             return str(counter)
         elif numFmt == "lowerRoman":
@@ -72,6 +122,21 @@ class NumberingConverter:
 
     @staticmethod
     def to_roman(num: int) -> str:
+        """
+        Convert an integer to a Roman numeral.
+
+        Args:
+            num (int): The integer to convert.
+
+        Returns:
+            str: The Roman numeral representation.
+
+        Example:
+            .. code-block:: python
+
+                roman_number = NumberingConverter.to_roman(5)
+                print(roman_number)  # Output: 'V'
+        """
         val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
         syb = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
         roman_num = ''
@@ -85,8 +150,38 @@ class NumberingConverter:
 
     @staticmethod
     def to_upper_letter(num: int) -> str:
+        """
+        Convert an integer to an uppercase letter (A-Z).
+
+        Args:
+            num (int): The integer to convert.
+
+        Returns:
+            str: The uppercase letter representation.
+
+        Example:
+            .. code-block:: python
+
+                letter = NumberingConverter.to_upper_letter(1)
+                print(letter)  # Output: 'A'
+        """
         return chr(64 + num)
 
     @staticmethod
     def to_lower_letter(num: int) -> str:
+        """
+        Convert an integer to a lowercase letter (a-z).
+
+        Args:
+            num (int): The integer to convert.
+
+        Returns:
+            str: The lowercase letter representation.
+
+        Example:
+            .. code-block:: python
+
+                letter = NumberingConverter.to_lower_letter(1)
+                print(letter)  # Output: 'a'
+        """
         return chr(96 + num)

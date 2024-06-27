@@ -11,10 +11,19 @@ class TxtGenerator:
     def generate_txt(document_schema: DocumentSchema, numbering_schema, indent: bool) -> str:
         """
         Generate plain text from the document schema.
-        :param document_schema: The document schema.
-        :param numbering_schema: The numbering schema.
-        :param indent: Whether to apply indentation.
-        :return: Plain text representation of the document.
+
+        Args:
+            document_schema (DocumentSchema): The document schema.
+            numbering_schema: The numbering schema.
+            indent (bool): Whether to apply indentation.
+
+        Returns:
+            str: Plain text representation of the document.
+
+        Example:
+            .. code-block:: python
+
+                txt_content = TxtGenerator.generate_txt(document_schema, numbering_schema, indent=True)
         """
         body_text = TxtGenerator.generate_txt_body(document_schema.doc_margins, document_schema.elements, numbering_schema, indent)
         return body_text
@@ -23,11 +32,20 @@ class TxtGenerator:
     def generate_txt_body(doc_margins, elements, numbering_schema, indent: bool) -> str:
         """
         Generate the body text from document elements.
-        :param doc_margins: The document margins.
-        :param elements: The document elements.
-        :param numbering_schema: The numbering schema.
-        :param indent: Whether to apply indentation.
-        :return: Body text as a string.
+
+        Args:
+            doc_margins: The document margins.
+            elements: The document elements.
+            numbering_schema: The numbering schema.
+            indent (bool): Whether to apply indentation.
+
+        Returns:
+            str: Body text as a string.
+
+        Example:
+            .. code-block:: python
+
+                body_text = TxtGenerator.generate_txt_body(doc_margins, elements, numbering_schema, indent=True)
         """
         body = ""
         if doc_margins:
@@ -46,5 +64,5 @@ class TxtGenerator:
             # elif isinstance(element, Table):
             #     table_text = TableConverter.convert_table(element)
             #     body += table_text + "\n"
-        
+
         return body

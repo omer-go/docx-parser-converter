@@ -12,10 +12,20 @@ class ParagraphConverter:
     def convert_paragraph(paragraph: Paragraph, numbering_schema, indent: bool) -> str:
         """
         Convert a paragraph to plain text.
-        :param paragraph: The paragraph object.
-        :param numbering_schema: The numbering schema.
-        :param indent: Whether to apply indentation.
-        :return: Plain text representation of the paragraph.
+
+        Args:
+            paragraph (Paragraph): The paragraph object.
+            numbering_schema: The numbering schema.
+            indent (bool): Whether to apply indentation.
+
+        Returns:
+            str: Plain text representation of the paragraph.
+
+        Example:
+            .. code-block:: python
+
+                paragraph_text = ParagraphConverter.convert_paragraph(paragraph, numbering_schema, indent=True)
+                print(paragraph_text)
         """
         paragraph_text = ""
         if paragraph.numbering:
@@ -33,9 +43,19 @@ class ParagraphConverter:
     def add_indentation(text: str, indent_value: float) -> str:
         """
         Add indentation to the text based on the indent value in points.
-        :param text: The text to indent.
-        :param indent_value: The indentation value in points.
-        :return: The indented text.
+
+        Args:
+            text (str): The text to indent.
+            indent_value (float): The indentation value in points.
+
+        Returns:
+            str: The indented text.
+
+        Example:
+            .. code-block:: python
+
+                indented_text = ParagraphConverter.add_indentation("This is a test.", 72)
+                print(indented_text)  # Output: "\t\tThis is a test."
         """
         tab_size_in_points = 36
         num_tabs = int(indent_value // tab_size_in_points)
@@ -48,11 +68,20 @@ class ParagraphConverter:
     def add_spacing(prev_paragraph: Paragraph, curr_paragraph: Paragraph) -> str:
         """
         Add spacing between paragraphs based on their spacing properties.
-        :param prev_paragraph: The previous paragraph.
-        :param curr_paragraph: The current paragraph.
-        :return: Newlines to add for spacing.
-        """
 
+        Args:
+            prev_paragraph (Paragraph): The previous paragraph.
+            curr_paragraph (Paragraph): The current paragraph.
+
+        Returns:
+            str: Newlines to add for spacing.
+
+        Example:
+            .. code-block:: python
+
+                spacing = ParagraphConverter.add_spacing(prev_paragraph, curr_paragraph)
+                print(spacing)  # Output: "\n\n" (depending on spacing properties)
+        """
         spacing_after = prev_paragraph.properties.spacing.after_pt if prev_paragraph.properties and prev_paragraph.properties.spacing and prev_paragraph.properties.spacing.after_pt is not None else 0
         spacing_before = curr_paragraph.properties.spacing.before_pt if curr_paragraph.properties and curr_paragraph.properties.spacing and curr_paragraph.properties.spacing.before_pt is not None else 0
 
@@ -70,9 +99,19 @@ class ParagraphConverter:
     def convert_paragraph_properties(properties, indent: bool) -> str:
         """
         Convert paragraph properties to text format.
-        :param properties: The paragraph properties.
-        :param indent: Whether to apply indentation.
-        :return: Text representation of paragraph properties.
+
+        Args:
+            properties: The paragraph properties.
+            indent (bool): Whether to apply indentation.
+
+        Returns:
+            str: Text representation of paragraph properties.
+
+        Example:
+            .. code-block:: python
+
+                paragraph_properties_text = ParagraphConverter.convert_paragraph_properties(properties, indent=True)
+                print(paragraph_properties_text)
         """
         # Convert properties if needed
         return ""
