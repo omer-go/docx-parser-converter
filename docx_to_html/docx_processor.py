@@ -8,8 +8,33 @@ from docx_parsers.styles.styles_merger import StyleMerger
 
 
 class DocxProcessor:
+    """
+    A processor for parsing and merging DOCX document components such as styles, numbering, and document content.
+    """
+
     @staticmethod
     def process_docx(docx_file: bytes) -> tuple[DocumentSchema, StylesSchema, NumberingSchema]:
+        """
+        Processes the DOCX file and extracts the document schema, styles schema, and numbering schema.
+
+        Args:
+            docx_file (bytes): The binary content of the DOCX file.
+
+        Returns:
+            tuple[DocumentSchema, StylesSchema, NumberingSchema]: The parsed document schema, styles schema, and numbering schema.
+
+        Raises:
+            Exception: If the document.xml parsing fails.
+
+        Example:
+            The following is an example of how to use the process_docx method:
+
+            .. code-block:: python
+
+                docx_path = "path/to/your/docx_file.docx"
+                docx_file = read_binary_from_file_path(docx_path)
+                document_schema, styles_schema, numbering_schema = DocxProcessor.process_docx(docx_file)
+        """
         styles_schema = None
         numbering_schema = None
         try:
@@ -39,9 +64,23 @@ class DocxProcessor:
         return document_schema, styles_schema, numbering_schema
 
     @staticmethod
-    def get_default_styles_schema():
+    def get_default_styles_schema() -> StylesSchema:
+        """
+        Returns a default styles schema.
+
+        Returns:
+            StylesSchema: The default styles schema.
+        """
+        # Implementation for default styles schema
         pass
 
     @staticmethod
-    def get_default_numbering_schema():
+    def get_default_numbering_schema() -> NumberingSchema:
+        """
+        Returns a default numbering schema.
+
+        Returns:
+            NumberingSchema: The default numbering schema.
+        """
+        # Implementation for default numbering schema
         pass
