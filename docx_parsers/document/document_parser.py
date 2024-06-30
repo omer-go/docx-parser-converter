@@ -2,7 +2,8 @@ import json
 from typing import Optional, List, Union
 from docx_parsers.helpers.common_helpers import NAMESPACE
 from docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
-from docx_parsers.models.document_models import DocumentSchema, Paragraph, DocMargins
+from docx_parsers.models.paragraph_models import Paragraph
+from docx_parsers.models.document_models import DocumentSchema, DocMargins
 from docx_parsers.models.table_models import Table
 from docx_parsers.document.margins_parser import MarginsParser
 from docx_parsers.document.paragraph_parser import ParagraphParser

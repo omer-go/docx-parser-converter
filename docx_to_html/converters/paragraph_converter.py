@@ -1,4 +1,4 @@
-from docx_parsers.models.document_models import Paragraph
+from docx_parsers.models.paragraph_models import Paragraph
 from docx_to_html.converters.style_converter import StyleConverter
 from docx_to_html.converters.run_converter import RunConverter
 from docx_to_html.converters.numbering_converter import NumberingConverter

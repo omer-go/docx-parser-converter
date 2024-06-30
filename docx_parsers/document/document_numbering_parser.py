@@ -1,7 +1,7 @@
 from lxml import etree
 from typing import Optional
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute
-from docx_parsers.models.document_models import Numbering
+from docx_parsers.models.paragraph_models import Numbering
 
 class DocumentNumberingParser:
     """

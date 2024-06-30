@@ -1,7 +1,7 @@
 from lxml import etree
 from typing import Optional, List
 from docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
-from docx_parsers.models.document_models import Paragraph, Run
+from docx_parsers.models.paragraph_models import Paragraph, Run
 from docx_parsers.models.styles_models import TabStop, ParagraphStyleProperties
 from docx_parsers.document.document_numbering_parser import DocumentNumberingParser
 from docx_parsers.document.run_parser import RunParser

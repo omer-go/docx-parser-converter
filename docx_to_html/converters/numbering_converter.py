@@ -1,4 +1,4 @@
-from docx_parsers.models.document_models import Paragraph
+from docx_parsers.models.paragraph_models import Paragraph
 from docx_parsers.models.numbering_models import NumberingLevel
 
 """

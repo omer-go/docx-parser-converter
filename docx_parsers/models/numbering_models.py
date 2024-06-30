@@ -1,22 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from docx_parsers.models.styles_models import FontProperties, IndentationProperties
 
 class NumberingLevel(BaseModel):
     """
     Represents a specific level in a numbering scheme.
-
-    Attributes:
-        numId (int): The ID of the numbering definition.
-        ilvl (int): The indent level of the numbering.
-        start (int): The start value for the numbering level.
-        numFmt (str): The format of the numbering (e.g., decimal, bullet).
-        lvlText (str): The text to be displayed for the level.
-        lvlJc (str): The justification of the level text.
-        counter (Optional[int]): A counter for the level.
-        indent (Optional[IndentationProperties]): The indentation properties for the level.
-        tab_pt (Optional[float]): The tab position in points.
-        fonts (Optional[FontProperties]): The font properties for the level.
 
     Example:
         The following is an example of a numbering level element in a numbering.xml file:
@@ -36,24 +24,20 @@ class NumberingLevel(BaseModel):
                 </w:rPr>
             </w:lvl>
     """
-    numId: int
-    ilvl: int
-    start: int
-    numFmt: str
-    lvlText: str
-    lvlJc: str
-    counter: Optional[int] = None
-    indent: Optional[IndentationProperties] = None
-    tab_pt: Optional[float] = None
-    fonts: Optional[FontProperties] = None
+    numId: int = Field(..., description="The ID of the numbering definition.")
+    ilvl: int = Field(..., description="The indent level of the numbering.")
+    start: int = Field(..., description="The start value for the numbering level.")
+    numFmt: str = Field(..., description="The format of the numbering (e.g., decimal, bullet).")
+    lvlText: str = Field(..., description="The text to be displayed for the level.")
+    lvlJc: str = Field(..., description="The justification of the level text.")
+    counter: Optional[int] = Field(None, description="A counter for the level.")
+    indent: Optional[IndentationProperties] = Field(None, description="The indentation properties for the level.")
+    tab_pt: Optional[float] = Field(None, description="The tab position in points.")
+    fonts: Optional[FontProperties] = Field(None, description="The font properties for the level.")
 
 class NumberingInstance(BaseModel):
     """
     Represents an instance of a numbering definition.
-
-    Attributes:
-        numId (int): The ID of the numbering definition.
-        levels (List[NumberingLevel]): The list of levels in the numbering definition.
 
     Example:
         The following is an example of a numbering instance element in a numbering.xml file:
@@ -67,15 +51,12 @@ class NumberingInstance(BaseModel):
                 </w:lvlOverride>
             </w:num>
     """
-    numId: int
-    levels: List[NumberingLevel]
+    numId: int = Field(..., description="The ID of the numbering definition.")
+    levels: List[NumberingLevel] = Field(..., description="The list of levels in the numbering definition.")
 
 class NumberingSchema(BaseModel):
     """
     Represents the overall numbering schema for the document.
-
-    Attributes:
-        instances (List[NumberingInstance]): The list of numbering instances in the document.
 
     Example:
         The following is an example of a numbering schema structure:
@@ -102,4 +83,4 @@ class NumberingSchema(BaseModel):
                 </w:num>
             </w:numbering>
     """
-    instances: List[NumberingInstance]
+    instances: List[NumberingInstance] = Field(..., description="The list of numbering instances in the document.")

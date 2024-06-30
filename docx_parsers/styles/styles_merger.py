@@ -1,5 +1,6 @@
 from typing import Optional
-from docx_parsers.models.document_models import DocumentSchema, Paragraph
+from docx_parsers.models.paragraph_models import Paragraph
+from docx_parsers.models.document_models import DocumentSchema
 from docx_parsers.models.styles_models import StylesSchema, Style, ParagraphStyleProperties
 from docx_parsers.models.numbering_models import NumberingSchema
 from docx_parsers.document.document_parser import DocumentParser
@@ -64,12 +65,7 @@ class StyleMerger:
                 <w:style w:styleId="Heading1" w:type="paragraph">
                     <w:name w:val="heading 1"/>
                     <w:basedOn w:val="Normal"/>
-                    <w:pPr>
-                        <w:spacing w:before="240" w:after="240" w:line="360"/>
-                    </w:pPr>
-                    <w:rPr>
-                        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
-                    </w:rPr>
+                    ...
                 </w:style>
         """
         for style in self.styles_schema.styles:
@@ -131,11 +127,7 @@ class StyleMerger:
                 <w:lvl w:ilvl="0">
                     <w:start w:val="1"/>
                     <w:numFmt w:val="decimal"/>
-                    <w:lvlText w:val="%1."/>
-                    <w:lvlJc w:val="left"/>
-                    <w:pPr>
-                        <w:ind w:left="720" w:hanging="360"/>
-                    </w:pPr>
+                    ...
                 </w:lvl>
         """
         num_id = paragraph.numbering.numId
@@ -164,13 +156,7 @@ class StyleMerger:
                 <w:style w:styleId="Heading1" w:type="paragraph">
                     <w:name w:val="heading 1"/>
                     <w:basedOn w:val="Normal"/>
-                    <w:pPr>
-                        <w:spacing w:before="240" w:after="240" w:line="360"/>
-                        <w:ind w:left="720" w:right="720" w:firstLine="720"/>
-                    </w:pPr>
-                    <w:rPr>
-                        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
-                    </w:rPr>
+                    ...
                 </w:style>
         """
         if paragraph.properties.style_id:
@@ -214,15 +200,10 @@ class StyleMerger:
 
                 <w:docDefaults>
                     <w:rPrDefault>
-                        <w:rPr>
-                            <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
-                            <w:sz w:val="22"/>
-                        </w:rPr>
+                        ...
                     </w:rPrDefault>
                     <w:pPrDefault>
-                        <w:pPr>
-                            <w:spacing w:before="120" w:after="120"/>
-                        </w:pPr>
+                        ...
                     </w:pPrDefault>
                 </w:docDefaults>
         """

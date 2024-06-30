@@ -1,4 +1,4 @@
-from docx_parsers.models.document_models import Run, Paragraph, TextContent, TabContent
+from docx_parsers.models.paragraph_models import Run, Paragraph, TextContent, TabContent
 from docx_parsers.models.styles_models import RunStyleProperties
 from docx_to_html.converters.style_converter import StyleConverter
 

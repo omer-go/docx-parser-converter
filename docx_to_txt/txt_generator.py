@@ -1,4 +1,5 @@
-from docx_parsers.models.document_models import DocumentSchema, Paragraph
+from docx_parsers.models.paragraph_models import Paragraph
+from docx_parsers.models.document_models import DocumentSchema
 from docx_to_txt.converters.paragraph_converter import ParagraphConverter
 
 

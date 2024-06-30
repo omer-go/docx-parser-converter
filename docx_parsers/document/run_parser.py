@@ -1,7 +1,7 @@
 from lxml import etree
 from typing import List
 from docx_parsers.helpers.common_helpers import extract_element, NAMESPACE_URI
-from docx_parsers.models.document_models import Run, RunContent, TextContent, TabContent
+from docx_parsers.models.paragraph_models import Run, RunContent, TextContent, TabContent
 from docx_parsers.models.styles_models import RunStyleProperties
 from docx_parsers.styles.run_properties_parser import RunPropertiesParser
 

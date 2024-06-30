@@ -1,5 +1,6 @@
 from lxml import etree, html
-from docx_parsers.models.document_models import DocumentSchema, Paragraph
+from docx_parsers.models.paragraph_models import Paragraph
+from docx_parsers.models.document_models import DocumentSchema
 from docx_parsers.models.table_models import Table
 from docx_to_html.converters.style_converter import StyleConverter
 from docx_to_html.converters.paragraph_converter import ParagraphConverter

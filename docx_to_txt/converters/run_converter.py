@@ -1,4 +1,4 @@
-from docx_parsers.models.document_models import Run, TextContent, TabContent
+from docx_parsers.models.paragraph_models import Run, TextContent, TabContent
 
 class RunConverter:
     """
