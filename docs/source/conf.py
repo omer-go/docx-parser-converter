@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath('../../docx_parser_converter'))
 project = 'Docx Parser and Converter'
 copyright = '2024, Omer Hayun'
 author = 'Omer Hayun'
-release = '0.1'
+release = '0.5'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
