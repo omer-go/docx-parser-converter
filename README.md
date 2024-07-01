@@ -3,16 +3,16 @@
 A powerful library for converting DOCX documents into HTML and plain text, with detailed parsing of document properties and styles.
 
 ## Table of Contents
-- [Introduction](#introduction-🌟)
-- [Project Overview](#project-overview-🛠️)
-- [Key Features](#key-features-🌟)
-- [Installation](#installation-💾)
-- [Usage](#usage-🚀)
-- [Quick Start Guide](#quick-start-guide-📖)
-- [Examples](#examples-📚)
-- [Models](#models-🏗️)
-- [Parsers](#parsers-🔍)
-- [Conversion](#conversion-🔄)
+- [Introduction 🌟](#introduction-)
+- [Project Overview 🛠️](#project-overview-)
+- [Key Features 🌟](#key-features-)
+- [Installation 💾](#installation-)
+- [Usage 🚀](#usage-)
+- [Quick Start Guide 📖](#quick-start-guide-)
+- [Examples 📚](#examples-)
+- [Models 🏗️](#models-)
+- [Parsers 🔍](#parsers-)
+- [Conversion 🔄](#conversion-)
 
 ## Introduction 🌟
 Welcome to the DOCX-HTML-TXT Converter project! This library allows you to easily convert DOCX documents into HTML and plain text formats, extracting detailed properties and styles using Pydantic models.
