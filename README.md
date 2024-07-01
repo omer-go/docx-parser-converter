@@ -75,15 +75,15 @@ from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
 ## Examples 📚
 
 ### Original DOCX File
-![Original DOCX File in LibreOffice](src/images/docx-test-1.png)
-![Original DOCX File in LibreOffice](src/images/docx-test-2.png)
+![Original DOCX File in LibreOffice](docs/images/docx-test-1.png)
+![Original DOCX File in LibreOffice](docs/images/docx-test-2.png)
 
 ### Converted to HTML
-![Converted HTML Output](src/images/docx-to-html-1.png)
-![Converted HTML Output](src/images/docx-to-html-2.png)
+![Converted HTML Output](docs/images/docx-to-html-1.png)
+![Converted HTML Output](docs/images/docx-to-html-2.png)
 
 ### Converted to Plain Text
-![Converted TXT Output](src/images/docx-to-txt.png)
+![Converted TXT Output](docs/images/docx-to-txt.png)
 
 
 ## API Reference 📜
