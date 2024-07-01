@@ -9,6 +9,8 @@ A powerful library for converting DOCX documents into HTML and plain text, with 
 - [Installation 💾](#installation-)
 - [Usage 🚀](#usage-)
 - [Quick Start Guide 📖](#quick-start-guide-)
+- [Examples 📚](#examples-)
+- [API Reference 📜](#api-reference-)
 
 ## Introduction 🌟
 Welcome to the DOCX-HTML-TXT Converter project! This library allows you to easily convert DOCX documents into HTML and plain text formats, extracting detailed properties and styles using Pydantic models.
@@ -69,6 +71,24 @@ from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
     txt_output = converter.convert_to_txt(indent=True)
     converter.save_txt_to_file(txt_output, txt_output_path)
    ```
+
+## Examples 📚
+
+### Original DOCX File
+![Original DOCX File in LibreOffice](images/docx-test-1.png)
+![Original DOCX File in LibreOffice](images/docx-test-2.png)
+
+### Converted to HTML
+![Converted HTML Output](images/docx-to-html-1.png)
+![Converted HTML Output](images/docx-to-html-2.png)
+
+### Converted to Plain Text
+![Converted TXT Output](images/docx-to-txt.png)
+
+
+## API Reference 📜
+
+For detailed API documentation, please visit our [Read the Docs page](https://docx-parser-and-converter.readthedocs.io/en/latest/).
 
 
 Enjoy using DOCX-HTML-TXT Converter! 🚀✨
