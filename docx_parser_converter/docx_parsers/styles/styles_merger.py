@@ -18,19 +18,19 @@ class StyleMerger:
 
     Rules of Inheritance:
     1. Styles Inheritance:
-        - Styles defined in styles.xml can be based on other styles.
-        - Properties from the base styles are inherited unless overridden in the inheriting style.
-        - This is resolved using the `resolve_based_on_styles` method.
+    - Styles defined in styles.xml can be based on other styles.
+    - Properties from the base styles are inherited unless overridden in the inheriting style.
+    - This is resolved using the `resolve_based_on_styles` method.
 
     2. Numbering Properties:
-        - Numbering definitions in numbering.xml can specify properties such as indentation.
-        - These properties are applied to paragraphs that have associated numbering.
-        - This is handled by the `apply_numbering_properties` method.
+    - Numbering definitions in numbering.xml can specify properties such as indentation.
+    - These properties are applied to paragraphs that have associated numbering.
+    - This is handled by the `apply_numbering_properties` method.
 
     3. Default Properties:
-        - Default properties can be specified in styles.xml for paragraphs and runs.
-        - These defaults are applied last, filling in any missing properties.
-        - This is handled by the `apply_default_properties` method.
+    - Default properties can be specified in styles.xml for paragraphs and runs.
+    - These defaults are applied last, filling in any missing properties.
+    - This is handled by the `apply_default_properties` method.
     """
 
     def __init__(self, document_schema: DocumentSchema, styles_schema: StylesSchema, numbering_schema: NumberingSchema):
