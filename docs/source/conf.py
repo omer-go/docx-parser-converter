@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../docx_parser_converter'))
+sys.path.insert(0, os.path.abspath('../docx_parser_converter'))
 
 project = 'Docx Parser and Converter'
 copyright = '2024, Omer Hayun'
