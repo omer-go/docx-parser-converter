@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src'))
 
-project = 'Docx Converter'
+project = 'Docx Parser and Converter'
 copyright = '2024, Omer Hayun'
 author = 'Omer Hayun'
 release = '0.1'
