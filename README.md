@@ -1,4 +1,4 @@
-# DOCX-HTML-TXT Converter 📄✨
+# Docx Parser and Converter 📄✨
 
 A powerful library for converting DOCX documents into HTML and plain text, with detailed parsing of document properties and styles.
 
@@ -27,7 +27,7 @@ The project is structured to parse DOCX files, convert their content into struct
 To install the library, you can use pip. (Add the pip install command manually)
 
 ```sh
-pip install docx_html_txt
+pip install docx-parser-converter
 ```
 
 ## Usage 🚀

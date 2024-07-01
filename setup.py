@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf8", errors="ignore") as fh:
     long_description = fh.read()
 
 setup(
-    name="Docx Parser and Converter",
+    name="docx-parser-converter",
     version="0.1",
     author="Omer Hayun",
     author_email="your.email@example.com",
-    description="A small description of your project",
+    description="A library for converting DOCX documents to HTML and plain text",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/omer-go/docx-html-txt",
