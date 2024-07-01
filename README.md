@@ -36,16 +36,16 @@ pip install docx-parser-converter
 To start using the library, import the necessary modules:
 
 ```python
-from docx_html_txt.docx_to_html import DocxToHtmlConverter
-from docx_html_txt.docx_to_txt import DocxToTxtConverter
-from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
+from docx_parser_converter.docx_to_html import DocxToHtmlConverter
+from docx_parser_converter.docx_to_txt import DocxToTxtConverter
+from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 ```
 
 ### Quick Start Guide 📖
 1. **Convert to HTML**:
    ```python
-   from docx_html_txt.docx_to_html import DocxToHtmlConverter
-   from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
+   from docx_parser_converter.docx_to_html import DocxToHtmlConverter
+   from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
     docx_path = "path_to_your_docx_file.docx"
     html_output_path = "output.html"
@@ -59,8 +59,8 @@ from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
 
 2. **Convert to Plain Text**:
    ```python
-   from docx_html_txt.docx_to_txt import DocxToTxtConverter
-   from docx_html_txt.docx_parsers.utils import read_binary_from_file_path
+   from docx_parser_converter.docx_to_txt import DocxToTxtConverter
+   from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
     docx_path = "path_to_your_docx_file.docx"
     txt_output_path = "output.txt"

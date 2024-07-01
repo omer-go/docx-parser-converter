@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf8", errors="ignore") as fh:
 
 setup(
     name="docx-parser-converter",
-    version="0.1",
+    version="0.5",
     author="Omer Hayun",
     author_email="your.email@example.com",
     description="A library for converting DOCX documents to HTML and plain text",
@@ -13,12 +13,13 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/omer-go/docx-html-txt",
     packages=find_packages(),
+    # package_dir={"": "src"},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=[
         "alabaster==0.7.16",
         "annotated-types==0.7.0",
@@ -52,7 +53,6 @@ setup(
         "sphinxcontrib-jsmath==1.0.1",
         "sphinxcontrib-qthelp==1.0.7",
         "sphinxcontrib-serializinghtml==1.1.10",
-        "tomli==2.0.1",
         "typing_extensions==4.12.2",
         "urllib3==2.2.2",
     ],
