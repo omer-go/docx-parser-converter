@@ -4,7 +4,7 @@ Docx Parsers
 .. toctree::
    :maxdepth: 4
 
-   docx_parsers
+   docx_parser_converter.docx_parsers
 
 Docx to HTML
 ===
@@ -12,7 +12,7 @@ Docx to HTML
 .. toctree::
    :maxdepth: 4
 
-   docx_to_html
+   docx_parser_converter.docx_to_html
 
 Docx to TXT
 ===
@@ -20,4 +20,4 @@ Docx to TXT
 .. toctree::
    :maxdepth: 4
 
-   docx_to_txt
+   docx_parser_converter.docx_to_txt

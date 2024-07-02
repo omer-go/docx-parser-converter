@@ -1,6 +1,13 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../docx_parser_converter'))
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+
+if on_rtd:
+    sys.path.insert(0, os.path.abspath('../..'))  # Adjust this path as needed
+else:
+    sys.path.insert(0, os.path.abspath('../../docx_parser_converter'))  # Local path adjustment
+
 
 project = 'Docx Parser and Converter'
 copyright = '2024, Omer Hayun'
