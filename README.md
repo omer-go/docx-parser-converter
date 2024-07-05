@@ -152,7 +152,7 @@ This detailed process ensures that the Docx Parser and Converter library accurat
 
 ## API Reference 📜
 
-For detailed API documentation, please visit our [Read the Docs](https://docx-parser-and-converter.readthedocs.io/en/latest/){:target="_blank"} page.
+For detailed API documentation, please visit our [Read the Docs](https://docx-parser-and-converter.readthedocs.io/en/latest/) page.
 
 
 Enjoy using Docx Parser and Converter! 🚀✨
