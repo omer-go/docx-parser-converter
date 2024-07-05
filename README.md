@@ -9,11 +9,13 @@ A powerful library for converting DOCX documents into HTML and plain text, with 
 - [Installation 💾](#installation-)
 - [Usage 🚀](#usage-)
 - [Quick Start Guide 📖](#quick-start-guide-)
+- [Supported XML Parsing Types 📄](#supported-xml-parsing-types-)
+- [General Code Flow 🔄](#general-code-flow-)
 - [Examples 📚](#examples-)
 - [API Reference 📜](#api-reference-)
 
 ## Introduction 🌟
-Welcome to the DOCX-HTML-TXT Converter project! This library allows you to easily convert DOCX documents into HTML and plain text formats, extracting detailed properties and styles using Pydantic models.
+Welcome to the Docx Parser and Converter project! This library allows you to easily convert DOCX documents into HTML and plain text formats, extracting detailed properties and styles using Pydantic models.
 
 ## Project Overview 🛠️
 The project is structured to parse DOCX files, convert their content into structured data using Pydantic models, and provide conversion utilities to transform this data into HTML or plain text.
@@ -72,6 +74,68 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
     converter.save_txt_to_file(txt_output, txt_output_path)
    ```
 
+## Supported XML Parsing Types 📄
+
+The Docx Parser and Converter library supports parsing various XML components within a DOCX file. Below is a detailed list of the supported and unsupported components:
+
+### Supported Components
+
+1. **document.xml**:
+   - **Document Parsing**: Parses the main document structure.
+   - **Paragraphs**: Extracts paragraphs and their properties.
+   - **Runs**: Extracts individual text runs within paragraphs.
+   - **Tables**: Parses table structures and properties.
+   - **Table Rows**: Extracts rows within tables.
+   - **Table Cells**: Extracts cells within rows.
+   - **List Items**: Handles both bulleted and numbered lists through paragraph properties.
+
+2. **numbering.xml**:
+   - **Numbering Definitions**: Parses numbering definitions and properties for lists.
+   - **Numbering Levels**: Extracts different levels of numbering for nested lists.
+
+3. **styles.xml**:
+   - **Paragraph Styles**: Extracts styles applied to paragraphs.
+   - **Run Styles**: Extracts styles applied to text runs.
+   - **Table Styles**: Parses styles applied to tables and table elements.
+   - **Default Styles**: Extracts default document styles for paragraphs, runs, and tables.
+
+### Unsupported Components
+
+- **Images**: Parsing and extraction of images embedded within the document.
+- **Headers and Footers**: Parsing of headers and footers content.
+- **Footnotes and Endnotes**: Handling footnotes and endnotes within the document.
+- **Comments**: Extraction and handling of comments.
+- **Custom XML Parts**: Any custom XML parts beyond the standard DOCX schema.
+
+## General Code Flow 🔄
+
+The Docx Parser and Converter library follows a structured workflow to parse, convert, and merge document properties and styles according to DOCX specifications. Here’s a detailed overview of the technical process:
+
+1. **Parsing XML Files**:
+   - **Document XML Parsing**: The `DocumentParser` class reads and parses the `document.xml` file to extract the document structure, including paragraphs, tables, and runs. This data is converted into `DocumentSchema` Pydantic models.
+   - **Numbering XML Parsing**: The `NumberingParser` class parses the `numbering.xml` file to extract numbering definitions and levels, converting them into `NumberingSchema` Pydantic models.
+   - **Styles XML Parsing**: The `StylesParser` class parses the `styles.xml` file to extract styles for paragraphs, runs, and tables, converting them into `StylesSchema` Pydantic models.
+
+2. **Property and Style Merging**:
+   - **Hierarchical Style Application**: The library applies styles to paragraphs and runs based on a defined hierarchy. Explicit properties in the `DocumentSchema` remain unchanged, while styles are applied based on the `style_id` if present.
+   - **Default Style Application**: If no specific `style_id` is present, default styles from `StyleDefaults` are applied. Finally, any remaining null properties are filled with `default_rpr` and `default_ppr` from the `StylesSchema`.
+   - **Efficient Property Merging**: The `merge_properties` function is used to efficiently merge properties by converting Pydantic models to dictionaries, adding only non-null properties, and reassigning them to the original models.
+
+3. **Conversion to HTML and TXT**:
+   - **DOCX to HTML**:
+     - The `DocxToHtmlConverter` class takes the parsed `DocumentSchema` and converts the document elements into HTML format.
+     - Styles and properties are translated into equivalent HTML tags and CSS attributes.
+     - The converted HTML content can be saved to a file using the `save_html_to_file` method.
+     - **WYSIWYG Support**: The conversion maintains the visual representation of the document, ensuring accurate rendering of numbering, margins, and indentations as they appear in the original DOCX file.
+   - **DOCX to TXT**:
+     - The `DocxToTxtConverter` class converts the `DocumentSchema` into plain text format.
+     - Paragraphs, lists, and tables are transformed into a readable plain text representation.
+     - The converted text content can be saved to a file using the `save_txt_to_file` method.
+     - **WYSIWYG Support**: The conversion preserves the structure of the document, maintaining numbering, margins, and indentations to ensure the text layout resembles the original document's format.
+
+This detailed process ensures that the Docx Parser and Converter library accurately parses and converts DOCX documents while preserving the original document's structure and style as much as possible.
+
+
 ## Examples 📚
 
 ### Original DOCX File
@@ -88,7 +152,7 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
 ## API Reference 📜
 
-For detailed API documentation, please visit our [Read the Docs page](https://docx-parser-and-converter.readthedocs.io/en/latest/).
+For detailed API documentation, please visit our [Read the Docs](https://docx-parser-and-converter.readthedocs.io/en/latest/){:target="_blank"} page.
 
 
-Enjoy using DOCX-HTML-TXT Converter! 🚀✨
+Enjoy using Docx Parser and Converter! 🚀✨
