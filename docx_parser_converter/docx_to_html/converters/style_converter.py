@@ -63,8 +63,22 @@ class StyleConverter:
             .. code-block:: css
 
                 text-decoration:underline;
+                text-decoration:line-through;
+                text-decoration:none;
         """
-        return "text-decoration:underline;" if underline else ""
+        underline_mapping = {
+            "single": "text-decoration:underline;",
+            "double": "text-decoration:underline double;",
+            "words": "text-decoration:underline words;",
+            "dotted": "text-decoration:underline dotted;",
+            "dashed": "text-decoration:underline dashed;",
+            "dot-dash": "text-decoration:underline dot-dash;",
+            "dot-dot-dash": "text-decoration:underline dot-dot-dash;",
+            "wavy": "text-decoration:underline wavy;",
+            "none": "text-decoration:none;"
+        }
+
+        return underline_mapping.get(underline, "")
 
     @staticmethod
     def convert_color(color: str) -> str:
