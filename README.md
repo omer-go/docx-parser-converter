@@ -164,7 +164,7 @@ This detailed process ensures that the Docx Parser and Converter library accurat
 | w:spacing      | p style="line-height:X%;"            | Line spacing, converted using CSS `line-height` property              |
 | w:highlight    | span style="background-color:#RRGGBB;" | Text highlight, converted using CSS `background-color` property       |
 | w:shd          | span style="background-color:#RRGGBB;" | Shading, converted using CSS `background-color` property              |
-| w:vertAlign    | span style="vertical-align:super|sub;" | Vertical alignment, converted using CSS `vertical-align` property     |
+| w:vertAlign    | span style="vertical-align:super/sub;" | Vertical alignment, converted using CSS `vertical-align` property     |
 | w:pgMar        | div style="padding: Xpt;"            | Margins, converted using CSS `padding` property                       |
 | w:rFonts       | span style="font-family:'font-name';"| Font name, converted using CSS `font-family` property                 |
 
