@@ -3,16 +3,17 @@
 A powerful library for converting DOCX documents into HTML and plain text, with detailed parsing of document properties and styles.
 
 ## Table of Contents
-- [Introduction 🌟](#introduction-)
-- [Project Overview 🛠️](#project-overview-)
-- [Key Features 🌟](#key-features-)
-- [Installation 💾](#installation-)
-- [Usage 🚀](#usage-)
-- [Quick Start Guide 📖](#quick-start-guide-)
-- [Supported XML Parsing Types 📄](#supported-xml-parsing-types-)
-- [General Code Flow 🔄](#general-code-flow-)
-- [Examples 📚](#examples-)
-- [API Reference 📜](#api-reference-)
+- [Introduction 🌟](#introduction)
+- [Project Overview 🛠️](#project-overview)
+- [Key Features 🌟](#key-features)
+- [Installation 💾](#installation)
+- [Usage 🚀](#usage)
+- [Quick Start Guide 📖](#quick-start-guide)
+- [Supported XML Parsing Types 📄](#supported-xml-parsing-types)
+- [General Code Flow 🔄](#general-code-flow)
+- [Conversion Table of DOCX XML Elements to HTML](#conversion-table-of-docx-xml-elements-to-html)
+- [Examples 📚](#examples)
+- [API Reference 📜](#api-reference)
 
 ## Introduction 🌟
 Welcome to the Docx Parser and Converter project! This library allows you to easily convert DOCX documents into HTML and plain text formats, extracting detailed properties and styles using Pydantic models.
@@ -135,6 +136,38 @@ The Docx Parser and Converter library follows a structured workflow to parse, co
 
 This detailed process ensures that the Docx Parser and Converter library accurately parses and converts DOCX documents while preserving the original document's structure and style as much as possible.
 
+## Conversion Table of DOCX XML Elements to HTML
+
+
+| XML Element    | HTML Element                        | Notes                                                                 |
+|----------------|--------------------------------------|-----------------------------------------------------------------------|
+| w:p            | p                                    | Paragraph element                                                     |
+| w:r            | span                                 | Run element, used for inline text formatting                          |
+| w:tbl          | table                                | Table element                                                         |
+| w:tr           | tr                                   | Table row                                                             |
+| w:tc           | td                                   | Table cell                                                            |
+| w:tblGrid      | colgroup                             | Table grid, converted to colgroup for column definitions              |
+| w:gridCol      | col                                  | Grid column, converted to col for column width                        |
+| w:tblPr        | table                                | Table properties                                                      |
+| w:tblW         | table style="width:X%;"              | Table width, converted using CSS `width` property                     |
+| w:tblBorders   | table style="border:X;"              | Table borders, converted using CSS `border` property                  |
+| w:tblCellMar   | td style="padding:Xpt;"              | Table cell margins, converted using CSS `padding` property            |
+| w:tblCellSpacing | table style="border-spacing:Xpt;"  | Cell spacing, converted using CSS `border-spacing` property           |
+| w:b            | b                                    | Bold text                                                             |
+| w:i            | i                                    | Italic text                                                           |
+| w:u            | span style="text-decoration:underline;" | Underline text, converted using CSS `text-decoration` property         |
+| w:color        | span style="color:#RRGGBB;"          | Text color, converted using CSS `color` property                      |
+| w:sz           | span style="font-size:Xpt;"          | Text size, converted using CSS `font-size` property (in points)       |
+| w:jc           | p style="text-align:left|center|right|justify;" | Text alignment, converted using CSS `text-align` property             |
+| w:ind          | p style="margin-left:Xpt;"           | Regular indent, converted using CSS `margin-left` property            |
+| w:ind          | p style="text-indent:Xpt;"           | Hanging/first-line indent, converted using CSS `text-indent` property |
+| w:spacing      | p style="line-height:X%;"            | Line spacing, converted using CSS `line-height` property              |
+| w:highlight    | span style="background-color:#RRGGBB;" | Text highlight, converted using CSS `background-color` property       |
+| w:shd          | span style="background-color:#RRGGBB;" | Shading, converted using CSS `background-color` property              |
+| w:vertAlign    | span style="vertical-align:super|sub;" | Vertical alignment, converted using CSS `vertical-align` property     |
+| w:pgMar        | div style="padding: Xpt;"            | Margins, converted using CSS `padding` property                       |
+| w:rFonts       | span style="font-family:'font-name';"| Font name, converted using CSS `font-family` property                 |
+
 
 ## Examples 📚
 
@@ -148,7 +181,6 @@ This detailed process ensures that the Docx Parser and Converter library accurat
 
 ### Converted to Plain Text
 ![Converted TXT Output](docs/images/docx-to-txt.png)
-
 
 ## API Reference 📜
 
