@@ -50,14 +50,14 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
    from docx_parser_converter.docx_to_html import DocxToHtmlConverter
    from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
-    docx_path = "path_to_your_docx_file.docx"
-    html_output_path = "output.html"
+   docx_path = "path_to_your_docx_file.docx"
+   html_output_path = "output.html"
 
-    docx_file_content = read_binary_from_file_path(docx_path)
+   docx_file_content = read_binary_from_file_path(docx_path)
 
-    converter = DocxToHtmlConverter(docx_file_content, use_default_values=True)
-    html_output = converter.convert_to_html()
-    converter.save_html_to_file(html_output, html_output_path)
+   converter = DocxToHtmlConverter(docx_file_content, use_default_values=True)
+   html_output = converter.convert_to_html()
+   converter.save_html_to_file(html_output, html_output_path)
    ```
 
 2. **Convert to Plain Text**:
@@ -65,14 +65,14 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
    from docx_parser_converter.docx_to_txt import DocxToTxtConverter
    from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
-    docx_path = "path_to_your_docx_file.docx"
-    txt_output_path = "output.txt"
+   docx_path = "path_to_your_docx_file.docx"
+   txt_output_path = "output.txt"
 
-    docx_file_content = read_binary_from_file_path(docx_path)
+   docx_file_content = read_binary_from_file_path(docx_path)
 
-    converter = DocxToTxtConverter(docx_file_content, use_default_values=True)
-    txt_output = converter.convert_to_txt(indent=True)
-    converter.save_txt_to_file(txt_output, txt_output_path)
+   converter = DocxToTxtConverter(docx_file_content, use_default_values=True)
+   txt_output = converter.convert_to_txt(indent=True)
+   converter.save_txt_to_file(txt_output, txt_output_path)
    ```
 
 ## Supported XML Parsing Types 📄
