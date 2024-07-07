@@ -26,7 +26,7 @@ setup(
         "Babel==2.15.0",
         "beautifulsoup4==4.12.3",
         "bs4==0.0.2",
-        "certifi==2024.6.2",
+        "certifi==2024.7.4",
         "charset-normalizer==3.3.2",
         "colorama==0.4.6",
         "docutils==0.20.1",
