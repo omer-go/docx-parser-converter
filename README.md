@@ -39,8 +39,8 @@ pip install docx-parser-converter
 To start using the library, import the necessary modules:
 
 ```python
-from docx_parser_converter.docx_to_html import DocxToHtmlConverter
-from docx_parser_converter.docx_to_txt import DocxToTxtConverter
+from docx_parser_converter.docx_to_html.docx_to_html_converter import DocxToHtmlConverter
+from docx_parser_converter.docx_to_txt.docx_to_txt_converter import DocxToTxtConverter
 from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 ```
 
