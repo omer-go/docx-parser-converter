@@ -47,7 +47,7 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 ### Quick Start Guide 📖
 1. **Convert to HTML**:
    ```python
-   from docx_parser_converter.docx_to_html import DocxToHtmlConverter
+   from docx_parser_converter.docx_to_html.docx_to_html_converter import DocxToHtmlConverter
    from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
    docx_path = "path_to_your_docx_file.docx"
@@ -62,7 +62,7 @@ from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
 2. **Convert to Plain Text**:
    ```python
-   from docx_parser_converter.docx_to_txt import DocxToTxtConverter
+   from docx_parser_converter.docx_to_txt.docx_to_txt_converter import DocxToTxtConverter
    from docx_parser_converter.docx_parsers.utils import read_binary_from_file_path
 
    docx_path = "path_to_your_docx_file.docx"
