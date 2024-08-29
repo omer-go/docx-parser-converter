@@ -4,16 +4,16 @@ from xml.etree.ElementTree import Element
 NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 NAMESPACE = {'w': NAMESPACE_URI}
 
-def extract_element(parent: Element, path: str) -> Optional[Element]:
+def extract_element(parent: Optional[Element], path: str) -> Optional[Element]:
     """
     Extracts an XML element from the parent element using the given path.
     
     Args:
-        parent (Element): The parent XML element.
+        parent (Optional[Element]): The parent XML element.
         path (str): The XPath to the desired child element.
 
     Returns:
-        Optional[Element]: The extracted XML element, or None if not found.
+        Optional[Element]: The extracted XML element, or None if not found or if parent is None.
 
     Example:
         The following is an example of extracting a paragraph properties element 
@@ -30,6 +30,8 @@ def extract_element(parent: Element, path: str) -> Optional[Element]:
         Usage:
             pPr = extract_element(paragraph_element, ".//w:pPr")
     """
+    if parent is None:
+        return None
     return parent.find(path, namespaces=NAMESPACE)
 
 def extract_attribute(element: Optional[Element], attr: str) -> Optional[str]:
