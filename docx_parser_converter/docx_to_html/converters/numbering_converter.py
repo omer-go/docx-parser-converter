@@ -1,5 +1,6 @@
 from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph
-from docx_parser_converter.docx_parsers.models.numbering_models import NumberingLevel
+from docx_parser_converter.docx_parsers.models.numbering_models import NumberingLevel, NumberingSchema
+
 
 """
 TODO:
@@ -15,10 +16,14 @@ class NumberingConverter:
     A converter class for handling numbered paragraphs in DOCX documents.
     """
 
-    numbering_counters = {}
+    _numbering_counters = {}
 
     @staticmethod
-    def convert_numbering(paragraph: Paragraph, numbering_schema) -> str:
+    def reset_counters():
+        NumberingConverter._numbering_counters = {}
+
+    @staticmethod
+    def convert_numbering(paragraph: Paragraph, numbering_schema: NumberingSchema) -> str:
         """
         Converts the numbering for a given paragraph to its HTML representation.
 
@@ -38,24 +43,23 @@ class NumberingConverter:
                 <span style="font-family:Times New Roman;">I.</span><span style="padding-left:7.2pt;"></span>
         """
         numbering = paragraph.numbering
-        level_key = (numbering.numId, numbering.ilvl)
         
         try:
             numbering_level = NumberingConverter.get_numbering_level(numbering_schema, numbering.numId, numbering.ilvl)
-        except ValueError as e:
+        except Exception as e:
             print(f"Warning: {e}")
             return "•"
 
-        if numbering.numId not in NumberingConverter.numbering_counters:
-            NumberingConverter.numbering_counters[numbering.numId] = [0] * 9  # Supports up to 9 levels
+        if numbering.numId not in NumberingConverter._numbering_counters:
+            NumberingConverter._numbering_counters[numbering.numId] = [0] * 9  # Supports up to 9 levels
         
-        NumberingConverter.numbering_counters[numbering.numId][numbering.ilvl] += 1
+        NumberingConverter._numbering_counters[numbering.numId][numbering.ilvl] += 1
         
         # Reset counters for deeper levels if a higher level is incremented
         for i in range(numbering.ilvl + 1, 9):
-            NumberingConverter.numbering_counters[numbering.numId][i] = 0
+            NumberingConverter._numbering_counters[numbering.numId][i] = 0
 
-        counters = NumberingConverter.numbering_counters[numbering.numId][:numbering.ilvl + 1]
+        counters = NumberingConverter._numbering_counters[numbering.numId][:numbering.ilvl + 1]
         formatted_counters = [NumberingConverter.format_number(counters[i], numbering_level.numFmt) for i in range(numbering.ilvl + 1)]
         
         # Replace all placeholders in lvlText
