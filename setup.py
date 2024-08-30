@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf8", errors="ignore") as fh:
 
 setup(
     name="docx-parser-converter",
-    version="0.5.1.1",
+    version="0.5.1.2",
     author="Omer Hayun",
     author_email="your.email@example.com",
     description="A library for converting DOCX documents to HTML and plain text",
