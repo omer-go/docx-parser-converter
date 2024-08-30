@@ -1,5 +1,5 @@
 from docx_parser_converter.docx_parsers.models.styles_models import FontProperties, SpacingProperties, IndentationProperties
-
+from docx_parser_converter.docx_parsers.models.document_models import DocMargins
 
 class StyleConverter:
     """
@@ -225,7 +225,7 @@ class StyleConverter:
         return f"text-align:{justification_map.get(justification, 'left')};" if justification else ""
 
     @staticmethod
-    def convert_doc_margins(margins) -> str:
+    def convert_doc_margins(margins: DocMargins) -> str:
         """
         Converts document margins to CSS style.
 

@@ -1,6 +1,8 @@
 from lxml import etree, html
+from typing import List
 from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph
-from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema
+from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema, DocMargins
+from docx_parser_converter.docx_parsers.models.numbering_models import NumberingSchema
 from docx_parser_converter.docx_parsers.models.table_models import Table
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
 from docx_parser_converter.docx_to_html.converters.paragraph_converter import ParagraphConverter
@@ -10,9 +12,8 @@ class HtmlGenerator:
     """
     A generator class for converting DOCX document schema to HTML.
     """
-
     @staticmethod
-    def generate_html(document_schema: DocumentSchema, numbering_schema) -> str:
+    def generate_html(document_schema: DocumentSchema, numbering_schema: NumberingSchema) -> str:
         """
         Generates HTML content from the given document schema.
 
@@ -40,7 +41,7 @@ class HtmlGenerator:
         return html.tostring(root, pretty_print=True, encoding="unicode")
 
     @staticmethod
-    def generate_html_body(doc_margins, elements, numbering_schema) -> etree.Element:
+    def generate_html_body(doc_margins: DocMargins, elements: List[Paragraph | Table], numbering_schema: NumberingSchema) -> etree.Element:
         """
         Generates the body of the HTML content from the given document elements.
 
