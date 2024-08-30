@@ -7,6 +7,7 @@ from docx_parser_converter.docx_parsers.models.table_models import Table
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
 from docx_parser_converter.docx_to_html.converters.paragraph_converter import ParagraphConverter
 from docx_parser_converter.docx_to_html.converters.table_converter import TableConverter
+from docx_parser_converter.docx_to_html.converters.numbering_converter import NumberingConverter
 
 class HtmlGenerator:
     """
@@ -34,6 +35,9 @@ class HtmlGenerator:
         """
         root = etree.Element("html")
         body = etree.SubElement(root, "body")
+        
+        # Reset the numbering counters before generating the HTML body
+        NumberingConverter.reset_counters()
         
         body_html = HtmlGenerator.generate_html_body(document_schema.doc_margins, document_schema.elements, numbering_schema)
         body.append(body_html)
