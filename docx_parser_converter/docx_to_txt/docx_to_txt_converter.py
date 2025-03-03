@@ -26,13 +26,13 @@ class DocxToTxtConverter:
         self.docx_file = docx_file
         self.document_schema, self.styles_schema, self.numbering_schema = DocxProcessor.process_docx(docx_file)
 
-    def convert_to_txt(self, indent: bool = False, extract_tables: bool = False) -> str:
+    def convert_to_txt(self, indent: bool = False, extract_tables: bool = True) -> str:
         """
         Convert the DOCX document to plain text.
 
         Args:
             indent (bool): Whether to apply indentation. Default is False.
-            extract_tables (bool): Whether to extract table contents. Default is False.
+            extract_tables (bool): Whether to extract table contents. Default is True.
 
         Returns:
             str: Plain text representation of the document.
@@ -65,7 +65,8 @@ class DocxToTxtConverter:
 
 
 if __name__ == "__main__":
-    docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
+    docx_path = "C:/Users/omerh/Desktop/Docx Test Files/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
     # docx_path = "C:/Users/omerh/Desktop/docx_test.docx"

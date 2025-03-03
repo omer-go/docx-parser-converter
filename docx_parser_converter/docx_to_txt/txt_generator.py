@@ -1,6 +1,8 @@
 from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph
 from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema
+from docx_parser_converter.docx_parsers.models.table_models import Table
 from docx_parser_converter.docx_to_txt.converters.paragraph_converter import ParagraphConverter
+from docx_parser_converter.docx_to_txt.converters.table_converter import TableConverter
 
 
 class TxtGenerator:
@@ -61,9 +63,9 @@ class TxtGenerator:
                 paragraph_text = ParagraphConverter.convert_paragraph(element, numbering_schema, indent)
                 body += paragraph_text + "\n"
                 prev_paragraph = element
-            # Handle tables in future implementation
-            # elif isinstance(element, Table):
-            #     table_text = TableConverter.convert_table(element)
-            #     body += table_text + "\n"
+            elif isinstance(element, Table):
+                table_text = TableConverter.convert_table(element, numbering_schema, indent)
+                body += table_text
+                prev_paragraph = None  # Reset previous paragraph after a table
 
         return body
