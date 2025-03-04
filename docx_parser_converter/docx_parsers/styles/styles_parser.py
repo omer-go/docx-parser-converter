@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Union
 import xml.etree.ElementTree as ET
-from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
+from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, extract_xml_root_from_string
 from docx_parser_converter.docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
 from docx_parser_converter.docx_parsers.models.styles_models import StylesSchema, Style, StyleDefaults
 from docx_parser_converter.docx_parsers.styles.paragraph_properties_parser import ParagraphPropertiesParser
@@ -13,15 +13,18 @@ class StylesParser:
     A parser for extracting styles from a DOCX file.
     """
 
-    def __init__(self, docx_file: Optional[bytes] = None):
+    def __init__(self, source: Optional[Union[bytes, str]] = None):
         """
         Initializes the StylesParser.
 
         Args:
-            docx_file (Optional[bytes]): The DOCX file as bytes. Defaults to None.
+            source (Optional[Union[bytes, str]]): Either the DOCX file as bytes or the styles.xml content as a string. Defaults to None.
         """
-        if docx_file:
-            self.root = extract_xml_root_from_docx(docx_file, 'styles.xml')
+        if source:
+            if isinstance(source, bytes):
+                self.root = extract_xml_root_from_docx(source, 'styles.xml')
+            else:  # string
+                self.root = extract_xml_root_from_string(source)
             self.styles_schema = self.parse()
         else:
             self.root = None

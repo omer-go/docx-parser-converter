@@ -70,7 +70,7 @@ class DocxToHtmlConverter:
 if __name__ == "__main__":
     # docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
     docx_path = "C:/Users/omerh/Desktop/SAFEs for analysis/SAFE 1 - Cap Only.docx"
-    html_output_path = "C:/Users/omerh/Desktop/new_newnewdocx.html"
+    html_output_path = "C:/Users/omerh/Desktop/new_newnewdocx1.html"
 
     if not os.path.exists(docx_path):
         print(f"File not found: {docx_path}")

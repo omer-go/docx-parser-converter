@@ -1,7 +1,7 @@
 import io
 import zipfile
 import xml.etree.ElementTree as ET
-from typing import Union
+from typing import Union, Optional
 from pydantic import BaseModel
 
 def extract_xml_root_from_docx(docx_file: bytes, xml_filename: str) -> ET.Element:
@@ -28,6 +28,18 @@ def extract_xml_root_from_docx(docx_file: bytes, xml_filename: str) -> ET.Elemen
         with docx.open(f'word/{xml_filename}') as xml_file:
             tree = ET.parse(xml_file)
             return tree.getroot()
+
+def extract_xml_root_from_string(xml_content: str) -> ET.Element:
+    """
+    Extracts the root element from an XML string.
+
+    Args:
+        xml_content (str): The XML content as a string.
+
+    Returns:
+        ET.Element: The root element of the parsed XML.
+    """
+    return ET.fromstring(xml_content)
 
 def read_binary_from_file_path(file_path: str) -> bytes:
     """

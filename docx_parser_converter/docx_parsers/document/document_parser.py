@@ -1,7 +1,7 @@
 import json
 from typing import Optional, List, Union
 from docx_parser_converter.docx_parsers.helpers.common_helpers import NAMESPACE
-from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path
+from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, extract_xml_root_from_string
 from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph
 from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema, DocMargins
 from docx_parser_converter.docx_parsers.models.table_models import Table
@@ -17,15 +17,19 @@ class DocumentParser:
     within a DOCX file, converting it into a structured DocumentSchema.
     """
 
-    def __init__(self, docx_file: Optional[bytes] = None):
+    def __init__(self, source: Optional[Union[bytes, str]] = None):
         """
-        Initializes the DocumentParser with the given DOCX file.
+        Initializes the DocumentParser with the given DOCX file or document XML content.
 
         Args:
-            docx_file (Optional[bytes]): The binary content of the DOCX file.
+            source (Optional[Union[bytes, str]]): Either the binary content of the DOCX file
+                                                 or the document.xml content as a string.
         """
-        if docx_file:
-            self.root = extract_xml_root_from_docx(docx_file, 'document.xml')
+        if source:
+            if isinstance(source, bytes):
+                self.root = extract_xml_root_from_docx(source, 'document.xml')
+            else:  # string
+                self.root = extract_xml_root_from_string(source)
             self.document_schema = self.parse()
         else:
             self.root = None
@@ -106,9 +110,9 @@ class DocumentParser:
 
 if __name__ == "__main__":
     # Example usage of the DocumentParser
-    # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    docx_path = "C:/Users/omerh/Desktop/Docx Test Files/file-sample_1MB.docx"
     # docx_path = "C:/Users/omerh/Desktop/new_docx.docx"
-    docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
+    # docx_path = "C:/Users/omerh/Desktop/docx_test.docx"
 
     docx_file = read_binary_from_file_path(docx_path)
     document_parser = DocumentParser(docx_file)

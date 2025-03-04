@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from lxml import etree
-from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, convert_twips_to_points
+from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, convert_twips_to_points, extract_xml_root_from_string
 from docx_parser_converter.docx_parsers.helpers.common_helpers import extract_element, extract_attribute, NAMESPACE
 from docx_parser_converter.docx_parsers.models.numbering_models import NumberingLevel, NumberingInstance, NumberingSchema
 from docx_parser_converter.docx_parsers.models.styles_models import FontProperties, IndentationProperties
@@ -16,14 +16,18 @@ class NumberingParser:
     Pydantic models for further processing or conversion to other formats.
     """
 
-    def __init__(self, docx_file: bytes):
+    def __init__(self, source: Union[bytes, str]):
         """
-        Initializes the NumberingParser with the given DOCX file.
+        Initializes the NumberingParser with the given DOCX file or numbering XML content.
 
         Args:
-            docx_file (bytes): The binary content of the DOCX file.
+            source (Union[bytes, str]): Either the binary content of the DOCX file
+                                       or the numbering.xml content as a string.
         """
-        self.root = extract_xml_root_from_docx(docx_file, 'numbering.xml')
+        if isinstance(source, bytes):
+            self.root = extract_xml_root_from_docx(source, 'numbering.xml')
+        else:  # string
+            self.root = extract_xml_root_from_string(source)
         self.numbering_schema = self.parse()
 
     def parse(self) -> NumberingSchema:
