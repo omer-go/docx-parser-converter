@@ -1,0 +1,24 @@
+{
+  "name": "docx-to-html-js",
+  "version": "0.1.0",
+  "description": "A DOCX to HTML and text converter.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "docx",
+    "converter",
+    "html",
+    "text",
+    "javascript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "xmldom-qsa": "^1.1.3",
+    "zod": "^3.25.12"
+  }
+}

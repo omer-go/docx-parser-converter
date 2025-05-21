@@ -1,0 +1,7 @@
+- XML Parsing:
+  - DOMParser (native)
+  - xmldom-qsa (if more advanced selectors are needed, similar to BeautifulSoup)
+- Data Validation:
+  - zod
+- Regular Expressions:
+  - RegExp (native, no external library strictly needed)
