@@ -20,7 +20,7 @@ II. First numbering level, the capital roman letter II with a dot (II.), in red.
     1. Third numbering level, the number 1 with a dot (1.), the word underline is underlined.
       a. Fourth numbering level, the letter a with a dot (a.), the word bold is bold.
         i. Firth numbering level, the roman letter I with a dot (i.).
-           Sixth numbering level, a bullet.
+          • Sixth numbering level, a bullet.
 
 
 

@@ -276,14 +276,12 @@ export function convertTablePropertiesToCss(properties) {
     styles.push(`table-layout: ${properties.tblLayout};`);
   }
 
-  // Table-wide borders (tblBorders) - very simplified for now
-  // This applies a default border if any specific border is set.
-  // A more detailed approach would convert each BorderTypeSchema (top, left, etc.)
-  // from tblBorders into specific CSS border properties.
+  // Table-wide borders (tblBorders) - simplified and improved
   if (properties.tblBorders && Object.values(properties.tblBorders).some(b => b && b.val && b.val !== 'nil')) {
-      styles.push('border: 1px solid #000000;'); // Default border if any are defined
+      // For now, apply a consistent border to all tables with borders
+      // This ensures clean, consistent appearance
+      styles.push('border: 1.0pt solid #000000;');
   }
-
 
   return styles.join(' ');
 }
@@ -352,41 +350,36 @@ export function convertTableCellPropertiesToCss(properties, tableProperties) {
 
   // Cell Margins (Padding) - tcMar overrides tblCellMar from tableProperties
   const cellMargins = properties.tcMar || tableProperties?.tblCellMar;
+  
+  // Always ensure all four padding directions are defined
+  let paddingTop = '5.4pt';    // Default padding
+  let paddingBottom = '5.4pt'; // Default padding
+  let paddingLeft = '5.4pt';   // Default padding
+  let paddingRight = '5.4pt';  // Default padding
+  
   if (cellMargins) {
-    if (cellMargins.top?.val) styles.push(`padding-top: ${formatPoints(cellMargins.top.val / TWIPS_PER_POINT)};`);
-    if (cellMargins.bottom?.val) styles.push(`padding-bottom: ${formatPoints(cellMargins.bottom.val / TWIPS_PER_POINT)};`);
-    if (cellMargins.left?.val) styles.push(`padding-left: ${formatPoints(cellMargins.left.val / TWIPS_PER_POINT)};`);
-    if (cellMargins.right?.val) styles.push(`padding-right: ${formatPoints(cellMargins.right.val / TWIPS_PER_POINT)};`);
+    if (cellMargins.top?.val) paddingTop = formatPoints(cellMargins.top.val / TWIPS_PER_POINT);
+    if (cellMargins.bottom?.val) paddingBottom = formatPoints(cellMargins.bottom.val / TWIPS_PER_POINT);
+    if (cellMargins.left?.val) paddingLeft = formatPoints(cellMargins.left.val / TWIPS_PER_POINT);
+    if (cellMargins.right?.val) paddingRight = formatPoints(cellMargins.right.val / TWIPS_PER_POINT);
   }
   
-  // Cell Borders (tcBorders) - This is complex. Simplified: apply if any border is set.
-  // A full implementation would convert each BorderTypeSchema to CSS border properties.
-  // e.g. properties.tcBorders.top -> border-top: ...
+  // Apply all padding values
+  styles.push(`padding-top: ${paddingTop};`);
+  styles.push(`padding-bottom: ${paddingBottom};`);
+  styles.push(`padding-left: ${paddingLeft};`);
+  styles.push(`padding-right: ${paddingRight};`);
+  
+  // Ensure empty cells have minimum height
+  styles.push('min-height: 18.0pt;'); // Minimum height for proper cell rendering
+
+  // Cell Borders - Simplified logic for cleaner table appearance
   if (properties.tcBorders && Object.values(properties.tcBorders).some(b => b && b.val && b.val !== 'nil')) {
-      // Simplified: if any border is defined, use a default.
-      // A real implementation would iterate each border (top, bottom, left, right, insideH, insideV)
-      // and convert its BorderTypeSchema to CSS.
-      // Example for top border:
-      const topBorder = properties.tcBorders.top;
-      if (topBorder && topBorder.val && topBorder.val !== 'nil') {
-          const widthPt = (topBorder.sz?.val || 8) / 8; // Default to 1pt if sz not specified (8/8ths of a point)
-          const color = (topBorder.color?.val && topBorder.color.val !== 'auto') ? `#${topBorder.color.val}` : '#000000';
-          // Border style mapping (e.g. 'single' -> 'solid', 'double' -> 'double')
-          const style = topBorder.val === 'single' ? 'solid' : topBorder.val; // Basic mapping
-          styles.push(`border-top: ${formatPoints(widthPt)} ${style} ${color};`);
-      }
-       // Similar logic for bottom, left, right borders.
-       // For now, a generic border if any tcBorder is present:
-      if (!styles.some(s => s.startsWith('border-top'))) { // Avoid adding if already specific
-          styles.push('border: 0.5pt solid #cccccc;'); // Fallback generic border
-      }
-
-  } else if (!tableProperties?.tblBorders && !properties.tcBorders) {
-      // If no table-level or cell-level borders defined, ensure a minimal visible border for structure.
-      // This might be undesirable if the DOCX truly has no borders.
-      // styles.push('border: 0.5pt solid #eeeeee;'); 
+      // Cell has explicit borders defined - use them
+      styles.push('border: 1.0pt solid #000000;');
   }
-
+  // Note: Removed automatic cell border addition for tables with borders
+  // This creates cleaner outline-only tables when the table has borders but cells don't
 
   return styles.join(' ');
 }

@@ -311,7 +311,13 @@ export class TextConverter {
                 case 'upperLetter': counterStrSegment = toAlphaUpper(counterForLevel); break;
                 case 'lowerRoman': counterStrSegment = toRomanLower(counterForLevel); break;
                 case 'upperRoman': counterStrSegment = toRomanUpper(counterForLevel); break;
-                case 'bullet': counterStrSegment = levelDefForPlaceholder?.text || '•'; break; // Use bullet char from its level's lvlText
+                case 'bullet': 
+                    counterStrSegment = levelDefForPlaceholder?.text || '•'; 
+                    // If text is empty or contains unknown characters, use proper bullet
+                    if (!counterStrSegment || counterStrSegment.trim() === '' || counterStrSegment.includes('')) {
+                        counterStrSegment = '•'; // Use proper bullet character
+                    }
+                    break; // Use bullet char from its level's lvlText
                 // Other formats like cardinalText, ordinalText, etc. are complex
                 default: counterStrSegment = levelDefForPlaceholder?.text || counterStrSegment; break; 
             }
@@ -321,10 +327,10 @@ export class TextConverter {
     
     markerText = lvlTextFormat;
 
-    // If after all replacements, it's still just a placeholder (e.g. %N for a level not yet counted)
-    // or if it's a bullet format that didn't resolve to a char in lvlTextFormat, use a default.
-    if (markerText.startsWith('%') || (format === 'bullet' && markerText === `%${numberingLevelSchema.level + 1}`)) {
-      markerText = (format === 'bullet') ? '•' : currentCounter.toString(); // Fallback
+    // If after replacement, it's still like "%X", it means the format was complex or not handled
+    // Or if it was a bullet and lvlText was empty, provide a default bullet.
+    if (markerText.includes('%') || (format === 'bullet' && (!markerText || markerText.trim() === '' || markerText.includes('')))) {
+        markerText = (format === 'bullet') ? '•' : (markerText.includes('%') ? currentCounter.toString() : markerText); // Only use bullet for bullet format
     }
 
     return markerText + " "; // Add a trailing space for separation

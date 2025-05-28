@@ -351,18 +351,50 @@ export class HtmlConverter {
           // Generate the list marker text
           const markerText = this._generateListMarkerText(levelDef, hierarchicalCounters[itemNumId], abstractNum);
           
-          // Calculate margin-left and text-indent based on level (matching Python output)
-          // Python uses: margin-left: 36pt + (level * 18pt), text-indent: varies by level
-          const baseMargin = 36; // Base margin in points
-          const levelIncrement = 18; // Additional margin per level in points
-          const marginLeft = baseMargin + (itemIlvl * levelIncrement);
+          // Calculate margin-left and text-indent based on actual numbering level definitions
+          // Use the actual indentation values from the numbering level definition
+          let marginLeft, textIndent, paddingLeft;
           
-          // Text indent varies - Python seems to use different values for different levels
-          let textIndent;
-          if (itemIlvl === 0) {
-              textIndent = -8.7; // First level
+          if (levelDef.paragraphProperties?.ind) {
+              // Use actual indentation values from the level definition
+              const leftIndentTwips = levelDef.paragraphProperties.ind.left?.val || 0;
+              const hangingIndentTwips = levelDef.paragraphProperties.ind.hanging?.val || 0;
+              const firstLineIndentTwips = levelDef.paragraphProperties.ind.firstLine?.val || 0;
+              
+              // Convert twips to points (1 point = 20 twips)
+              marginLeft = leftIndentTwips / 20;
+              
+              // Text indent is usually negative for hanging indent
+              if (hangingIndentTwips > 0) {
+                  textIndent = -(hangingIndentTwips / 20);
+              } else if (firstLineIndentTwips !== 0) {
+                  textIndent = firstLineIndentTwips / 20;
+              } else {
+                  textIndent = 0;
+              }
+              
+              // Calculate padding based on tab position and text width
+              if (levelDef.paragraphProperties.tabs?.tab?.val || levelDef.tab?.val) {
+                  const tabPositionTwips = levelDef.paragraphProperties.tabs?.tab?.val || levelDef.tab?.val;
+                  const tabPositionPt = tabPositionTwips / 20;
+                  
+                  // Estimate text width (simplified calculation)
+                  const markerTextLength = markerText.length;
+                  const estimatedTextWidthPt = markerTextLength * 7.2; // Approximate character width
+                  
+                  // Calculate net padding
+                  const netPadding = tabPositionPt - marginLeft - Math.abs(textIndent) - estimatedTextWidthPt;
+                  paddingLeft = Math.max(netPadding, 7.2); // Minimum 7.2pt padding
+              } else {
+                  paddingLeft = 7.2; // Default padding
+              }
           } else {
-              textIndent = -18.0; // Other levels (with decimal to match Python)
+              // Fallback to calculated values if no indentation definition
+              const baseMargin = 36; // Base margin in points
+              const levelIncrement = 18; // Additional margin per level in points
+              marginLeft = baseMargin + (itemIlvl * levelIncrement);
+              textIndent = itemIlvl === 0 ? -8.7 : -18.0;
+              paddingLeft = 7.2;
           }
 
           // Convert paragraph properties to CSS but override margin and text-indent
@@ -374,13 +406,13 @@ export class HtmlConverter {
               .replace(/;;/g, ';')
               .replace(/^;|;$/g, '');
           
-          const listParagraphCss = `margin-left:${marginLeft}.0pt;text-indent:${textIndent}pt;${cleanedCss}`;
+          const listParagraphCss = `margin-left:${marginLeft.toFixed(1)}pt;text-indent:${textIndent.toFixed(1)}pt;${cleanedCss}`;
 
           // Convert runs to HTML
           const runsHtml = paragraph.runs.map(run => this._convertRunToHtml(run)).join('');
 
           // Create the paragraph with marker and content
-          html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:7.2pt;"></span>${runsHtml}</p>`;
+          html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:${paddingLeft}pt;"></span>${runsHtml}</p>`;
           
           // Increment the counter for this level AFTER generating the marker
           hierarchicalCounters[itemNumId][itemIlvl]++;
@@ -442,6 +474,10 @@ export class HtmlConverter {
           case 'bullet':
               // lvlText often directly contains the bullet character for 'bullet' format
               markerText = lvlText; // Use lvlText directly which might be '•', 'o', etc.
+              // If lvlText is empty or contains unknown characters, use proper bullet
+              if (!markerText || markerText.trim() === '' || markerText.includes('')) {
+                  markerText = '•'; // Use proper bullet character
+              }
               break;
           // Add more cases for other formats like 'cardinalText', 'ordinalText', etc.
           default: 
@@ -500,8 +536,8 @@ export class HtmlConverter {
       
       // If after replacement, it's still like "%X", it means the format was complex or not handled
       // Or if it was a bullet and lvlText was empty, provide a default bullet.
-      if (markerText.includes('%') || (format === 'bullet' && !markerText)) {
-          markerText = (format === 'bullet' || !markerText) ? '•' : counterStr; // Default bullet or just counter
+      if (markerText.includes('%') || (format === 'bullet' && (!markerText || markerText.trim() === '' || markerText.includes('')))) {
+          markerText = (format === 'bullet') ? '•' : (markerText.includes('%') ? counterStr : markerText); // Only use bullet for bullet format
       }
 
       return markerText;
@@ -664,18 +700,50 @@ HtmlConverter.prototype._convertListToHtml = function(listParagraphs, documentSc
         // Generate the list marker text
         const markerText = this._generateListMarkerText(levelDef, hierarchicalCounters[itemNumId], abstractNum);
         
-        // Calculate margin-left and text-indent based on level (matching Python output)
-        // Python uses: margin-left: 36pt + (level * 18pt), text-indent: varies by level
-        const baseMargin = 36; // Base margin in points
-        const levelIncrement = 18; // Additional margin per level in points
-        const marginLeft = baseMargin + (itemIlvl * levelIncrement);
+        // Calculate margin-left and text-indent based on actual numbering level definitions
+        // Use the actual indentation values from the numbering level definition
+        let marginLeft, textIndent, paddingLeft;
         
-        // Text indent varies - Python seems to use different values for different levels
-        let textIndent;
-        if (itemIlvl === 0) {
-            textIndent = -8.7; // First level
+        if (levelDef.paragraphProperties?.ind) {
+            // Use actual indentation values from the level definition
+            const leftIndentTwips = levelDef.paragraphProperties.ind.left?.val || 0;
+            const hangingIndentTwips = levelDef.paragraphProperties.ind.hanging?.val || 0;
+            const firstLineIndentTwips = levelDef.paragraphProperties.ind.firstLine?.val || 0;
+            
+            // Convert twips to points (1 point = 20 twips)
+            marginLeft = leftIndentTwips / 20;
+            
+            // Text indent is usually negative for hanging indent
+            if (hangingIndentTwips > 0) {
+                textIndent = -(hangingIndentTwips / 20);
+            } else if (firstLineIndentTwips !== 0) {
+                textIndent = firstLineIndentTwips / 20;
+            } else {
+                textIndent = 0;
+            }
+            
+            // Calculate padding based on tab position and text width
+            if (levelDef.paragraphProperties.tabs?.tab?.val || levelDef.tab?.val) {
+                const tabPositionTwips = levelDef.paragraphProperties.tabs?.tab?.val || levelDef.tab?.val;
+                const tabPositionPt = tabPositionTwips / 20;
+                
+                // Estimate text width (simplified calculation)
+                const markerTextLength = markerText.length;
+                const estimatedTextWidthPt = markerTextLength * 7.2; // Approximate character width
+                
+                // Calculate net padding
+                const netPadding = tabPositionPt - marginLeft - Math.abs(textIndent) - estimatedTextWidthPt;
+                paddingLeft = Math.max(netPadding, 7.2); // Minimum 7.2pt padding
+            } else {
+                paddingLeft = 7.2; // Default padding
+            }
         } else {
-            textIndent = -18.0; // Other levels (with decimal to match Python)
+            // Fallback to calculated values if no indentation definition
+            const baseMargin = 36; // Base margin in points
+            const levelIncrement = 18; // Additional margin per level in points
+            marginLeft = baseMargin + (itemIlvl * levelIncrement);
+            textIndent = itemIlvl === 0 ? -8.7 : -18.0;
+            paddingLeft = 7.2;
         }
 
         // Convert paragraph properties to CSS but override margin and text-indent
@@ -687,13 +755,13 @@ HtmlConverter.prototype._convertListToHtml = function(listParagraphs, documentSc
             .replace(/;;/g, ';')
             .replace(/^;|;$/g, '');
         
-        const listParagraphCss = `margin-left:${marginLeft}.0pt;text-indent:${textIndent}pt;${cleanedCss}`;
+        const listParagraphCss = `margin-left:${marginLeft.toFixed(1)}pt;text-indent:${textIndent.toFixed(1)}pt;${cleanedCss}`;
 
         // Convert runs to HTML
         const runsHtml = paragraph.runs.map(run => this._convertRunToHtml(run)).join('');
 
         // Create the paragraph with marker and content
-        html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:7.2pt;"></span>${runsHtml}</p>`;
+        html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:${paddingLeft}pt;"></span>${runsHtml}</p>`;
         
         // Increment the counter for this level AFTER generating the marker
         hierarchicalCounters[itemNumId][itemIlvl]++;
@@ -755,6 +823,10 @@ HtmlConverter.prototype._generateListMarkerText = function(numberingLevelSchema,
         case 'bullet':
             // lvlText often directly contains the bullet character for 'bullet' format
             markerText = lvlText; // Use lvlText directly which might be '•', 'o', etc.
+            // If lvlText is empty or contains unknown characters, use proper bullet
+            if (!markerText || markerText.trim() === '' || markerText.includes('')) {
+                markerText = '•'; // Use proper bullet character
+            }
             break;
         // Add more cases for other formats like 'cardinalText', 'ordinalText', etc.
         default: 
@@ -813,8 +885,8 @@ HtmlConverter.prototype._generateListMarkerText = function(numberingLevelSchema,
     
     // If after replacement, it's still like "%X", it means the format was complex or not handled
     // Or if it was a bullet and lvlText was empty, provide a default bullet.
-    if (markerText.includes('%') || (format === 'bullet' && !markerText)) {
-        markerText = (format === 'bullet' || !markerText) ? '•' : counterStr; // Default bullet or just counter
+    if (markerText.includes('%') || (format === 'bullet' && (!markerText || markerText.trim() === '' || markerText.includes('')))) {
+        markerText = (format === 'bullet') ? '•' : (markerText.includes('%') ? counterStr : markerText); // Only use bullet for bullet format
     }
 
     return markerText;
