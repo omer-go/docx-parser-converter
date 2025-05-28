@@ -46,8 +46,7 @@ export class StyleEnhancer {
    * @returns {object} A new DocumentSchema object with properties resolved and merged.
    */
   enhanceDocument(documentSchema) {
-    // For now, this is a placeholder. Implementation will follow in subsequent steps.
-    // It will iterate through elements and call specific enhancers like _enhanceParagraph.
+    // Check if documentSchema has the correct structure
     if (!documentSchema || !Array.isArray(documentSchema.elements)) {
       console.warn("enhanceDocument: Invalid documentSchema or missing elements array.");
       return documentSchema; // Or throw error, depending on desired strictness
@@ -66,6 +65,10 @@ export class StyleEnhancer {
     // Deep clone the document schema and update its elements
     const enhancedDocument = JSON.parse(JSON.stringify(documentSchema));
     enhancedDocument.elements = enhancedElements;
+    
+    // Add the numbering definitions to the enhanced document so the HTML converter can access them
+    enhancedDocument.numberingDefinitions = this.numberingDefinitionsSchema;
+    
     return enhancedDocument;
   }
 
@@ -77,39 +80,44 @@ export class StyleEnhancer {
    * @private
    */
   _enhanceParagraph(paragraph) {
-    // Start with a deep clone of the paragraph's original properties
-    let resolvedParaProps = JSON.parse(JSON.stringify(paragraph.properties || {}));
+    // 1. Start with document default paragraph properties as the absolute base.
+    //    Deep clone to prevent modification of the original defaults.
+    let finalParagraphProps = JSON.parse(JSON.stringify(this.stylesSchema.docDefaults.paragraphProperties || {}));
 
-    // 1. Resolve style-defined properties if pStyle is present
-    if (resolvedParaProps.pStyle) {
-      const styleProps = this._getResolvedStyleProperties(resolvedParaProps.pStyle, 'paragraph');
-      if (styleProps) {
-        // Style properties form the base, direct properties override them
-        resolvedParaProps = this.mergeParagraphProperties(styleProps, resolvedParaProps);
+    // 2. Apply default paragraph style (if any).
+    const defaultParaStyleId = this.stylesSchema.styleTypeDefaults?.paragraph;
+    if (defaultParaStyleId) {
+      const defaultParaStyleProps = this._getResolvedStyleProperties(defaultParaStyleId, 'paragraph');
+      if (defaultParaStyleProps) {
+        finalParagraphProps = this.mergeParagraphProperties(finalParagraphProps, defaultParaStyleProps);
       } else {
-        console.warn(`_enhanceParagraph: Style ID '${resolvedParaProps.pStyle}' not found. Using only direct properties.`);
+        // console.warn(`_enhanceParagraph: Default paragraph style ID '${defaultParaStyleId}' not found.`);
       }
     }
 
-    // 2. Consider document default paragraph properties as a fallback
-    // (This step might be adjusted based on exact OOXML hierarchy,
-    // for now, style or direct properties take precedence over doc defaults)
-    // resolvedParaProps = this.mergeParagraphProperties(this.stylesSchema.docDefaults.paragraphProperties, resolvedParaProps);
-
-
-    // Create a new paragraph object with the updated (merged) properties
-    // and enhanced runs
-    const newParagraph = JSON.parse(JSON.stringify(paragraph)); // Deep clone
-    newParagraph.properties = resolvedParaProps;
-
-    // Enhance each run within the paragraph
-    if (newParagraph.runs && Array.isArray(newParagraph.runs)) {
-      newParagraph.runs = newParagraph.runs.map(run => {
-        // Deep clone the run before enhancing to avoid side effects if runs are shared
-        const clonedRun = JSON.parse(JSON.stringify(run));
-        return this._enhanceRun(clonedRun, resolvedParaProps);
-      });
+    // 3. Apply paragraph style if pStyle is present.
+    //    (paragraph.properties comes from the direct <w:pPr> on the <w:p> element)
+    const directParagraphProps = paragraph.properties || {};
+    if (directParagraphProps.pStyle) {
+      const paraStyleProps = this._getResolvedStyleProperties(directParagraphProps.pStyle, 'paragraph');
+      if (paraStyleProps) {
+        finalParagraphProps = this.mergeParagraphProperties(finalParagraphProps, paraStyleProps);
+      } else {
+        console.warn(`_enhanceParagraph: Paragraph style ID '${directParagraphProps.pStyle}' not found.`);
+      }
     }
+
+    // 4. Apply direct paragraph properties (from the paragraph's own <w:pPr>).
+    //    These have the highest precedence.
+    finalParagraphProps = this.mergeParagraphProperties(finalParagraphProps, directParagraphProps);
+
+    // Create a new paragraph object with the original runs and the new, fully resolved properties.
+    // Deep clone the original paragraph and then replace its properties.
+    const newParagraph = JSON.parse(JSON.stringify(paragraph));
+    newParagraph.properties = finalParagraphProps;
+
+    // Enhance each run within this paragraph, passing the resolved paragraph properties for context.
+    newParagraph.runs = newParagraph.runs.map(run => this._enhanceRun(run, finalParagraphProps));
 
     return newParagraph;
   }

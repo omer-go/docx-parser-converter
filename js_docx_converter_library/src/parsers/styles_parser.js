@@ -3,10 +3,9 @@ import {
   StylesSchema,
   StyleSchema,
   DocDefaultsSchema,
-  StyleTypeDefaultsSchema,
-  defaultRunProperties,
-  defaultParagraphProperties
+  StyleTypeDefaultsSchema
 } from './models/styles_models.js';
+import { defaultRunProperties, defaultParagraphProperties } from './models/properties_models.js';
 import { RunPropertiesParser } from './run_properties_parser.js';
 import { ParagraphPropertiesParser } from './paragraph_properties_parser.js';
 

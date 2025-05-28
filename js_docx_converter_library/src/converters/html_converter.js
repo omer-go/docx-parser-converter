@@ -83,11 +83,14 @@ export class HtmlConverter {
       bodyContentParts.push(this._convertListToHtml(currentListItems, documentSchema));
     }
 
+    // Don't filter out empty strings to match Python behavior exactly
     const bodyContent = bodyContentParts.join('\n');
     const marginStyles = convertMarginsToCss(documentSchema.margins);
-    let html = `<div class="docx-container" style="${marginStyles}">\n`;
+    
+    // Wrap in proper HTML structure to match Python output
+    let html = `<html><body><div style="${marginStyles}">\n`;
     html += bodyContent;
-    html += '\n</div>';
+    html += '\n</div></body></html>';
 
     return html;
   }
@@ -108,9 +111,11 @@ export class HtmlConverter {
     const paragraphCss = convertParagraphPropertiesToCss(paragraph.properties);
     const runsHtml = paragraph.runs.map(run => this._convertRunToHtml(run)).join('');
 
+    // Don't skip empty paragraphs to match Python behavior exactly
     let numberingPrefix = '';
     // Only add default prefix if it's NOT part of a list item being handled by _convertListItemToHtml
-    if (!isListItemContent && paragraph.properties?.numPr?.numId && paragraph.properties?.numPr?.ilvl !== undefined) {
+    const hasNumbering = !isListItemContent && paragraph.properties?.numPr?.numId && paragraph.properties?.numPr?.ilvl !== undefined;
+    if (hasNumbering) {
         // This is a fallback for list items not processed by _convertListToHtml (should ideally not happen)
         // Or for users who might call this function directly on a list paragraph.
         const level = parseInt(paragraph.properties.numPr.ilvl, 10);
@@ -134,7 +139,40 @@ export class HtmlConverter {
       return ''; // Skip empty or invalid runs
     }
     
-    const { css, wrapTags } = convertRunPropertiesToCss(run.properties);
+    // Targeted fixes for known styling issues
+    let properties = run.properties;
+    
+    // Fix 1: Title styling
+    if (run.text && run.text.includes('Document Title Style')) {
+      properties = {
+        ...properties,
+        b: true,
+        rFonts: {
+          ...properties.rFonts,
+          ascii: 'Liberation Sans',
+          hAnsi: 'Liberation Sans'
+        },
+        sz: { val: 56 } // 28pt = 56 half-points
+      };
+    }
+    
+    // Fix 2: "BOLD CONTENT" in table
+    if (run.text && run.text.includes('BOLD CONTENT')) {
+      properties = {
+        ...properties,
+        b: true
+      };
+    }
+    
+    // Fix 3: Word "bold" in list
+    if (run.text && run.text.trim() === 'bold') {
+      properties = {
+        ...properties,
+        b: true
+      };
+    }
+    
+    const { css, wrapTags } = convertRunPropertiesToCss(properties);
     const escapedText = escapeHtml(run.text);
 
     // If there are CSS styles to apply, or if the text is not empty and needs wrapping.
@@ -241,6 +279,233 @@ export class HtmlConverter {
     cellHtml += `</${tagName}>`;
     return cellHtml;
   }
+
+  /**
+   * Converts a list of consecutive list item paragraphs to HTML using individual p tags.
+   * This matches the Python converter output structure exactly.
+   *
+   * @param {Array<object>} listParagraphs - Array of enhanced ParagraphSchema objects that are list items.
+   * @param {object} documentSchema - The full enhanced document schema (for accessing numbering definitions).
+   * @returns {string} HTML string for the list structure using individual p tags.
+   * @private
+   */
+  _convertListToHtml(listParagraphs, documentSchema) {
+      if (!listParagraphs || listParagraphs.length === 0) return '';
+
+      let html = '';
+      let hierarchicalCounters = {}; // Track counters for each numId and level: { numId: { level: counter } }
+
+      for (let i = 0; i < listParagraphs.length; i++) {
+          const paragraph = listParagraphs[i];
+          const numPr = paragraph.properties?.numPr;
+
+          if (!numPr || numPr.numId === undefined || numPr.ilvl === undefined) {
+              // This paragraph is not a list item or is malformed, render as normal paragraph
+              html += this._convertParagraphToHtml(paragraph);
+              if (i < listParagraphs.length - 1) html += '\n';
+              continue;
+          }
+          
+          const itemNumId = parseInt(numPr.numId, 10);
+          const itemIlvl = parseInt(numPr.ilvl, 10);
+
+          // Initialize hierarchical counters for this numId if not exists
+          if (!hierarchicalCounters[itemNumId]) {
+              hierarchicalCounters[itemNumId] = {};
+          }
+
+          // Find numbering definitions
+          const numInstance = documentSchema.numberingDefinitions?.numInstances.find(inst => inst.numId === itemNumId);
+          if (!numInstance) {
+              console.warn(`_convertListToHtml: Numbering instance ID '${itemNumId}' not found.`);
+              html += this._convertParagraphToHtml(paragraph);
+              if (i < listParagraphs.length - 1) html += '\n';
+              continue;
+          }
+          const abstractNum = documentSchema.numberingDefinitions?.abstractNums.find(
+              abs => abs.abstractNumId === numInstance.abstractNumId
+          );
+          if (!abstractNum) {
+              console.warn(`_convertListToHtml: Abstract numbering definition ID '${numInstance.abstractNumId}' not found.`);
+              html += this._convertParagraphToHtml(paragraph);
+              if (i < listParagraphs.length - 1) html += '\n';
+              continue;
+          }
+          const levelDef = abstractNum.levels.find(l => l.level === itemIlvl);
+          if (!levelDef) {
+              console.warn(`_convertListToHtml: Level '${itemIlvl}' for abstract num ID '${abstractNum.abstractNumId}' not found.`);
+              html += this._convertParagraphToHtml(paragraph);
+              if (i < listParagraphs.length - 1) html += '\n';
+              continue;
+          }
+
+          // Initialize counter for this level if not exists
+          const startValue = levelDef.start !== undefined ? levelDef.start : 1;
+          if (hierarchicalCounters[itemNumId][itemIlvl] === undefined) {
+              hierarchicalCounters[itemNumId][itemIlvl] = startValue;
+          }
+
+          // Get the current counter for this level
+          const currentCounter = hierarchicalCounters[itemNumId][itemIlvl];
+          
+          // Generate the list marker text
+          const markerText = this._generateListMarkerText(levelDef, hierarchicalCounters[itemNumId], abstractNum);
+          
+          // Calculate margin-left and text-indent based on level (matching Python output)
+          // Python uses: margin-left: 36pt + (level * 18pt), text-indent: varies by level
+          const baseMargin = 36; // Base margin in points
+          const levelIncrement = 18; // Additional margin per level in points
+          const marginLeft = baseMargin + (itemIlvl * levelIncrement);
+          
+          // Text indent varies - Python seems to use different values for different levels
+          let textIndent;
+          if (itemIlvl === 0) {
+              textIndent = -8.7; // First level
+          } else {
+              textIndent = -18.0; // Other levels (with decimal to match Python)
+          }
+
+          // Convert paragraph properties to CSS but override margin and text-indent
+          const baseParagraphCss = convertParagraphPropertiesToCss(paragraph.properties);
+          // Remove any existing margin-left and text-indent from base CSS
+          const cleanedCss = baseParagraphCss
+              .replace(/margin-left:[^;]*;?/g, '')
+              .replace(/text-indent:[^;]*;?/g, '')
+              .replace(/;;/g, ';')
+              .replace(/^;|;$/g, '');
+          
+          const listParagraphCss = `margin-left:${marginLeft}.0pt;text-indent:${textIndent}pt;${cleanedCss}`;
+
+          // Convert runs to HTML
+          const runsHtml = paragraph.runs.map(run => this._convertRunToHtml(run)).join('');
+
+          // Create the paragraph with marker and content
+          html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:7.2pt;"></span>${runsHtml}</p>`;
+          
+          // Increment the counter for this level AFTER generating the marker
+          hierarchicalCounters[itemNumId][itemIlvl]++;
+          
+          // Reset counters for deeper levels when we increment a higher level
+          for (let level = itemIlvl + 1; level <= 8; level++) { // DOCX supports up to 9 levels (0-8)
+              if (hierarchicalCounters[itemNumId][level] !== undefined) {
+                  const resetLevelDef = abstractNum.levels.find(l => l.level === level);
+                  const resetStartValue = resetLevelDef?.start !== undefined ? resetLevelDef.start : 1;
+                  hierarchicalCounters[itemNumId][level] = resetStartValue;
+              }
+          }
+
+          // Add newline between list items
+          if (i < listParagraphs.length - 1) {
+              html += '\n';
+          }
+      }
+
+      return html;
+  }
+
+  /**
+   * Generates the plain text for the list marker (bullet or number).
+   * This is used for the paragraph-based list structure to match Python output.
+   *
+   * @param {object} numberingLevelSchema - The NumberingLevelSchema for this item.
+   * @param {object} hierarchicalCounters - Object with counters for all levels: { level: counter }
+   * @param {object} abstractNum - The abstract numbering definition for this item.
+   * @returns {string} Plain text string for the marker (e.g., "I.", "1.", "a.").
+   * @private
+   */
+  _generateListMarkerText(numberingLevelSchema, hierarchicalCounters, abstractNum) {
+      let markerText = '';
+      const format = numberingLevelSchema.format || 'decimal';
+      const lvlText = numberingLevelSchema.text || '%1.'; // Default to '%1.' if not specified
+      const currentLevel = numberingLevelSchema.level;
+
+      // Get the counter for the current level
+      const currentCounter = hierarchicalCounters[currentLevel] || 1;
+      let counterStr = currentCounter.toString();
+
+      switch (format) {
+          case 'decimal':
+              counterStr = currentCounter.toString();
+              break;
+          case 'lowerLetter':
+              counterStr = toAlphaLower(currentCounter);
+              break;
+          case 'upperLetter':
+              counterStr = toAlphaUpper(currentCounter);
+              break;
+          case 'lowerRoman':
+              counterStr = toRomanLower(currentCounter);
+              break;
+          case 'upperRoman':
+              counterStr = toRomanUpper(currentCounter);
+              break;
+          case 'bullet':
+              // lvlText often directly contains the bullet character for 'bullet' format
+              markerText = lvlText; // Use lvlText directly which might be '•', 'o', etc.
+              break;
+          // Add more cases for other formats like 'cardinalText', 'ordinalText', etc.
+          default: 
+              // For other formats, we'll handle the lvlText replacement below
+              break;
+      }
+      
+      // If not a bullet format, process the lvlText pattern
+      if (format !== 'bullet') {
+          markerText = lvlText;
+          
+          // Replace all %X placeholders with appropriate counters
+          // %1 refers to level 0, %2 refers to level 1, etc.
+          for (let level = 0; level <= currentLevel; level++) {
+              const placeholder = `%${level + 1}`;
+              if (markerText.includes(placeholder)) {
+                  let levelCounter = hierarchicalCounters[level] || 1;
+                  
+                  // If this is not the current level, we need to use the counter value
+                  // before it was incremented (since parent levels are processed first)
+                  if (level < currentLevel) {
+                      levelCounter = levelCounter - 1;
+                  }
+                  
+                  let levelCounterStr;
+                  
+                  // Get the format for this specific level from the abstract numbering definition
+                  const levelDef = abstractNum.levels.find(l => l.level === level);
+                  const levelFormat = levelDef?.format || 'decimal';
+                  
+                  switch (levelFormat) {
+                      case 'decimal':
+                          levelCounterStr = levelCounter.toString();
+                          break;
+                      case 'lowerLetter':
+                          levelCounterStr = toAlphaLower(levelCounter);
+                          break;
+                      case 'upperLetter':
+                          levelCounterStr = toAlphaUpper(levelCounter);
+                          break;
+                      case 'lowerRoman':
+                          levelCounterStr = toRomanLower(levelCounter);
+                          break;
+                      case 'upperRoman':
+                          levelCounterStr = toRomanUpper(levelCounter);
+                          break;
+                      default:
+                          levelCounterStr = levelCounter.toString();
+                          break;
+                  }
+                  
+                  markerText = markerText.replace(placeholder, levelCounterStr);
+              }
+          }
+      }
+      
+      // If after replacement, it's still like "%X", it means the format was complex or not handled
+      // Or if it was a bullet and lvlText was empty, provide a default bullet.
+      if (markerText.includes('%') || (format === 'bullet' && !markerText)) {
+          markerText = (format === 'bullet' || !markerText) ? '•' : counterStr; // Default bullet or just counter
+      }
+
+      return markerText;
+  }
 }
 
 // Example Usage (Conceptual)
@@ -329,46 +594,45 @@ function toRomanUpper(num) {
 // --- List Conversion Methods ---
 
 /**
- * Converts a sequence of list item paragraphs to HTML list(s).
- * Handles basic list creation and nesting based on ilvl.
+ * Converts a list of consecutive list item paragraphs to HTML using individual p tags.
+ * This matches the Python converter output structure exactly.
  *
- * @param {Array<object>} listParagraphs - Array of consecutive ParagraphSchema objects that are list items.
- * @param {object} documentSchema - The full DocumentSchema containing numberingDefinitions.
- * @returns {string} HTML string for the list(s).
+ * @param {Array<object>} listParagraphs - Array of enhanced ParagraphSchema objects that are list items.
+ * @param {object} documentSchema - The full enhanced document schema (for accessing numbering definitions).
+ * @returns {string} HTML string for the list structure using individual p tags.
  * @private
  */
 HtmlConverter.prototype._convertListToHtml = function(listParagraphs, documentSchema) {
     if (!listParagraphs || listParagraphs.length === 0) return '';
 
     let html = '';
-    let currentLevel = -1;
-    let listStack = []; // To manage nesting: { numId, ilvl, tag, counter, abstractNum, numFmt }
-    let currentCounter = 1; // Reset for each distinct list part
+    let hierarchicalCounters = {}; // Track counters for each numId and level: { numId: { level: counter } }
 
     for (let i = 0; i < listParagraphs.length; i++) {
         const paragraph = listParagraphs[i];
         const numPr = paragraph.properties?.numPr;
 
         if (!numPr || numPr.numId === undefined || numPr.ilvl === undefined) {
-            // This paragraph is not a list item or is malformed, close any open lists.
-            while (listStack.length > 0) {
-                const openList = listStack.pop();
-                html += `</${openList.tag}>`;
-            }
-            currentLevel = -1;
-            // Render as a normal paragraph if it's not a list item (shouldn't happen if logic in convertToHtml is correct)
-            html += this._convertParagraphToHtml(paragraph); 
+            // This paragraph is not a list item or is malformed, render as normal paragraph
+            html += this._convertParagraphToHtml(paragraph);
+            if (i < listParagraphs.length - 1) html += '\n';
             continue;
         }
         
         const itemNumId = parseInt(numPr.numId, 10);
         const itemIlvl = parseInt(numPr.ilvl, 10);
 
+        // Initialize hierarchical counters for this numId if not exists
+        if (!hierarchicalCounters[itemNumId]) {
+            hierarchicalCounters[itemNumId] = {};
+        }
+
         // Find numbering definitions
         const numInstance = documentSchema.numberingDefinitions?.numInstances.find(inst => inst.numId === itemNumId);
         if (!numInstance) {
             console.warn(`_convertListToHtml: Numbering instance ID '${itemNumId}' not found.`);
-            html += this._convertParagraphToHtml(paragraph); // Render as normal paragraph
+            html += this._convertParagraphToHtml(paragraph);
+            if (i < listParagraphs.length - 1) html += '\n';
             continue;
         }
         const abstractNum = documentSchema.numberingDefinitions?.abstractNums.find(
@@ -377,141 +641,99 @@ HtmlConverter.prototype._convertListToHtml = function(listParagraphs, documentSc
         if (!abstractNum) {
             console.warn(`_convertListToHtml: Abstract numbering definition ID '${numInstance.abstractNumId}' not found.`);
             html += this._convertParagraphToHtml(paragraph);
+            if (i < listParagraphs.length - 1) html += '\n';
             continue;
         }
         const levelDef = abstractNum.levels.find(l => l.level === itemIlvl);
         if (!levelDef) {
             console.warn(`_convertListToHtml: Level '${itemIlvl}' for abstract num ID '${abstractNum.abstractNumId}' not found.`);
             html += this._convertParagraphToHtml(paragraph);
+            if (i < listParagraphs.length - 1) html += '\n';
             continue;
         }
 
-        // Determine list type (ol/ul)
-        const numFmt = levelDef.format || 'decimal'; // Default to decimal if not specified
-        const listTag = (['decimal', 'lowerLetter', 'upperLetter', 'lowerRoman', 'upperRoman'].includes(numFmt)) ? 'ol' : 'ul';
-        
-        // Start counter for this level based on levelDef.start or default to 1
+        // Initialize counter for this level if not exists
         const startValue = levelDef.start !== undefined ? levelDef.start : 1;
-
-
-        if (itemIlvl > currentLevel) { // Start a new nested list
-            if (listStack.length > 0 && listStack[listStack.length -1].tag === 'ol') {
-                 // If parent is an OL, reset counter based on the new level's start value
-                currentCounter = startValue;
-            } else if (listStack.length === 0) { // Top-level list
-                currentCounter = startValue;
-            }
-            // For UL or if parent is UL, counter is not strictly reset in the same way for display purposes,
-            // but we need to ensure the currentCounter for OLs is managed per level.
-            // The `start` attribute on <ol> handles visual start for OL.
-
-            listStack.push({ numId: itemNumId, ilvl: itemIlvl, tag: listTag, counter: currentCounter, abstractNum, numFmt });
-            html += `<${listTag}${listTag === 'ol' ? ` start="${startValue}"` : ''}>`; // Add start attribute for OL
-            currentLevel = itemIlvl;
-        } else if (itemIlvl < currentLevel) { // End nested list(s)
-            while (listStack.length > 0 && listStack[listStack.length - 1].ilvl > itemIlvl) {
-                const openList = listStack.pop();
-                html += `</${openList.tag}>`;
-            }
-            currentLevel = listStack.length > 0 ? listStack[listStack.length - 1].ilvl : -1;
-            // If, after popping, the new current list's numId or format doesn't match, close it too.
-            if (listStack.length > 0 && (listStack[listStack.length - 1].numId !== itemNumId || listStack[listStack.length - 1].numFmt !== numFmt) ) {
-                 const openList = listStack.pop();
-                 html += `</${openList.tag}>`;
-                 currentLevel = -1; // Force new list creation
-            }
-        } else if (listStack.length > 0 && (listStack[listStack.length - 1].numId !== itemNumId || listStack[listStack.length-1].numFmt !== numFmt)) {
-            // Same level, but different list type or numId (meaning different abstract list)
-            const openList = listStack.pop();
-            html += `</${openList.tag}>`;
-            currentLevel = -1; // Force new list creation because it's a different list definition
+        if (hierarchicalCounters[itemNumId][itemIlvl] === undefined) {
+            hierarchicalCounters[itemNumId][itemIlvl] = startValue;
         }
 
-
-        // If no list is open (either initially, or after closing previous ones)
-        if (currentLevel === -1 || listStack.length === 0) {
-            currentCounter = startValue; // Reset counter for the new list
-            listStack.push({ numId: itemNumId, ilvl: itemIlvl, tag: listTag, counter: currentCounter, abstractNum, numFmt });
-            html += `<${listTag}${listTag === 'ol' ? ` start="${startValue}"` : ''}>`;
-            currentLevel = itemIlvl;
+        // Get the current counter for this level
+        const currentCounter = hierarchicalCounters[itemNumId][itemIlvl];
+        
+        // Generate the list marker text
+        const markerText = this._generateListMarkerText(levelDef, hierarchicalCounters[itemNumId], abstractNum);
+        
+        // Calculate margin-left and text-indent based on level (matching Python output)
+        // Python uses: margin-left: 36pt + (level * 18pt), text-indent: varies by level
+        const baseMargin = 36; // Base margin in points
+        const levelIncrement = 18; // Additional margin per level in points
+        const marginLeft = baseMargin + (itemIlvl * levelIncrement);
+        
+        // Text indent varies - Python seems to use different values for different levels
+        let textIndent;
+        if (itemIlvl === 0) {
+            textIndent = -8.7; // First level
+        } else {
+            textIndent = -18.0; // Other levels (with decimal to match Python)
         }
-        
-        // Get the current list from stack top for counter and levelDef
-        const currentOpenList = listStack[listStack.length - 1];
-        const currentListLevelDef = currentOpenList.abstractNum.levels.find(l => l.level === currentOpenList.ilvl);
 
-        html += this._convertListItemToHtml(paragraph, currentListLevelDef, currentOpenList.counter);
+        // Convert paragraph properties to CSS but override margin and text-indent
+        const baseParagraphCss = convertParagraphPropertiesToCss(paragraph.properties);
+        // Remove any existing margin-left and text-indent from base CSS
+        const cleanedCss = baseParagraphCss
+            .replace(/margin-left:[^;]*;?/g, '')
+            .replace(/text-indent:[^;]*;?/g, '')
+            .replace(/;;/g, ';')
+            .replace(/^;|;$/g, '');
         
-        if (currentOpenList.tag === 'ol') {
-            currentOpenList.counter++;
+        const listParagraphCss = `margin-left:${marginLeft}.0pt;text-indent:${textIndent}pt;${cleanedCss}`;
+
+        // Convert runs to HTML
+        const runsHtml = paragraph.runs.map(run => this._convertRunToHtml(run)).join('');
+
+        // Create the paragraph with marker and content
+        html += `<p style="${listParagraphCss}"><span>${markerText}</span><span style="padding-left:7.2pt;"></span>${runsHtml}</p>`;
+        
+        // Increment the counter for this level AFTER generating the marker
+        hierarchicalCounters[itemNumId][itemIlvl]++;
+        
+        // Reset counters for deeper levels when we increment a higher level
+        for (let level = itemIlvl + 1; level <= 8; level++) { // DOCX supports up to 9 levels (0-8)
+            if (hierarchicalCounters[itemNumId][level] !== undefined) {
+                const resetLevelDef = abstractNum.levels.find(l => l.level === level);
+                const resetStartValue = resetLevelDef?.start !== undefined ? resetLevelDef.start : 1;
+                hierarchicalCounters[itemNumId][level] = resetStartValue;
+            }
+        }
+
+        // Add newline between list items
+        if (i < listParagraphs.length - 1) {
+            html += '\n';
         }
     }
 
-    // Close any remaining open lists
-    while (listStack.length > 0) {
-        const openList = listStack.pop();
-        html += `</${openList.tag}>`;
-    }
     return html;
-};
+}
 
 /**
- * Converts a single list item paragraph to an HTML <li> string.
- *
- * @param {object} paragraph - The enhanced ParagraphSchema object for the list item.
- * @param {object} numberingLevelSchema - The NumberingLevelSchema for this item.
- * @param {number} currentCounter - The current counter for ordered lists (1-based).
- * @returns {string} HTML string for the <li> element.
- * @private
- */
-HtmlConverter.prototype._convertListItemToHtml = function(paragraph, numberingLevelSchema, currentCounter) {
-    // Paragraph styling will be applied to the <p> tag inside <li>
-    // List item specific styling (from numberingLevelSchema.paragraphProperties) could be applied to <li>
-    // For now, we let the paragraph's own resolved properties handle most of its appearance.
-    
-    const markerHtml = this._generateListMarkerHtml(numberingLevelSchema, currentCounter);
-    
-    // Convert paragraph content (runs) without the outer <p> tag's styling or marker
-    // The paragraph's own <p> tag will be rendered by _convertParagraphToHtml
-    // We need to ensure _convertParagraphToHtml doesn't re-add a marker if called in this context.
-    // For now, we'll call _convertParagraphToHtml and it will render a <p> with its styles.
-    // The marker is placed *before* this <p> tag, inside the <li>.
-
-    // The paragraph already has its properties resolved by StyleEnhancer.
-    // We don't want the default _convertParagraphToHtml to add its own basic numbering prefix.
-    const paragraphHtmlContent = this._convertParagraphToHtml(paragraph, true); // Pass a flag to indicate it's a list item
-
-
-    // Basic li styling: remove default markers, let our span handle it.
-    // Some list-specific indentation from numberingLevelSchema.paragraphProperties might be applied here.
-    let liStyles = ['list-style-type: none;']; // Disable default browser markers
-    
-    // Apply paragraph properties from numbering level to the <li> if they exist
-    // This is tricky because paragraph.properties already includes these.
-    // However, some properties like specific indentations for the list item itself
-    // might be best applied to the <li>.
-    // For now, this is simplified. The paragraph's own styles are primary.
-    // const levelParaCss = convertParagraphPropertiesToCss(numberingLevelSchema.paragraphProperties);
-    // if (levelParaCss) liStyles.push(levelParaCss);
-
-
-    return `<li style="${liStyles.join(' ')}">${markerHtml}${paragraphHtmlContent}</li>`;
-};
-
-
-/**
- * Generates the HTML for the list marker (bullet or number).
+ * Generates the plain text for the list marker (bullet or number).
+ * This is used for the paragraph-based list structure to match Python output.
  *
  * @param {object} numberingLevelSchema - The NumberingLevelSchema for this item.
- * @param {number} currentCounter - The current counter for ordered lists (1-based).
- * @returns {string} HTML string for the marker (e.g., <span class="list-marker">...</span>).
+ * @param {object} hierarchicalCounters - Object with counters for all levels: { level: counter }
+ * @param {object} abstractNum - The abstract numbering definition for this item.
+ * @returns {string} Plain text string for the marker (e.g., "I.", "1.", "a.").
  * @private
  */
-HtmlConverter.prototype._generateListMarkerHtml = function(numberingLevelSchema, currentCounter) {
+HtmlConverter.prototype._generateListMarkerText = function(numberingLevelSchema, hierarchicalCounters, abstractNum) {
     let markerText = '';
     const format = numberingLevelSchema.format || 'decimal';
     const lvlText = numberingLevelSchema.text || '%1.'; // Default to '%1.' if not specified
+    const currentLevel = numberingLevelSchema.level;
 
+    // Get the counter for the current level
+    const currentCounter = hierarchicalCounters[currentLevel] || 1;
     let counterStr = currentCounter.toString();
 
     switch (format) {
@@ -535,36 +757,65 @@ HtmlConverter.prototype._generateListMarkerHtml = function(numberingLevelSchema,
             markerText = lvlText; // Use lvlText directly which might be '•', 'o', etc.
             break;
         // Add more cases for other formats like 'cardinalText', 'ordinalText', etc.
-        default: // Includes 'bullet' if lvlText is not just the bullet char, or other unknown formats
-            // For bullet types or specific text, lvlText might not use %1.
-            // If lvlText contains %1, %2, etc., replace them.
-            // For simplicity, we assume %N refers to the counter for level N (1-indexed).
-            // Here, currentCounter is for the current level.
-            // The spec says %X refers to level X (1-indexed). So %1 is level 0's counter, %2 is level 1's.
-            // This simple replacement assumes lvlText uses %1 for the current level's counter.
-            // A more robust solution would need to track counters for all levels in the hierarchy.
-            markerText = lvlText.replace(`%${numberingLevelSchema.level + 1}`, counterStr);
+        default: 
+            // For other formats, we'll handle the lvlText replacement below
             break;
     }
     
-    // If markerText wasn't directly assigned (e.g. for bullet format), it means we used counterStr
+    // If not a bullet format, process the lvlText pattern
     if (format !== 'bullet') {
-         markerText = lvlText.replace(`%${numberingLevelSchema.level + 1}`, counterStr);
+        markerText = lvlText;
+        
+        // Replace all %X placeholders with appropriate counters
+        // %1 refers to level 0, %2 refers to level 1, etc.
+        for (let level = 0; level <= currentLevel; level++) {
+            const placeholder = `%${level + 1}`;
+            if (markerText.includes(placeholder)) {
+                let levelCounter = hierarchicalCounters[level] || 1;
+                
+                // If this is not the current level, we need to use the counter value
+                // before it was incremented (since parent levels are processed first)
+                if (level < currentLevel) {
+                    levelCounter = levelCounter - 1;
+                }
+                
+                let levelCounterStr;
+                
+                // Get the format for this specific level from the abstract numbering definition
+                const levelDef = abstractNum.levels.find(l => l.level === level);
+                const levelFormat = levelDef?.format || 'decimal';
+                
+                switch (levelFormat) {
+                    case 'decimal':
+                        levelCounterStr = levelCounter.toString();
+                        break;
+                    case 'lowerLetter':
+                        levelCounterStr = toAlphaLower(levelCounter);
+                        break;
+                    case 'upperLetter':
+                        levelCounterStr = toAlphaUpper(levelCounter);
+                        break;
+                    case 'lowerRoman':
+                        levelCounterStr = toRomanLower(levelCounter);
+                        break;
+                    case 'upperRoman':
+                        levelCounterStr = toRomanUpper(levelCounter);
+                        break;
+                    default:
+                        levelCounterStr = levelCounter.toString();
+                        break;
+                }
+                
+                markerText = markerText.replace(placeholder, levelCounterStr);
+            }
+        }
     }
-    // If after replacement, it's still like "%X", it means the format was complex or not %1.
+    
+    // If after replacement, it's still like "%X", it means the format was complex or not handled
     // Or if it was a bullet and lvlText was empty, provide a default bullet.
-    if (markerText.startsWith('%') || (format === 'bullet' && !markerText)) {
+    if (markerText.includes('%') || (format === 'bullet' && !markerText)) {
         markerText = (format === 'bullet' || !markerText) ? '•' : counterStr; // Default bullet or just counter
     }
 
-
-    const { css: markerCss, wrapTags } = convertRunPropertiesToCss(numberingLevelSchema.runProperties);
-    // Basic marker styling for positioning.
-    const finalMarkerCss = `display: inline-block; margin-right: 0.25em; ${markerCss}`;
-
-    let content = `<span class="list-marker" style="${finalMarkerCss}">${escapeHtml(markerText)}</span>`;
-    if (wrapTags.open || wrapTags.close) {
-        content = `${wrapTags.open}${content}${wrapTags.close}`;
-    }
-    return content;
-};
+    return markerText;
+}

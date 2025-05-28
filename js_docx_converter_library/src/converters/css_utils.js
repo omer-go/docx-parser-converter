@@ -10,13 +10,13 @@ const TWIPS_PER_POINT = 20;
 /**
  * Formats a value as points.
  * @param {number} value - The value in points.
- * @returns {string} The value formatted as "Xpt".
+ * @returns {string} The value formatted as "X.0pt" to match Python format.
  */
 export function formatPoints(value) {
   if (typeof value !== 'number' || isNaN(value)) {
     return null;
   }
-  return `${value}pt`;
+  return `${value.toFixed(1)}pt`;
 }
 
 /**
@@ -40,23 +40,23 @@ export function convertParagraphPropertiesToCss(properties) {
       distribute: 'justify', // Often similar to justify
     };
     if (textAlignMap[properties.jc]) {
-      styles.push(`text-align: ${textAlignMap[properties.jc]};`);
+      styles.push(`text-align:${textAlignMap[properties.jc]};`);
     }
   }
 
   // Indentation (assuming values in properties.ind are in twips)
   if (properties.ind) {
     if (properties.ind.left?.val) { // w:left or w:start
-        styles.push(`margin-left: ${formatPoints(properties.ind.left.val / TWIPS_PER_POINT)};`);
+        styles.push(`margin-left:${formatPoints(properties.ind.left.val / TWIPS_PER_POINT)};`);
     }
     if (properties.ind.right?.val) { // w:right or w:end
-        styles.push(`margin-right: ${formatPoints(properties.ind.right.val / TWIPS_PER_POINT)};`);
+        styles.push(`margin-right:${formatPoints(properties.ind.right.val / TWIPS_PER_POINT)};`);
     }
     if (properties.ind.firstLine?.val) {
-        styles.push(`text-indent: ${formatPoints(properties.ind.firstLine.val / TWIPS_PER_POINT)};`);
+        styles.push(`text-indent:${formatPoints(properties.ind.firstLine.val / TWIPS_PER_POINT)};`);
     } else if (properties.ind.hanging?.val) {
         // Negative text-indent for hanging indent if no firstLine is specified
-        styles.push(`text-indent: -${formatPoints(properties.ind.hanging.val / TWIPS_PER_POINT)};`);
+        styles.push(`text-indent:-${formatPoints(properties.ind.hanging.val / TWIPS_PER_POINT)};`);
         // Hanging indent also implies the margin-left should accommodate the hang
         // This might require more complex logic if left indentation is also present.
         // For now, assuming simple hanging or left. If both, text-indent works relative to margin-left.
@@ -66,10 +66,10 @@ export function convertParagraphPropertiesToCss(properties) {
   // Spacing (assuming values in properties.spacing are in twips)
   if (properties.spacing) {
     if (properties.spacing.before?.val) {
-      styles.push(`margin-top: ${formatPoints(properties.spacing.before.val / TWIPS_PER_POINT)};`);
+      styles.push(`margin-top:${formatPoints(properties.spacing.before.val / TWIPS_PER_POINT)};`);
     }
     if (properties.spacing.after?.val) {
-      styles.push(`margin-bottom: ${formatPoints(properties.spacing.after.val / TWIPS_PER_POINT)};`);
+      styles.push(`margin-bottom:${formatPoints(properties.spacing.after.val / TWIPS_PER_POINT)};`);
     }
     if (properties.spacing.line?.val) {
       // lineRule: 'auto' (default, typically 1.0 to 1.2), 'exact' (value is exact), 'atLeast' (minimum)
@@ -80,11 +80,11 @@ export function convertParagraphPropertiesToCss(properties) {
       const lineValue = properties.spacing.line.val;
       if (properties.spacing.lineRule && ['exact', 'atLeast'].includes(properties.spacing.lineRule)) {
          // Value is in twips, convert to points for absolute line height
-        styles.push(`line-height: ${formatPoints(lineValue / TWIPS_PER_POINT)};`);
+        styles.push(`line-height:${formatPoints(lineValue / TWIPS_PER_POINT)};`);
       } else { // 'auto' or no lineRule, or large value likely representing 240 units per line
         // Assuming standard line height units (e.g., 240 = single spacing)
         // Convert to a relative line-height value. 240 is standard single.
-        styles.push(`line-height: ${ (lineValue / 240).toFixed(2) };`);
+        styles.push(`line-height:${ (lineValue / 240).toFixed(2) };`);
       }
     }
   }
@@ -95,7 +95,7 @@ export function convertParagraphPropertiesToCss(properties) {
     // Example: check for a 'top' border, then get its 'val', 'sz', 'color'.
     // For now, just a generic border if pBdr is present and not empty.
     if (properties.pBdr.top || properties.pBdr.bottom || properties.pBdr.left || properties.pBdr.right) {
-        styles.push('border: 1px solid #000000;'); // Placeholder
+        styles.push('border:1px solid #000000;'); // Placeholder
     }
   }
 
@@ -107,8 +107,7 @@ export function convertParagraphPropertiesToCss(properties) {
     styles.push(`background-color: #${properties.shd.fill};`);
   }
 
-
-  return styles.join(' ');
+  return styles.join('');
 }
 
 /**
@@ -121,45 +120,59 @@ export function convertRunPropertiesToCss(properties) {
   const styles = [];
   const wrapTags = { open: '', close: '' };
 
-
-  // Font size (sz is in half-points)
-  if (properties.sz?.val) {
-    styles.push(`font-size: ${formatPoints(properties.sz.val / 2)};`);
+  // Bold
+  if (properties.b === true) { // OnOffSchema ensures this is boolean
+    styles.push('font-weight:bold;');
   }
-
-  // Color
-  if (properties.color?.val && properties.color.val !== 'auto') {
-    // Ensure it's a hex color. 'auto' usually means black or theme-dependent.
-    // Theme color processing would be more complex.
-    styles.push(`color: #${properties.color.val};`);
+  
+  // Color - match Python format exactly
+  if (properties.color?.val) {
+    if (properties.color.val === 'auto') {
+      styles.push('color:auto;');
+    } else {
+      // Remove # prefix to match Python format
+      const colorValue = properties.color.val.replace(/^#/, '');
+      styles.push(`color:${colorValue};`);
+    }
+  } else {
+    // Add default color:auto when no color is specified (to match Python)
+    styles.push('color:auto;');
   }
 
   // Font family
   if (properties.rFonts) {
     const font = properties.rFonts.ascii || properties.rFonts.hAnsi || properties.rFonts.eastAsia || properties.rFonts.cs;
     if (font) {
-      // Basic font family name, might need escaping or quotes if it contains spaces.
-      // For simplicity, assuming simple font names.
-      styles.push(`font-family: "${font}";`);
+      // Match Python format exactly - no quotes around font name
+      styles.push(`font-family:${font};`);
     }
+  } else {
+    // Add default font family when none is specified (to match Python)
+    styles.push('font-family:Liberation Serif;');
   }
-  
-  // Bold
-  if (properties.b === true) { // OnOffSchema ensures this is boolean
-    styles.push('font-weight: bold;');
+
+  // Font size (sz is in half-points) - add default if not specified
+  if (properties.sz?.val) {
+    styles.push(`font-size:${(properties.sz.val / 2).toFixed(1)}pt;`);
+  } else {
+    // Add default font size to match Python (12.0pt)
+    styles.push('font-size:12.0pt;');
   }
+
   // Italic
   if (properties.i === true) {
-    styles.push('font-style: italic;');
+    styles.push('font-style:italic;');
   }
+  
   // Underline
   if (properties.u && properties.u !== 'none') { // 'none' or other complex types
     // Simple underline for now. Complex underline types (double, dotted) are possible.
-    styles.push('text-decoration: underline;');
+    styles.push('text-decoration:underline;');
   }
+  
   // Strikethrough
   if (properties.strike === true || properties.dstrike === true) {
-    styles.push('text-decoration: line-through;'); // CSS combines strike and dstrike
+    styles.push('text-decoration:line-through;'); // CSS combines strike and dstrike
   }
 
   // Vertical alignment (superscript/subscript)
@@ -182,7 +195,7 @@ export function convertRunPropertiesToCss(properties) {
     styles.push(`background-color: ${properties.highlight};`);
   }
 
-  return { css: styles.join(' '), wrapTags };
+  return { css: styles.join(''), wrapTags };
 }
 
 /**

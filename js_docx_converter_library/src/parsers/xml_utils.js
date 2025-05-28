@@ -1,6 +1,7 @@
 // Import necessary libraries
 import JSZip from 'jszip';
-import { DOMParser, QuerySelector } from 'xmldom-qsa';
+import pkg from 'xmldom-qsa';
+const { DOMParser, QuerySelector } = pkg;
 
 /**
  * Extracts the root XML element from a DOCX file.
@@ -42,12 +43,9 @@ export function getElement(node, tagName) {
   if (!node || typeof node.getElementsByTagName !== 'function') {
     return null;
   }
-  // XML elements in DOCX often have namespaces (e.g., "w:p").
-  // querySelector can handle this directly.
-  // For simplicity, we'll assume tagName can include the prefix.
-  // A more robust solution might involve namespace registration if issues arise.
-  const qsa = new QuerySelector(node.ownerDocument || node); // Ensure QuerySelector is initialized with the document
-  return qsa.querySelector(`${tagName}`, node);
+  // Use standard DOM getElementsByTagName method
+  const elements = node.getElementsByTagName(tagName);
+  return elements.length > 0 ? elements[0] : null;
 }
 
 /**

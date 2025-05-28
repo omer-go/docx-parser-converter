@@ -293,7 +293,14 @@ export class TextConverter {
         const placeholder = `%${i + 1}`;
         if (lvlTextFormat.includes(placeholder)) {
             const levelDefForPlaceholder = abstractNumSchema.levels.find(l => l.level === i);
-            const counterForLevel = levelCounters[i] !== undefined ? levelCounters[i] : (levelDefForPlaceholder?.start || 1);
+            let counterForLevel = levelCounters[i] !== undefined ? levelCounters[i] : (levelDefForPlaceholder?.start || 1);
+            
+            // If this is not the current level, we need to use the counter value
+            // before it was incremented (since parent levels are processed first)
+            if (i < numberingLevelSchema.level) {
+                counterForLevel = counterForLevel - 1;
+            }
+            
             let counterStrSegment = counterForLevel.toString();
 
             // Use the format defined for *that specific level* (level 'i')
