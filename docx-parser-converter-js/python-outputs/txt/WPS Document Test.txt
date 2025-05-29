@@ -1,0 +1,35 @@
+WPS Document Test
+
+18. Numbering #1 - the number 1. 
+19. Numbering #2 - the number 2. 
+	a) Numbering #3 - the letter a) 
+	b) The letter b)
+	c) The letter c)
+	   i. The roman letter i.
+	   ii. The roman letter ii.
+	   iii. The roman letter iii.
+		 1. The number 1.
+		   a) The letter a)
+•
+•
+  13. New numbering - the number 1.
+  14. The number 2.
+	14.1. The number 2.1.
+	14.2. The number 2.2.
+	   14.2.1. The number 2.2.1.
+		 14.2.1.1. The number 2.2.1.1.
+	   14.2.2. The number 2.2.2.
+	   14.2.3. The number 2.2.3.
+		 14.2.3.1. The number 2.2.3.1.
+	14.3. The number 2.3.
+  15. The number 3.
+•
+•
+•Table Check (5X4)
+•
+
+•First cell | • | • | •Italic Cell | • | •
+• | • | • | • | • | •
+• | •Blue Font | • | • | •Another Cell | •
+• | • | •Large Font | • | •Bold Cell | •
+•

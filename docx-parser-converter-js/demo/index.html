@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX Parser Converter - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .file-input-area {
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-area:hover {
+            border-color: #764ba2;
+            background-color: #f8f9ff;
+        }
+
+        .file-input-area.dragover {
+            border-color: #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            min-height: 300px;
+            padding: 20px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .output-area {
+            width: 100%;
+            min-height: 250px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: vertical;
+            background: #f8f9fa;
+        }
+
+        .metadata {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .metadata h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .metadata-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .demo-card {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 DOCX Parser Converter</h1>
+            <p>High-performance TypeScript library for converting DOCX documents to HTML and TXT</p>
+        </div>
+
+        <div class="demo-card">
+            <div class="file-input-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📤</div>
+                <h3>Choose or drag a DOCX file</h3>
+                <p>Select a .docx file to see the conversion in action</p>
+                <input type="file" id="fileInput" accept=".docx" />
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="parseBtn" disabled>
+                    <span id="parseLoading" class="loading" style="display: none;"></span>
+                    Parse Structure
+                </button>
+                <button class="btn btn-primary" id="htmlBtn" disabled>
+                    <span id="htmlLoading" class="loading" style="display: none;"></span>
+                    Convert to HTML
+                </button>
+                <button class="btn btn-primary" id="txtBtn" disabled>
+                    <span id="txtLoading" class="loading" style="display: none;"></span>
+                    Convert to Text
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+            </div>
+
+            <div id="statusArea"></div>
+
+            <div class="output-section" id="outputSection" style="display: none;">
+                <div class="output-tabs">
+                    <button class="tab active" data-tab="structure">Document Structure</button>
+                    <button class="tab" data-tab="html">HTML Output</button>
+                    <button class="tab" data-tab="text">Text Output</button>
+                    <button class="tab" data-tab="metadata">Metadata</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="tab-panel active" id="structure">
+                        <h4>Document Structure</h4>
+                        <textarea class="output-area" id="structureOutput" readonly placeholder="Document structure will appear here..."></textarea>
+                    </div>
+                    
+                    <div class="tab-panel" id="html">
+                        <h4>HTML Output</h4>
+                        <textarea class="output-area" id="htmlOutput" readonly placeholder="HTML output will appear here..."></textarea>
+                        <h4 style="margin-top: 20px;">CSS Styles</h4>
+                        <textarea class="output-area" id="cssOutput" readonly placeholder="CSS styles will appear here..."></textarea>
+                    </div>
+                    
+                    <div class="tab-panel" id="text">
+                        <h4>Plain Text Output</h4>
+                        <textarea class="output-area" id="textOutput" readonly placeholder="Plain text output will appear here..."></textarea>
+                    </div>
+                    
+                    <div class="tab-panel" id="metadata">
+                        <div id="metadataOutput">
+                            <p>Metadata will appear here after conversion...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>High Performance</h3>
+                <p>Optimized for speed and efficiency in browser environments</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>TypeScript</h3>
+                <p>Built with strict TypeScript for maximum reliability</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Rich Formatting</h3>
+                <p>Preserves styles, tables, and document structure</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Browser Ready</h3>
+                <p>No server required - runs entirely in the browser</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // This would normally import the built library
+        // For demo purposes, we'll simulate the API
+        console.log('DOCX Parser Converter Demo');
+        
+        class DemoConverter {
+            static getInstance() {
+                if (!this.instance) {
+                    this.instance = new DemoConverter();
+                }
+                return this.instance;
+            }
+            
+            getVersion() {
+                return '1.0.0';
+            }
+            
+            getName() {
+                return 'docx-parser-converter-js';
+            }
+            
+            async parseDocument(file) {
+                // Simulate parsing delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                return {
+                    success: Math.random() > 0.3, // 70% success rate for demo
+                    data: {
+                        elements: ['paragraph1', 'table1', 'paragraph2'],
+                        doc_margins: { top: 72, bottom: 72, left: 72, right: 72 }
+                    },
+                    errors: Math.random() > 0.7 ? ['Sample parsing error'] : [],
+                    warnings: ['Sample warning: Some formatting may not be preserved'],
+                };
+            }
+            
+            async convertToHtml(file, options = {}) {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                return {
+                    html: `<div class="docx-document">
+                        <h1>Sample Document</h1>
+                        <p>This is a sample paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
+                        <table>
+                            <tr><td>Cell 1</td><td>Cell 2</td></tr>
+                            <tr><td>Data 1</td><td>Data 2</td></tr>
+                        </table>
+                        <p>Another paragraph with some content.</p>
+                    </div>`,
+                    css: `.docx-document { font-family: Arial, sans-serif; }
+                    .docx-document h1 { color: #333; margin-bottom: 20px; }
+                    .docx-document p { margin-bottom: 15px; line-height: 1.6; }
+                    .docx-document table { border-collapse: collapse; width: 100%; }
+                    .docx-document td { border: 1px solid #ccc; padding: 8px; }`,
+                    warnings: ['Demo warning: This is simulated output'],
+                    metadata: {
+                        paragraphCount: 2,
+                        tableCount: 1,
+                        totalElements: 3,
+                        processingTime: 1500,
+                    }
+                };
+            }
+            
+            async convertToTxt(file, options = {}) {
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                
+                return {
+                    text: `Sample Document
+
+This is a sample paragraph with bold and italic text.
+
++--------+--------+
+| Cell 1 | Cell 2 |
++--------+--------+
+| Data 1 | Data 2 |
++--------+--------+
+
+Another paragraph with some content.`,
+                    warnings: ['Demo warning: This is simulated output'],
+                    metadata: {
+                        paragraphCount: 2,
+                        tableCount: 1,
+                        totalElements: 3,
+                        lineCount: 12,
+                        characterCount: 150,
+                        processingTime: 1200,
+                    }
+                };
+            }
+        }
+        
+        // Initialize demo
+        const converter = DemoConverter.getInstance();
+        let currentFile = null;
+        
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const fileInputArea = document.querySelector('.file-input-area');
+        const parseBtn = document.getElementById('parseBtn');
+        const htmlBtn = document.getElementById('htmlBtn');
+        const txtBtn = document.getElementById('txtBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusArea = document.getElementById('statusArea');
+        const outputSection = document.getElementById('outputSection');
+        
+        // Tab handling
+        const tabs = document.querySelectorAll('.tab');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // File selection
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // Drag and drop
+        fileInputArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileInputArea.classList.add('dragover');
+        });
+        
+        fileInputArea.addEventListener('dragleave', () => {
+            fileInputArea.classList.remove('dragover');
+        });
+        
+        fileInputArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInputArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ target: { files } });
+            }
+        });
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!file.name.toLowerCase().endsWith('.docx')) {
+                showStatus('Please select a .docx file', 'error');
+                return;
+            }
+            
+            currentFile = file;
+            fileInputArea.innerHTML = `
+                <div class="upload-icon">📄</div>
+                <h3>${file.name}</h3>
+                <p>Size: ${(file.size / 1024).toFixed(2)} KB</p>
+            `;
+            
+            parseBtn.disabled = false;
+            htmlBtn.disabled = false;
+            txtBtn.disabled = false;
+            
+            showStatus(`File "${file.name}" selected successfully`, 'success');
+        }
+        
+        // Button handlers
+        parseBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+            
+            setLoading('parseLoading', true);
+            parseBtn.disabled = true;
+            
+            try {
+                const result = await converter.parseDocument(currentFile);
+                
+                if (result.success) {
+                    document.getElementById('structureOutput').value = JSON.stringify(result.data, null, 2);
+                    showStatus('Document parsed successfully', 'success');
+                    outputSection.style.display = 'block';
+                    
+                    if (result.warnings.length > 0) {
+                        showStatus(`Warnings: ${result.warnings.join(', ')}`, 'warning');
+                    }
+                } else {
+                    showStatus(`Parsing failed: ${result.errors.join(', ')}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                setLoading('parseLoading', false);
+                parseBtn.disabled = false;
+            }
+        });
+        
+        htmlBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+            
+            setLoading('htmlLoading', true);
+            htmlBtn.disabled = true;
+            
+            try {
+                const result = await converter.convertToHtml(currentFile, {
+                    preserveStructure: true,
+                    includeDebugComments: false,
+                });
+                
+                document.getElementById('htmlOutput').value = result.html;
+                document.getElementById('cssOutput').value = result.css;
+                updateMetadata(result.metadata, 'HTML');
+                
+                showStatus('HTML conversion completed', 'success');
+                outputSection.style.display = 'block';
+                
+                // Switch to HTML tab
+                document.querySelector('.tab[data-tab="html"]').click();
+                
+            } catch (error) {
+                showStatus(`HTML conversion failed: ${error.message}`, 'error');
+            } finally {
+                setLoading('htmlLoading', false);
+                htmlBtn.disabled = false;
+            }
+        });
+        
+        txtBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+            
+            setLoading('txtLoading', true);
+            txtBtn.disabled = true;
+            
+            try {
+                const result = await converter.convertToTxt(currentFile, {
+                    preserveFormatting: true,
+                    includeHeadingMarkers: true,
+                    preserveTableStructure: true,
+                });
+                
+                document.getElementById('textOutput').value = result.text;
+                updateMetadata(result.metadata, 'TXT');
+                
+                showStatus('Text conversion completed', 'success');
+                outputSection.style.display = 'block';
+                
+                // Switch to text tab
+                document.querySelector('.tab[data-tab="text"]').click();
+                
+            } catch (error) {
+                showStatus(`Text conversion failed: ${error.message}`, 'error');
+            } finally {
+                setLoading('txtLoading', false);
+                txtBtn.disabled = false;
+            }
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            currentFile = null;
+            fileInput.value = '';
+            fileInputArea.innerHTML = `
+                <div class="upload-icon">📤</div>
+                <h3>Choose or drag a DOCX file</h3>
+                <p>Select a .docx file to see the conversion in action</p>
+            `;
+            
+            parseBtn.disabled = true;
+            htmlBtn.disabled = true;
+            txtBtn.disabled = true;
+            
+            outputSection.style.display = 'none';
+            statusArea.innerHTML = '';
+            
+            // Clear outputs
+            document.getElementById('structureOutput').value = '';
+            document.getElementById('htmlOutput').value = '';
+            document.getElementById('cssOutput').value = '';
+            document.getElementById('textOutput').value = '';
+            document.getElementById('metadataOutput').innerHTML = '<p>Metadata will appear here after conversion...</p>';
+        });
+        
+        function setLoading(elementId, show) {
+            const element = document.getElementById(elementId);
+            element.style.display = show ? 'inline-block' : 'none';
+        }
+        
+        function showStatus(message, type) {
+            statusArea.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function updateMetadata(metadata, type) {
+            const metadataDiv = document.getElementById('metadataOutput');
+            metadataDiv.innerHTML = `
+                <h4>${type} Conversion Metadata</h4>
+                <div class="metadata-grid">
+                    <div class="metadata-item">
+                        <strong>Paragraphs:</strong> ${metadata.paragraphCount}
+                    </div>
+                    <div class="metadata-item">
+                        <strong>Tables:</strong> ${metadata.tableCount}
+                    </div>
+                    <div class="metadata-item">
+                        <strong>Total Elements:</strong> ${metadata.totalElements}
+                    </div>
+                    <div class="metadata-item">
+                        <strong>Processing Time:</strong> ${metadata.processingTime}ms
+                    </div>
+                    ${metadata.lineCount ? `
+                        <div class="metadata-item">
+                            <strong>Lines:</strong> ${metadata.lineCount}
+                        </div>
+                        <div class="metadata-item">
+                            <strong>Characters:</strong> ${metadata.characterCount}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Show library info
+        console.log(`${converter.getName()} v${converter.getVersion()}`);
+        console.log('Demo loaded successfully!');
+    </script>
+</body>
+</html> 
