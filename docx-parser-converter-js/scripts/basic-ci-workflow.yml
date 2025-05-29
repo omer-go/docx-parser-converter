@@ -1,0 +1,47 @@
+# Basic GitHub Actions Workflow for docx-parser-converter-js
+#
+# To use this:
+# 1. Create a directory in your project root: .github/workflows/
+# 2. Copy this content into a file like .github/workflows/ci.yml
+# 3. Ensure you have the necessary npm scripts in your package.json:
+#    "lint": "eslint . --ext .ts",
+#    "build": "vite build",
+#    "test": "vitest run"
+
+name: Basic CI
+
+on:
+  push:
+    branches: [ main ] # Or your default branch
+  pull_request:
+    branches: [ main ] # Or your default branch
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x] # Test on multiple Node.js versions
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3 # Checks out your repository under $GITHUB_WORKSPACE
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm' # Cache npm dependencies
+
+    - name: Install dependencies
+      run: npm ci # Use 'ci' for cleaner installs in CI environments
+
+    - name: Lint code
+      run: npm run lint # Assumes 'lint' script is defined in package.json
+
+    - name: Build project
+      run: npm run build # Assumes 'build' script is defined in package.json
+
+    - name: Run tests
+      run: npm run test # Assumes 'test' script is defined in package.json

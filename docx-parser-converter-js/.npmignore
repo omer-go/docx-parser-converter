@@ -1,0 +1,24 @@
+# Source files
+src/
+test/
+
+# Config files
+vite.config.ts
+vitest.config.ts
+tsconfig.json
+.eslintrc.js
+.prettierrc.js
+.gitignore
+
+# CI/CD
+.github/
+
+# Documentation
+docs/
+examples/
+
+# Scripts
+scripts/
+
+# Other
+*.log
