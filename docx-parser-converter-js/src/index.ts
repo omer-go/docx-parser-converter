@@ -7,17 +7,24 @@
  * @license MIT
  */
 
+import { extractMainDocumentXml } from './utils/file-utils';
+import type { DocumentSchema } from './models/document-models';
+import { DocumentParser } from './parsers/document/document-parser';
+// Import converters and types for non-worker path and method signatures
+import { DocxToHtmlConverter, type HtmlConversionOptions, type HtmlConversionResult } from './converters/html/index';
+import { DocxToTxtConverter, type TxtConversionOptions, type TxtConversionResult } from './converters/txt/index';
+
 // Export all constants
-export * from './constants/index.js';
+export * from './constants/index';
 
 // Export all utilities
-export * from './utils/index.js';
+export * from './utils/index';
 
 // Export models (Phase 2 complete)
-export * from './models/index.js';
+export * from './models/index';
 
 // Export parsers (Phase 3 - basic implementation)
-export * from './parsers/index.js';
+export * from './parsers/index';
 
 // Export converters (Phase 7 HTML & Phase 8 TXT complete)
 export { 
@@ -26,22 +33,17 @@ export {
   DocxProcessor as HtmlDocxProcessor,
   type HtmlConversionOptions,
   type HtmlConversionResult
-} from './converters/html/index.js';
+} from './converters/html/index';
 export { 
   DocxToTxtConverter, 
   TxtGenerator, 
   DocxProcessor as TxtDocxProcessor,
   type TxtConversionOptions,
   type TxtConversionResult
-} from './converters/txt/index.js';
+} from './converters/txt/index';
 
 // Export worker manager and types
-export { WorkerManager, type ProgressCallback } from './utils/worker-manager.js';
-
-// Export simplified parsers and converters
-export { SimpleDocumentParser } from './parsers/simple-document-parser.js';
-export { SimpleHtmlConverter } from './converters/simple-html-converter.js';
-export { SimpleTxtConverter } from './converters/simple-txt-converter.js';
+export { WorkerManager, type ProgressCallback } from './utils/worker-manager';
 
 /**
  * Library version
@@ -111,7 +113,7 @@ export interface ProgressEvent {
  */
 export class DocxParserConverter {
   private static instance: DocxParserConverter;
-  private workerManager: import('./utils/worker-manager.js').WorkerManager | undefined;
+  private workerManager: import('./utils/worker-manager').WorkerManager | undefined;
   private config: LibraryConfig;
   private performanceMetrics: PerformanceMetrics = {
     memoryUsage: 0,
@@ -147,14 +149,31 @@ export class DocxParserConverter {
    * @returns Promise that resolves when initialization is complete
    */
   public async initialize(): Promise<void> {
-    if (this.config.useWebWorkers && !this.workerManager) {
-      const { WorkerManager } = await import('./utils/worker-manager.js');
-      this.workerManager = new WorkerManager({
-        maxWorkers: this.config.maxWorkers,
-        workerTimeout: this.config.workerTimeout,
-        enableProgressReporting: this.config.enableProgressReporting,
-      });
-      await this.workerManager.initialize();
+    if (this.config.useWebWorkers) {
+      if (!this.workerManager) {
+        const { WorkerManager } = await import('./utils/worker-manager');
+        this.workerManager = new WorkerManager({
+          maxWorkers: this.config.maxWorkers,
+          workerTimeout: this.config.workerTimeout,
+          enableProgressReporting: this.config.enableProgressReporting,
+        });
+      }
+      try {
+        await this.workerManager.initialize(); // Attempt to initialize its internal workers
+        console.log('WorkerManager initialized successfully internally.');
+      } catch (error) {
+        console.warn('WorkerManager internal initialization failed. Falling back to non-worker mode.', error);
+        if (this.workerManager) {
+            this.workerManager.terminate(); // Clean up partially initialized manager
+        }
+        this.workerManager = undefined; // Unset workerManager so other methods fall back
+        this.config.useWebWorkers = false; // Explicitly disable worker use in config
+      }
+    } else { // If config.useWebWorkers is false initially or set to false due to init failure
+      if (this.workerManager) {
+        this.workerManager.terminate();
+        this.workerManager = undefined;
+      }
     }
   }
 
@@ -212,74 +231,62 @@ export class DocxParserConverter {
    */
   public async parseDocument(
     docxFile: File,
-    progressCallback?: import('./utils/worker-manager.js').ProgressCallback
+    progressCallback?: import('./utils/worker-manager').ProgressCallback
   ): Promise<DocumentParseResult> {
     const startTime = performance.now();
+    let result: DocumentParseResult;
 
     try {
-      await this.initialize();
-
-      if (progressCallback) {
-        progressCallback(0, 'Starting document parsing...');
-      }
-
-      const { fileToArrayBuffer, extractXMLFromDocx } = await import('./utils/file-utils.js');
-
-      // Convert file to ArrayBuffer
-      const arrayBuffer = await fileToArrayBuffer(docxFile);
-      
-      if (progressCallback) {
-        progressCallback(20, 'Extracting XML content...');
-      }
-
-      // Extract document.xml
-      const documentXml = await extractXMLFromDocx(arrayBuffer, 'document.xml');
-
-      if (progressCallback) {
-        progressCallback(40, 'Parsing document structure...');
-      }
-
-      let result;
-
-      // Use Web Worker if available and enabled
       if (this.config.useWebWorkers && this.workerManager) {
-        result = await this.workerManager.parseDocument(
-          documentXml,
+        if (progressCallback) progressCallback(0, 'Reading DOCX file...');
+        const xmlData = await extractMainDocumentXml(docxFile);
+        if (progressCallback) progressCallback(20, 'Starting worker parsing...');
+
+        const documentSchema: DocumentSchema = await this.workerManager.parseDocument(
+          xmlData,
           'document',
-          undefined,
-          progressCallback
+          {},
+          (workerProgress, details) => {
+            if (progressCallback) progressCallback(20 + workerProgress * 0.8, details);
+          }
         );
+        result = { success: true, data: documentSchema, errors: [], warnings: [] };
+        if (progressCallback) progressCallback(100, 'Worker parsing complete.');
+
       } else {
-        // Fallback to main thread
-        const { DocumentParser } = await import('./parsers/document/document-parser.js');
-        const parser = new DocumentParser();
-        const parseResult = await parser.parse(documentXml);
-        result = parseResult.data;
+        // Non-worker path implementation
+        if (progressCallback) progressCallback(0, 'Reading DOCX file (main thread)...');
+        const xmlData = await extractMainDocumentXml(docxFile);
+        if (progressCallback) progressCallback(20, 'Parsing XML (main thread)...');
         
-        if (progressCallback) {
-          progressCallback(100, 'Parsing complete');
-        }
+        const parser = new DocumentParser();
+        const parserResult = await parser.parse(xmlData); // Returns ParserResult<DocumentSchema>
+        // TODO: Consider how progress is reported for main thread parsing if possible
+        
+        result = {
+          success: true, // Assuming parser.parse throws on critical failure
+          data: parserResult.data, // DocumentSchema
+          errors: [], // BaseParser.parse throws ParserError, caught by outer catch
+          warnings: parserResult.warnings,
+        };
+        if (progressCallback) progressCallback(100, 'Main thread parsing complete.');
       }
-
+    } catch (error: any) {
       this.performanceMetrics.processingTime = performance.now() - startTime;
-
-      return {
-        success: true,
-        data: result,
-        errors: [],
-        warnings: [],
-      };
-    } catch (error) {
-      this.performanceMetrics.processingTime = performance.now() - startTime;
-      // Log the detailed error here
       console.error('Error during DocxParserConverter.parseDocument:', error);
-      
-      return {
+      const errorMessages = [error instanceof Error ? error.message : 'Unknown parsing error'];
+      if (error.cause instanceof Error) {
+        errorMessages.push(`Cause: ${error.cause.message}`);
+      }
+      result = {
         success: false,
-        errors: [error instanceof Error ? error.message : 'Unknown parsing error'],
-        warnings: [],
+        errors: errorMessages,
+        warnings: (error.warnings as string[] || []),
       };
     }
+
+    this.performanceMetrics.processingTime = performance.now() - startTime;
+    return result;
   }
 
   /**
@@ -291,63 +298,61 @@ export class DocxParserConverter {
    */
   public async convertToHtml(
     docxFile: File, 
-    options?: import('./converters/html/index.js').HtmlConversionOptions,
-    progressCallback?: import('./utils/worker-manager.js').ProgressCallback
-  ): Promise<import('./converters/html/index.js').HtmlConversionResult> {
+    options?: HtmlConversionOptions,
+    progressCallback?: import('./utils/worker-manager').ProgressCallback
+  ): Promise<HtmlConversionResult> {
     const startTime = performance.now();
+    let conversionResult: HtmlConversionResult;
 
     try {
-      await this.initialize();
+      const parsingProgress = progressCallback ? (progress: number, details?: string) => progressCallback(progress * 0.5, details) : undefined;
+      const parseResult = await this.parseDocument(docxFile, parsingProgress);
 
-      if (progressCallback) {
-        progressCallback(0, 'Starting HTML conversion...');
+      if (!parseResult.success || !parseResult.data) {
+        this.performanceMetrics.processingTime = performance.now() - startTime;
+        return {
+          html: '<p>Error: Document parsing failed.</p>',
+          css: '',
+          warnings: [...(parseResult.warnings || []), ...(parseResult.errors || ['Document parsing failed.'])],
+          metadata: { processingTime: this.performanceMetrics.processingTime } as any,
+        };
       }
+      const documentSchema = parseResult.data as DocumentSchema;
 
-      // Step 1: Parse the document using the full parser
-      // We need the DocumentSchema for the full DocxToHtmlConverter
-      const parsedDocumentResult = await this.parseDocument(docxFile, (progress, details) => {
-        // Adjust progress for parsing phase (0-60% of total conversion)
-        if (progressCallback) progressCallback(progress * 0.6, details || 'Parsing document...');
-      });
-
-      if (!parsedDocumentResult.success || !parsedDocumentResult.data) {
-        throw new Error(parsedDocumentResult.errors.join('; ') || 'Failed to parse document for HTML conversion');
+      const conversionProgress = progressCallback ? (progress: number, details?: string) => progressCallback(50 + progress * 0.5, details) : undefined;
+      if (this.config.useWebWorkers && this.workerManager) {
+        if (conversionProgress) conversionProgress(0, 'Converting to HTML (worker)...');
+        conversionResult = await this.workerManager.convertToHtml(
+          documentSchema,
+          options,
+          conversionProgress // Pass only the conversion part of progress
+        );
+        if (conversionProgress) conversionProgress(100, 'HTML conversion (worker) complete.');
+      } else {
+        // Non-worker HTML conversion
+        if (conversionProgress) conversionProgress(0, 'Converting to HTML (main thread)...');
+        const htmlConverter = new DocxToHtmlConverter(options);
+        conversionResult = await htmlConverter.convert(documentSchema);
+        if (conversionProgress) conversionProgress(100, 'HTML conversion (main thread) complete.');
       }
-
-      // Ensure parsedDocumentResult.data is treated as DocumentSchema
-      const documentSchema = parsedDocumentResult.data as import('./models/document-models.js').DocumentSchema;
-
-      if (progressCallback) {
-        progressCallback(60, 'Converting to HTML...');
-      }
-
-      // Step 2: Use the full DocxToHtmlConverter
-      const { DocxToHtmlConverter } = await import('./converters/html/docx-to-html-converter.js');
-      const htmlConverter = new DocxToHtmlConverter(options);
-      const result = await htmlConverter.convert(documentSchema);
-
-      if (progressCallback) {
-        progressCallback(100, 'HTML conversion complete');
-      }
-
+    } catch (error: any) {
       this.performanceMetrics.processingTime = performance.now() - startTime;
-      return result;
-
-    } catch (error) {
-      this.performanceMetrics.processingTime = performance.now() - startTime;
-      
-      return {
-        html: '<p>Error converting document to HTML</p>',
+      console.error('Error during DocxParserConverter.convertToHtml:', error);
+      conversionResult = {
+        html: '<p>Error: HTML conversion failed.</p>',
         css: '',
         warnings: [error instanceof Error ? error.message : 'Unknown conversion error'],
-        metadata: {
-          paragraphCount: 0,
-          tableCount: 0,
-          totalElements: 0,
-          processingTime: this.performanceMetrics.processingTime,
-        },
+        metadata: { processingTime: this.performanceMetrics.processingTime } as any,
       };
     }
+
+    this.performanceMetrics.processingTime = performance.now() - startTime;
+    if (conversionResult.metadata && conversionResult.metadata.processingTime === undefined) {
+      conversionResult.metadata.processingTime = this.performanceMetrics.processingTime;
+    } else if (!conversionResult.metadata) {
+      (conversionResult as any).metadata = { processingTime: this.performanceMetrics.processingTime };
+    }
+    return conversionResult;
   }
 
   /**
@@ -359,69 +364,58 @@ export class DocxParserConverter {
    */
   public async convertToTxt(
     docxFile: File,
-    options?: import('./converters/txt/index.js').TxtConversionOptions,
-    progressCallback?: import('./utils/worker-manager.js').ProgressCallback
-  ): Promise<import('./converters/txt/index.js').TxtConversionResult> {
+    options?: TxtConversionOptions,
+    progressCallback?: import('./utils/worker-manager').ProgressCallback
+  ): Promise<TxtConversionResult> {
     const startTime = performance.now();
-
+    let conversionResult: TxtConversionResult;
     try {
-      await this.initialize();
+      const parsingProgress = progressCallback ? (progress: number, details?: string) => progressCallback(progress * 0.5, details) : undefined;
+      const parseResult = await this.parseDocument(docxFile, parsingProgress);
 
-      if (progressCallback) {
-        progressCallback(0, 'Starting TXT conversion...');
+      if (!parseResult.success || !parseResult.data) {
+        this.performanceMetrics.processingTime = performance.now() - startTime;
+        return {
+          text: 'Error: Document parsing failed.',
+          warnings: [...(parseResult.warnings || []), ...(parseResult.errors || ['Document parsing failed.'])],
+          metadata: { processingTime: this.performanceMetrics.processingTime } as any,
+        };
       }
+      const documentSchema = parseResult.data as DocumentSchema;
 
-      const { fileToArrayBuffer, extractXMLFromDocx } = await import('./utils/file-utils.js');
-
-      // Convert file to ArrayBuffer
-      const arrayBuffer = await fileToArrayBuffer(docxFile);
-
-      if (progressCallback) {
-        progressCallback(15, 'Extracting XML content...');
+      const conversionProgress = progressCallback ? (progress: number, details?: string) => progressCallback(50 + progress * 0.5, details) : undefined;
+      if (this.config.useWebWorkers && this.workerManager) {
+        if (conversionProgress) conversionProgress(0, 'Converting to TXT (worker)...');
+        conversionResult = await this.workerManager.convertToTxt(
+          documentSchema,
+          options,
+          conversionProgress
+        );
+        if (conversionProgress) conversionProgress(100, 'TXT conversion (worker) complete.');
+      } else {
+        // Non-worker TXT conversion
+        if (conversionProgress) conversionProgress(0, 'Converting to TXT (main thread)...');
+        const txtConverter = new DocxToTxtConverter(options);
+        conversionResult = await txtConverter.convert(documentSchema);
+        if (conversionProgress) conversionProgress(100, 'TXT conversion (main thread) complete.');
       }
-
-      // Extract document.xml
-      const documentXml = await extractXMLFromDocx(arrayBuffer, 'document.xml');
-
-      if (progressCallback) {
-        progressCallback(30, 'Parsing document structure...');
-      }
-
-      // Use simplified parser
-      const { SimpleDocumentParser } = await import('./parsers/simple-document-parser.js');
-      const document = SimpleDocumentParser.parseDocument(documentXml);
-
-      if (progressCallback) {
-        progressCallback(60, 'Converting to text...');
-      }
-
-      // Use simplified TXT converter
-      const { SimpleTxtConverter } = await import('./converters/simple-txt-converter.js');
-      const result = SimpleTxtConverter.convert(document);
-
-      if (progressCallback) {
-        progressCallback(100, 'TXT conversion complete');
-      }
-
+    } catch (error: any) {
       this.performanceMetrics.processingTime = performance.now() - startTime;
-      return result;
-
-    } catch (error) {
-      this.performanceMetrics.processingTime = performance.now() - startTime;
-      
-      return {
-        text: 'Error converting document to text',
+      console.error('Error during DocxParserConverter.convertToTxt:', error);
+      conversionResult = {
+        text: 'Error: TXT conversion failed.',
         warnings: [error instanceof Error ? error.message : 'Unknown conversion error'],
-        metadata: {
-          characterCount: 0,
-          lineCount: 0,
-          paragraphCount: 0,
-          tableCount: 0,
-          totalElements: 0,
-          processingTime: this.performanceMetrics.processingTime,
-        },
+        metadata: { processingTime: this.performanceMetrics.processingTime } as any,
       };
     }
+
+    this.performanceMetrics.processingTime = performance.now() - startTime;
+    if (conversionResult.metadata && conversionResult.metadata.processingTime === undefined) {
+      conversionResult.metadata.processingTime = this.performanceMetrics.processingTime;
+    } else if (!conversionResult.metadata) {
+      (conversionResult as any).metadata = { processingTime: this.performanceMetrics.processingTime };
+    }
+    return conversionResult;
   }
 
   /**
@@ -456,7 +450,7 @@ export class DocxParserConverter {
    */
   public async processBatch<T>(
     files: File[],
-    processor: (file: File, progressCallback?: import('./utils/worker-manager.js').ProgressCallback) => Promise<T>,
+    processor: (file: File, progressCallback?: import('./utils/worker-manager').ProgressCallback) => Promise<T>,
     options?: {
       concurrency?: number;
       failFast?: boolean;

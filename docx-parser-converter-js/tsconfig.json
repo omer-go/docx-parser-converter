@@ -24,6 +24,8 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     
+    "types": ["node"],
+    
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -41,7 +43,8 @@
   },
   "include": [
     "src/**/*",
-    "test/**/*"
+    "test/**/*",
+    "scripts/**/*"
   ],
   "exclude": [
     "node_modules",

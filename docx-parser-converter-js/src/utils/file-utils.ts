@@ -3,6 +3,8 @@
  * Provides functions for reading, extracting, and processing DOCX files
  */
 
+import JSZip from 'jszip';
+
 /**
  * DOCX file structure interface
  */
@@ -454,21 +456,49 @@ export async function listXMLFiles(docxFile: ArrayBuffer | Uint8Array): Promise<
 }
 
 /**
- * Convert File object to ArrayBuffer
- * @param file - File object from browser
- * @returns Promise resolving to ArrayBuffer
+ * Extracts the content of word/document.xml from a DOCX file.
+ * @param file - The DOCX file (File object, or a mock with an async arrayBuffer() method).
+ * @returns A promise that resolves with the string content of word/document.xml.
+ * @throws Error if the file is not a valid DOCX or word/document.xml is not found.
  */
-export async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
+export async function extractMainDocumentXml(file: File | { arrayBuffer: () => Promise<ArrayBuffer | Buffer> }): Promise<string> {
+  try {
+    // Get the ArrayBuffer content from the file object or mock
+    const bufferContent = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(bufferContent);
+    const docXmlFile = zip.file('word/document.xml');
+
+    if (docXmlFile) {
+      return docXmlFile.async('string');
+    }
+    // Try alternative path for some DOCX generators (e.g., WPS Office)
+    const altDocXmlFile = zip.file('word/document2.xml');
+    if (altDocXmlFile) {
+      console.warn('Using alternative path word/document2.xml');
+      return altDocXmlFile.async('string');
+    }
+
+    throw new Error('word/document.xml (or word/document2.xml) not found in DOCX file.');
+  } catch (error) {
+    console.error('Error reading DOCX file:', error);
+    throw new Error(`Failed to read or process DOCX file: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
+ * Utility to convert a File object to an ArrayBuffer.
+ * @param file The File object to convert.
+ * @returns A Promise that resolves with the ArrayBuffer.
+ */
+export function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      if (reader.result instanceof ArrayBuffer) {
-        resolve(reader.result);
-      } else {
-        reject(new Error('Failed to read file as ArrayBuffer'));
-      }
+      resolve(reader.result as ArrayBuffer);
     };
-    reader.onerror = () => reject(new Error('File reading failed'));
+    reader.onerror = () => {
+      reject(reader.error);
+    };
     reader.readAsArrayBuffer(file);
   });
 }
