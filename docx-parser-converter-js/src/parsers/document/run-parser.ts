@@ -149,7 +149,27 @@ export class RunParser extends BaseParser<Run> {
 
     // Check for underline
     if (rPrElement['w:u'] !== undefined || getFirstChildElement(rPrElement, 'w:u')) {
-      props.underline = true;
+      // Extract underline type properly
+      let underlineType = null;
+      if (rPrElement['w:u']) {
+        // Direct property case
+        const uObj = rPrElement['w:u'] as Record<string, unknown>;
+        if (uObj && typeof uObj === 'object' && uObj['@_w:val']) {
+          underlineType = uObj['@_w:val'] as string;
+        } else {
+          // If w:u exists but has no val attribute, default to 'single'
+          underlineType = 'single';
+        }
+      } else {
+        // Child element case
+        const uElement = getFirstChildElement(rPrElement, 'w:u');
+        if (uElement) {
+          underlineType = this.getAttribute(uElement, 'w:val') || 'single';
+        }
+      }
+      if (underlineType) {
+        props.underline = underlineType;
+      }
     }
 
     // Color can be a direct property or child element
@@ -188,6 +208,28 @@ export class RunParser extends BaseParser<Run> {
     }
     if (fontSize) {
       props.size_pt = parseInt(fontSize, 10) / 2; // Half-points to points
+    }
+
+    // Font family can be a direct property or child element
+    let fontFamily = null;
+    if (rPrElement['w:rFonts']) {
+      // Direct property case
+      const rFontsObj = rPrElement['w:rFonts'] as Record<string, unknown>;
+      if (rFontsObj && typeof rFontsObj === 'object') {
+        // Try different font attributes in order of preference
+        fontFamily = rFontsObj['@_w:ascii'] || rFontsObj['@_w:hAnsi'] || rFontsObj['@_w:cs'];
+      }
+    } else {
+      // Child element case
+      const rFontsElement = getFirstChildElement(rPrElement, 'w:rFonts');
+      if (rFontsElement) {
+        fontFamily = this.getAttribute(rFontsElement, 'w:ascii') || 
+                    this.getAttribute(rFontsElement, 'w:hAnsi') || 
+                    this.getAttribute(rFontsElement, 'w:cs');
+      }
+    }
+    if (fontFamily) {
+      props.font = { ascii: fontFamily };
     }
 
     return props;
