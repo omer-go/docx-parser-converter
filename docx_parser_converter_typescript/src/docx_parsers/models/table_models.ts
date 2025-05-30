@@ -74,6 +74,7 @@ export const TableCellPropertiesModel = z.object({
   textDirection: z.string().optional(), // e.g., "lrTb", "tbRl"
   hideMark: z.boolean().optional(),
   noWrap: z.boolean().optional(),
+  vMerge: z.enum(['continue', 'restart']).optional(), // For vertical cell merging
 });
 export type TableCellProperties = z.infer<typeof TableCellPropertiesModel>;
 
@@ -120,7 +121,7 @@ export type TableProperties = z.infer<typeof TablePropertiesModel>;
 
 // 13. TableGrid
 export const TableGridModel = z.object({
-  columns: z.array(z.number()), // Array of column widths in dxa
+  columns: z.array(z.number()), // Array of column widths in points
 });
 export type TableGrid = z.infer<typeof TableGridModel>;
 

@@ -9,23 +9,11 @@ import {
   StylesModel,
   StyleModel,
   StyleDefaultsModel,
-  RunStylePropertiesModel,
-  ParagraphStylePropertiesModel,
+  // RunStylePropertiesModel, // No longer needed directly here
+  // ParagraphStylePropertiesModel, // No longer needed directly here
 } from '../models/styles_models';
-
-// Placeholder for RunPropertiesParser
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const parseRunProperties = (rPrElement: any): RunStylePropertiesModel | undefined => {
-  // console.warn("RunPropertiesParser not yet implemented. Returning undefined for rPr:", rPrElement);
-  return undefined;
-};
-
-// Placeholder for ParagraphPropertiesParser
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const parseParagraphProperties = (pPrElement: any): ParagraphStylePropertiesModel | undefined => {
-  // console.warn("ParagraphPropertiesParser not yet implemented. Returning undefined for pPr:", pPrElement);
-  return undefined;
-};
+import { parseRunProperties } from './run_properties_parser';
+import { parseParagraphProperties } from './paragraph_properties_parser';
 
 /**
  * Helper to ensure an element is an array for easier iteration.
@@ -43,37 +31,36 @@ const ensureArray = (item: any): any[] => {
  */
 export class StylesParser {
   private stylesXmlObject: any;
-  private attributePrefix: string;
+  // private attributePrefix: string; // Replaced by storing parserOptions
+  private parserOptions: any; // To store parser options for later use
 
   /**
    * Initializes the StylesParser with XML content.
    * @param xmlContent The string content of styles.xml.
    */
   constructor(xmlContent: string) {
-    this.attributePrefix = DEFAULT_ATTRIBUTE_PREFIX; // Using the default from common_helpers
-    const parserOptions = {
-      attributeNamePrefix: this.attributePrefix, // Use the chosen prefix
-      // attributesGroupName: "$attributes", // Alternative way to group attributes. Using prefix for now.
+    // this.attributePrefix = DEFAULT_ATTRIBUTE_PREFIX;
+    const options = {
+      // attributeNamePrefix: "@_", // Using attributesGroupName instead
+      attributesGroupName: "$attributes", // Group attributes under $attributes
       ignoreAttributes: false,
-      parseTagValue: false,
-      parseAttributeValue: false,
-      allowBooleanAttributes: true,
-      trimValues: true,
-      removeNSPrefix: false, // Keep namespace prefixes
+      parseTagValue: false, 
+      parseAttributeValue: false, 
+      allowBooleanAttributes: true, 
+      trimValues: true, 
+      removeNSPrefix: false, 
       tagValueProcessor: (_tagName: string, tagValue: string, _jPath: string, _hasAttributes: boolean, _isLeafNode: boolean) => {
-        // fast-xml-parser v4+ handles XML entity decoding by default for tag values
         return tagValue;
       },
-      // Explicitly define which elements should always be arrays
       isArray: (name: string, jpath: string, isLeafNode: boolean, isAttribute: boolean) => {
         if (!isAttribute && !isLeafNode) {
-            // Example: if 'w:style' can appear multiple times under 'w:styles'
             if (jpath === "w:styles.w:style") return true;
         }
-        return false; // Default: do not treat as array
+        return false; 
       }
     };
-    const parser = new XMLParser(parserOptions);
+    this.parserOptions = options; // Store options
+    const parser = new XMLParser(this.parserOptions);
     this.stylesXmlObject = parser.parse(xmlContent);
   }
 
@@ -110,10 +97,10 @@ export class StylesParser {
    * @param stylesRoot The 'w:styles' XML element object.
    * @returns Parsed RunStylePropertiesModel or undefined.
    */
-  private extractDocDefaultsRPr(stylesRoot: any): RunStylePropertiesModel | undefined {
+  private extractDocDefaultsRPr(stylesRoot: any): ReturnType<typeof parseRunProperties> {
     const rPrDefault = extractElement(stylesRoot, 'w:docDefaults.w:rPrDefault');
     const rPrElement = rPrDefault ? rPrDefault['w:rPr'] : undefined;
-    return rPrElement ? parseRunProperties(rPrElement) : undefined;
+    return rPrElement ? parseRunProperties(rPrElement, this.parserOptions.attributesGroupName) : undefined;
   }
 
   /**
@@ -121,10 +108,10 @@ export class StylesParser {
    * @param stylesRoot The 'w:styles' XML element object.
    * @returns Parsed ParagraphStylePropertiesModel or undefined.
    */
-  private extractDocDefaultsPPr(stylesRoot: any): ParagraphStylePropertiesModel | undefined {
+  private extractDocDefaultsPPr(stylesRoot: any): ReturnType<typeof parseParagraphProperties> {
     const pPrDefault = extractElement(stylesRoot, 'w:docDefaults.w:pPrDefault');
     const pPrElement = pPrDefault ? pPrDefault['w:pPr'] : undefined;
-    return pPrElement ? parseParagraphProperties(pPrElement) : undefined;
+    return pPrElement ? parseParagraphProperties(pPrElement, this.parserOptions.attributesGroupName) : undefined;
   }
 
   /**
@@ -134,14 +121,13 @@ export class StylesParser {
    */
   private extractStyleTypeDefaults(stylesRoot: any): StyleDefaultsModel {
     const defaults: Partial<StyleDefaultsModel> = {};
-    // The isArray parser option should handle 'w:style' directly under stylesRoot
     const stylesArray = ensureArray(stylesRoot['w:style']);
 
     for (const styleElement of stylesArray) {
-      const isDefault = extractAttribute(styleElement, 'w:default', this.attributePrefix);
+      const isDefault = extractAttribute(styleElement, 'w:default', this.parserOptions.attributesGroupName);
       if (isDefault === '1' || isDefault === 'true') {
-        const type = extractAttribute(styleElement, 'w:type', this.attributePrefix);
-        const styleId = extractAttribute(styleElement, 'w:styleId', this.attributePrefix);
+        const type = extractAttribute(styleElement, 'w:type', this.parserOptions.attributesGroupName);
+        const styleId = extractAttribute(styleElement, 'w:styleId', this.parserOptions.attributesGroupName);
 
         if (styleId) {
           if (type === 'paragraph') defaults.paragraph = styleId;
@@ -160,7 +146,6 @@ export class StylesParser {
    * @returns An array of StyleModel.
    */
   private extractAllStyles(stylesRoot: any): StyleModel[] {
-    // The isArray parser option should handle 'w:style' directly under stylesRoot
     const stylesArray = ensureArray(stylesRoot['w:style']);
     return stylesArray.map(styleElement => this.extractStyle(styleElement)).filter(Boolean) as StyleModel[];
   }
@@ -171,34 +156,34 @@ export class StylesParser {
    * @returns A StyleModel or undefined if essential data is missing.
    */
   private extractStyle(styleElement: any): StyleModel | undefined {
-    const styleId = extractAttribute(styleElement, 'w:styleId', this.attributePrefix);
+    const styleId = extractAttribute(styleElement, 'w:styleId', this.parserOptions.attributesGroupName);
     if (!styleId) {
         console.warn("Found a style element without a w:styleId. Skipping.", styleElement);
         return undefined; 
     }
 
-    const type = extractAttribute(styleElement, 'w:type', this.attributePrefix);
+    const type = extractAttribute(styleElement, 'w:type', this.parserOptions.attributesGroupName);
     
     let name: string | undefined;
     const nameElement = styleElement['w:name'];
     if (nameElement) {
-      name = extractAttribute(nameElement, 'w:val', this.attributePrefix);
+      name = extractAttribute(nameElement, 'w:val', this.parserOptions.attributesGroupName);
     }
 
     const basedOnElement = styleElement['w:basedOn'];
-    const basedOnId = basedOnElement ? extractAttribute(basedOnElement, 'w:val', this.attributePrefix) : undefined;
+    const basedOnId = basedOnElement ? extractAttribute(basedOnElement, 'w:val', this.parserOptions.attributesGroupName) : undefined;
 
     const linkElement = styleElement['w:link'];
-    const linkId = linkElement ? extractAttribute(linkElement, 'w:val', this.attributePrefix) : undefined;
+    const linkId = linkElement ? extractAttribute(linkElement, 'w:val', this.parserOptions.attributesGroupName) : undefined;
     
     const pPrElement = styleElement['w:pPr'];
-    const paragraphProperties = pPrElement ? parseParagraphProperties(pPrElement) : undefined;
+    const paragraphProperties = pPrElement ? parseParagraphProperties(pPrElement, this.parserOptions.attributesGroupName) : undefined;
 
     const rPrElement = styleElement['w:rPr'];
-    const runProperties = rPrElement ? parseRunProperties(rPrElement) : undefined;
+    const runProperties = rPrElement ? parseRunProperties(rPrElement, this.parserOptions.attributesGroupName) : undefined;
 
     try {
-      const styleData: Partial<StyleModel> = { // Use Partial for constructing StyleModel
+      const styleData: Partial<StyleModel> = {
         style_id: styleId,
       };
       if (name) styleData.name = name;

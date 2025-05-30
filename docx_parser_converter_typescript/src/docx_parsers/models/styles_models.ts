@@ -57,6 +57,9 @@ export const ParagraphStylePropertiesModel = z.object({
   border_left: z.string().optional(), // Assuming string, could be more complex
   border_right: z.string().optional(), // Assuming string, could be more complex
   border_top: z.string().optional(), // Assuming string, could be more complex
+  suppress_auto_hyphens: z.boolean().optional(),
+  bidi: z.boolean().optional(),
+  suppress_line_numbers: z.boolean().optional(),
 });
 export type ParagraphStyleProperties = z.infer<typeof ParagraphStylePropertiesModel>;
 

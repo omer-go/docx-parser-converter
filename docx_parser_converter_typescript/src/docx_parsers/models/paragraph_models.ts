@@ -28,7 +28,7 @@ export type TabContent = z.infer<typeof TabContentModel>;
 
 // Schema for Run Content (Union of TextContent and TabContent)
 export const RunContentModel = z.object({
-  run: z.union([TextContentModel, TabContentModel]),
+  item: z.union([TextContentModel, TabContentModel]),
 });
 
 // Interface for Run Content
