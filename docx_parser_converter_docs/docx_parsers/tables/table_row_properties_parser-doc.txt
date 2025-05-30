@@ -1,0 +1,125 @@
+DOCX PARSER CONVERTER - TABLE_ROW_PROPERTIES_PARSER.PY DOCUMENTATION
+====================================================================
+
+FILE PURPOSE:
+This file contains the TableRowPropertiesParser class that extracts and parses table row properties from DOCX table row XML elements. It handles the conversion of table row property XML elements into structured TableRowProperties objects, including height, header settings, alignment, borders, and shading.
+
+IMPORTS:
+- lxml.etree: For XML parsing and manipulation
+- typing.Optional: For type hints
+- docx_parser_converter.docx_parsers.helpers.common_helpers: For XML helper functions (extract_element, extract_attribute, safe_int)
+- docx_parser_converter.docx_parsers.models.table_models.TableRowProperties: For table row properties data model
+- docx_parser_converter.docx_parsers.tables.table_properties_parser.TablePropertiesParser: For shared table property parsing
+- docx_parser_converter.docx_parsers.utils.convert_twips_to_points: For unit conversion
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. TableRowPropertiesParser
+   Purpose: A parser for extracting table row properties from an XML element
+   Description: This class provides static methods for parsing various table row properties from DOCX table row property XML elements. It handles the extraction of row-specific formatting including height, header settings, alignment, borders, and shading.
+
+   METHODS:
+
+   parse(trPr_element: Optional[etree.Element]) -> TableRowProperties [STATIC METHOD]
+   Purpose: Parses table row properties from the given XML element
+   Parameters:
+   - trPr_element (Optional[etree.Element]): The row properties XML element
+   Returns: TableRowProperties - The parsed table row properties
+   Description: Main parsing method that extracts all table row property components and assembles them into a complete TableRowProperties object. Coordinates the parsing of height, header settings, alignment, borders, and shading.
+
+   extract_row_height(element: Optional[etree.Element]) -> Optional[str] [STATIC METHOD]
+   Purpose: Extracts row height from the given XML element
+   Parameters:
+   - element (Optional[etree.Element]): The XML element
+   Returns: Optional[str] - The row height in points as a string, or None if not found
+   Description: Parses row height settings and converts from twips to points for consistency. Returns height as string for compatibility with various height specifications.
+
+   extract_row_height_h_rule(element: Optional[etree.Element]) -> Optional[str] [STATIC METHOD]
+   Purpose: Extracts row height rule from the given XML element
+   Parameters:
+   - element (Optional[etree.Element]): The XML element
+   Returns: Optional[str] - The row height rule, or None if not found
+   Description: Parses row height rule settings that determine how the height value should be interpreted (exact, minimum, auto).
+
+   extract_table_header(element: Optional[etree.Element]) -> Optional[bool] [STATIC METHOD]
+   Purpose: Extracts table header from the given XML element
+   Parameters:
+   - element (Optional[etree.Element]): The XML element
+   Returns: Optional[bool] - True if the table header is found, otherwise None
+   Description: Parses table header settings that identify rows as header rows for table structure and formatting.
+
+   extract_justification(element: Optional[etree.Element]) -> Optional[str] [STATIC METHOD]
+   Purpose: Extracts justification from the given XML element
+   Parameters:
+   - element (Optional[etree.Element]): The XML element
+   Returns: Optional[str] - The justification, or None if not found
+   Description: Parses row-level justification settings that control horizontal alignment of the entire row within the table.
+
+INSTANCE ATTRIBUTES:
+None (static method class).
+
+DATA MODELS USED:
+- TableRowProperties: Container for all row-level properties
+- TableCellBorders: Border specifications for row edges
+- ShadingProperties: Background shading and pattern settings
+
+DEPENDENCIES:
+- TablePropertiesParser for shared table property parsing (borders, shading)
+- XML helper functions for element and attribute extraction
+- Unit conversion utilities for height measurements
+- Table data models for structured representation
+
+USAGE CONTEXT:
+This parser is used by table row parsers to extract comprehensive row formatting information. Table row properties control the appearance and behavior of entire table rows, including:
+- Visual appearance (borders, shading, height)
+- Layout behavior (height rules, alignment)
+- Table structure (header row identification)
+- Row-level formatting specifications
+
+ROW PROPERTY TYPES SUPPORTED:
+- **Height**: Row height with various measurement types and rules
+- **Header Settings**: Table header row identification
+- **Justification**: Row-level horizontal alignment
+- **Borders**: Complete border formatting for row edges
+- **Shading**: Background colors and patterns for the entire row
+
+HEIGHT HANDLING:
+- **Height Values**: Converts height measurements from twips to points
+- **Height Rules**: Supports exact, minimum, and auto height rules
+- **Unit Conversion**: Maintains precision during measurement conversion
+- **String Format**: Returns height as string for compatibility
+
+SHARED FUNCTIONALITY:
+- **Border Parsing**: Uses TablePropertiesParser for consistent border handling
+- **Shading Parsing**: Uses TablePropertiesParser for consistent shading handling
+- **Height Parsing**: Implements row-specific height extraction
+- **Header Parsing**: Handles header row identification
+
+ERROR HANDLING:
+- Returns None for missing property elements
+- Uses safe integer conversion to handle malformed values
+- Handles optional elements gracefully
+- Provides fallback values for incomplete properties
+- Continues processing when individual properties fail
+
+TECHNICAL FEATURES:
+- **Static Methods**: Stateless operation for efficiency
+- **Comprehensive Coverage**: Supports all major row property types
+- **Unit Consistency**: Converts measurements to points
+- **Shared Parsing**: Reuses table-level parsers for consistency
+- **Type Safety**: Uses proper type hints and safe conversions
+
+INTEGRATION POINTS:
+- **TablePropertiesParser**: Handles shared property types (borders, shading)
+- **Table Models**: Uses structured data models for representation
+- **Unit Conversion**: Consistent measurement handling
+
+TECHNICAL NOTES:
+- Uses static methods for stateless operation
+- Supports comprehensive row-level formatting coverage
+- Maintains consistency with table-level property parsing
+- Handles complex row layouts including header rows
+- Provides complete row property representation for accurate table rendering 

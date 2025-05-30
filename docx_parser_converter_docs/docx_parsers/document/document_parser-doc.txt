@@ -1,0 +1,82 @@
+DOCX PARSER CONVERTER - DOCUMENT_PARSER.PY DOCUMENTATION
+==========================================================
+
+FILE PURPOSE:
+This file contains the DocumentParser class that extracts and parses the main document.xml part of a DOCX file. It handles the conversion of the document structure into a structured DocumentSchema containing paragraphs, tables, and document margins.
+
+IMPORTS:
+- json: For JSON serialization in the main section
+- typing.Optional, typing.List, typing.Union: For type hints
+- docx_parser_converter.docx_parsers.helpers.common_helpers.NAMESPACE: For XML namespace handling
+- docx_parser_converter.docx_parsers.utils: For utility functions (extract_xml_root_from_docx, read_binary_from_file_path, extract_xml_root_from_string)
+- docx_parser_converter.docx_parsers.models.paragraph_models.Paragraph: For paragraph data model
+- docx_parser_converter.docx_parsers.models.document_models: For document data models (DocumentSchema, DocMargins)
+- docx_parser_converter.docx_parsers.models.table_models.Table: For table data model
+- docx_parser_converter.docx_parsers.document.margins_parser.MarginsParser: For parsing document margins
+- docx_parser_converter.docx_parsers.document.paragraph_parser.ParagraphParser: For parsing paragraphs
+- docx_parser_converter.docx_parsers.tables.tables_parser.TablesParser: For parsing tables
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. DocumentParser
+   Purpose: Parses the main document.xml part of a DOCX file
+   Description: This class handles the extraction and parsing of the document.xml file within a DOCX file, converting it into a structured DocumentSchema that contains all document elements including paragraphs, tables, and margins.
+
+   METHODS:
+
+   __init__(self, source: Optional[Union[bytes, str]] = None)
+   Purpose: Initializes the DocumentParser with the given DOCX file or document XML content
+   Parameters:
+   - source (Optional[Union[bytes, str]]): Either the binary content of the DOCX file or the document.xml content as a string (optional)
+   Description: Determines the source type and extracts the XML root from either a DOCX file or XML string. If source is provided, immediately parses the document schema. If no source is provided, initializes with None values.
+
+   parse(self) -> DocumentSchema
+   Purpose: Parses the document XML into a DocumentSchema
+   Returns: DocumentSchema - The parsed document schema
+   Description: Main parsing method that extracts all document elements (paragraphs and tables) and margins, then creates a complete DocumentSchema object.
+
+   extract_elements(self) -> List[Union[Paragraph, Table]]
+   Purpose: Extracts elements (paragraphs and tables) from the document XML
+   Returns: List[Union[Paragraph, Table]] - The list of extracted elements
+   Description: Iterates through the document body and identifies paragraph and table elements, using appropriate parsers to convert them into structured data models. Maintains the order of elements as they appear in the document.
+
+   extract_margins(self) -> Optional[DocMargins]
+   Purpose: Extracts margins from the document XML
+   Returns: Optional[DocMargins] - The extracted margins or None if not found
+   Description: Searches for section properties in the document and extracts page margin information using the MarginsParser. Returns None if no margin information is found.
+
+   get_document_schema(self) -> DocumentSchema
+   Purpose: Gets the parsed document schema
+   Returns: DocumentSchema - The document schema
+   Description: Simple getter method that returns the parsed document schema stored in the instance.
+
+INSTANCE ATTRIBUTES:
+- root: The XML root element of the document
+- document_schema: The parsed DocumentSchema object
+
+DATA MODELS USED:
+- DocumentSchema: Top-level container for the entire document structure
+- DocMargins: Document margin information
+- Paragraph: Individual paragraph elements
+- Table: Table elements
+
+DEPENDENCIES:
+- XML parsing utilities for extracting document content
+- Specialized parsers for different document elements (paragraphs, tables, margins)
+- Pydantic models for structured data representation
+- Helper functions for XML namespace handling
+
+USAGE CONTEXT:
+This parser is the main entry point for processing DOCX document content. It coordinates the parsing of different document elements and assembles them into a complete document structure. The parsed DocumentSchema serves as the foundation for document conversion to other formats.
+
+MAIN SECTION:
+The file includes a main section that demonstrates usage by:
+1. Loading a DOCX file from a specified path
+2. Creating a DocumentParser instance
+3. Extracting the document schema
+4. Outputting the parsed structure as JSON
+
+This serves as both a test and an example of how to use the DocumentParser class for document parsing workflows. 

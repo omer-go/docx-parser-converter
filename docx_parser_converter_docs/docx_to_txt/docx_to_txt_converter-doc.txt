@@ -1,0 +1,80 @@
+DOCX PARSER CONVERTER - DOCX_TO_TXT_CONVERTER.PY DOCUMENTATION
+===============================================================
+
+FILE PURPOSE:
+This file contains the main DocxToTxtConverter class that provides a high-level interface for converting DOCX files to plain text format. It orchestrates the parsing of DOCX documents and the generation of text output by coordinating between the DocxProcessor and TxtGenerator components.
+
+IMPORTS:
+- os: For file system operations
+- docx_parser_converter.docx_to_txt.docx_processor.DocxProcessor: For processing DOCX files
+- docx_parser_converter.docx_to_txt.txt_generator.TxtGenerator: For generating plain text output
+- docx_parser_converter.docx_parsers.utils.read_binary_from_file_path: For reading binary file content
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. DocxToTxtConverter
+   Purpose: Class to convert DOCX files to plain text format
+   Description: This class provides a complete solution for converting DOCX documents to plain text format. It handles the entire conversion pipeline from parsing the DOCX file to generating the final text output with options for formatting and table extraction.
+
+   METHODS:
+
+   __init__(self, docx_file: bytes, use_default_values: bool = True)
+   Purpose: Initializes the DocxToTxtConverter with the given DOCX file
+   Parameters:
+   - docx_file (bytes): The DOCX file content
+   - use_default_values (bool): Whether to use default values for missing schemas (defaults to True)
+   Description: Sets up the converter by processing the DOCX file through DocxProcessor to extract document schema, styles schema, and numbering schema. The use_default_values parameter controls whether missing style and numbering information should be filled with defaults.
+
+   convert_to_txt(self, indent: bool = False, extract_tables: bool = True) -> str
+   Purpose: Convert the DOCX document to plain text
+   Parameters:
+   - indent (bool): Whether to apply indentation (defaults to False)
+   - extract_tables (bool): Whether to extract table contents (defaults to True)
+   Returns: str - Plain text representation of the document
+   Description: Performs the actual conversion by passing the parsed document schema and numbering schema to the TxtGenerator. The indent parameter controls whether list items and nested content should be indented, while extract_tables determines if table content should be included in the output.
+
+   save_txt_to_file(self, txt_content: str, output_path: str) -> None
+   Purpose: Save the generated plain text to a file
+   Parameters:
+   - txt_content (str): The plain text content
+   - output_path (str): The output file path
+   Returns: None
+   Description: Writes the text content to a file with UTF-8 encoding. Includes error handling to catch and report file writing issues.
+
+INSTANCE ATTRIBUTES:
+- docx_file (bytes): The binary content of the DOCX file
+- document_schema: The parsed document structure
+- styles_schema: The parsed styles information
+- numbering_schema: The parsed numbering/list information
+
+DEPENDENCIES:
+- DocxProcessor for parsing DOCX files into structured data
+- TxtGenerator for converting parsed data to plain text
+- Utility functions for file operations
+- Standard library os module for file system operations
+
+USAGE CONTEXT:
+This class serves as the main entry point for DOCX to plain text conversion. It provides a simple, high-level interface that abstracts away the complexity of parsing DOCX files and generating text output. Users can create an instance with a DOCX file, call convert_to_txt() with desired formatting options to get the text content, and optionally save it to a file.
+
+CONVERSION OPTIONS:
+The converter provides several options for customizing the text output:
+- Indentation: Controls whether hierarchical content (like lists) should be indented
+- Table extraction: Controls whether table content should be included in the text output
+
+ERROR HANDLING:
+The class includes error handling for file operations, particularly in the save_txt_to_file method. Errors are caught and reported to help with debugging file writing issues.
+
+MAIN SECTION:
+The file includes a main section that demonstrates complete usage:
+1. Defines input DOCX file path and output text file path
+2. Checks if the input file exists
+3. Reads the DOCX file content
+4. Creates a converter instance
+5. Performs the conversion with indentation enabled
+6. Saves the result to a text file
+7. Provides error handling and status messages throughout the process
+
+This serves as both a test and a comprehensive example of how to use the DocxToTxtConverter class for complete DOCX to text conversion workflows. 

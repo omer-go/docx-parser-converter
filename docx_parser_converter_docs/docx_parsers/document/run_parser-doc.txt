@@ -1,0 +1,70 @@
+DOCX PARSER CONVERTER - RUN_PARSER.PY DOCUMENTATION
+===================================================
+
+FILE PURPOSE:
+This file contains the RunParser class that extracts and parses run elements from DOCX document structures. A run represents a sequence of text with consistent formatting properties within a paragraph. This parser handles the conversion of run XML elements into structured Run objects.
+
+IMPORTS:
+- lxml.etree: For XML parsing and manipulation
+- typing.List: For type hints
+- docx_parser_converter.docx_parsers.helpers.common_helpers: For XML helper functions (extract_element, NAMESPACE_URI)
+- docx_parser_converter.docx_parsers.models.paragraph_models: For run data models (Run, RunContent, TextContent, TabContent)
+- docx_parser_converter.docx_parsers.models.styles_models.RunStyleProperties: For run style properties
+- docx_parser_converter.docx_parsers.styles.run_properties_parser.RunPropertiesParser: For parsing run properties
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. RunParser
+   Purpose: A parser for extracting run elements from the DOCX document structure
+   Description: This class handles the extraction of run properties and contents within a run element, converting them into a structured Run object for further processing or conversion to other formats like HTML. Runs are the smallest unit of formatted text in DOCX documents.
+
+   METHODS:
+
+   parse(self, r: etree.Element) -> Run
+   Purpose: Parses a run from the given XML element
+   Parameters:
+   - r (etree.Element): The run XML element
+   Returns: Run - The parsed run object
+   Description: Main parsing method that extracts run properties and contents from a run XML element. It first looks for run properties (rPr) and parses them using RunPropertiesParser, then extracts all run contents. If no run properties are found, it creates a default RunStyleProperties object.
+
+   extract_run_contents(self, r: etree.Element) -> List[RunContent]
+   Purpose: Extracts run contents from the given run XML element
+   Parameters:
+   - r (etree.Element): The run XML element
+   Returns: List[RunContent] - The list of extracted run contents
+   Description: Iterates through all child elements of the run and identifies different types of content:
+   - Tab elements (w:tab) are converted to TabContent objects
+   - Text elements (w:t) are converted to TextContent objects with the text value
+   Each content type is wrapped in a RunContent object to maintain a consistent interface.
+
+INSTANCE ATTRIBUTES:
+None (stateless parser class).
+
+DATA MODELS USED:
+- Run: Container for run properties and contents
+- RunContent: Wrapper for different types of run content
+- TextContent: Represents plain text within a run
+- TabContent: Represents tab characters within a run
+- RunStyleProperties: Formatting properties for the run
+
+DEPENDENCIES:
+- lxml for XML parsing
+- Helper functions for XML element extraction
+- Pydantic models for data structure
+- RunPropertiesParser for parsing style properties
+
+USAGE CONTEXT:
+This parser is used by higher-level parsers (like ParagraphParser) to process individual runs within paragraphs. Runs are fundamental building blocks of DOCX documents, representing text segments with consistent formatting. The parser handles both the textual content and the formatting properties of runs.
+
+CONTENT TYPES SUPPORTED:
+- Text content (w:t): Plain text with potential formatting
+- Tab content (w:tab): Tab characters for alignment and spacing
+
+TECHNICAL NOTES:
+- Uses XML namespace URI for element identification
+- Creates default RunStyleProperties when no properties are specified
+- Maintains order of content elements as they appear in the XML
+- Handles empty runs gracefully by returning empty content lists 

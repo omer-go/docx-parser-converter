@@ -1,0 +1,69 @@
+DOCX PARSER CONVERTER - COMMON_HELPERS.PY DOCUMENTATION
+========================================================
+
+FILE PURPOSE:
+This file provides common helper functions for XML parsing and manipulation in DOCX documents. It contains utility functions for extracting XML elements, attributes, and handling data type conversions safely. These functions are used throughout the parser system to interact with the XML structure of DOCX files.
+
+IMPORTS:
+- typing.Optional: For type hints
+- xml.etree.ElementTree.Element: For XML element type hints
+
+CONSTANTS:
+
+NAMESPACE_URI
+Value: "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+Purpose: Defines the main namespace URI for Word processing markup language
+Description: This is the standard namespace used in DOCX XML files for Word-specific elements.
+
+NAMESPACE
+Value: {'w': NAMESPACE_URI}
+Purpose: Namespace dictionary for XML parsing
+Description: Maps the 'w' prefix to the Word processing namespace URI, used in XPath queries and element searches.
+
+FUNCTIONS:
+
+1. extract_element(parent: Optional[Element], path: str) -> Optional[Element]
+   Purpose: Extracts an XML element from the parent element using the given path
+   Parameters:
+   - parent (Optional[Element]): The parent XML element
+   - path (str): The XPath to the desired child element
+   Returns: Optional[Element] - The extracted XML element, or None if not found or if parent is None
+   Description: Safely searches for a child element within a parent element using XPath. Handles None parent gracefully and uses the predefined namespace for Word elements.
+
+2. extract_attribute(element: Optional[Element], attr: str) -> Optional[str]
+   Purpose: Extracts an attribute value from an XML element
+   Parameters:
+   - element (Optional[Element]): The XML element
+   - attr (str): The attribute name
+   Returns: Optional[str] - The attribute value, or None if not found
+   Description: Safely extracts attribute values from XML elements, automatically handling the Word namespace prefix. Returns None if the element is None or the attribute doesn't exist.
+
+3. safe_int(value: Optional[str]) -> Optional[int]
+   Purpose: Converts a string value to an integer safely
+   Parameters:
+   - value (Optional[str]): The string value to convert
+   Returns: Optional[int] - The integer value, or None if the input is None
+   Description: Provides safe integer conversion that handles None values gracefully without raising exceptions.
+
+4. extract_boolean_attribute(element: Optional[Element]) -> Optional[bool]
+   Purpose: Extracts a boolean attribute from an XML element
+   Parameters:
+   - element (Optional[Element]): The XML element
+   Returns: Optional[bool] - True if the element is present and its 'val' attribute is not 'false' or '0', False if its 'val' attribute is 'false' or '0', None if the element is not present
+   Description: Handles the Word-specific boolean attribute pattern where presence of an element often indicates True, but the 'val' attribute can explicitly set it to false. Follows Word's boolean logic where "false" and "0" are considered false, everything else is true.
+
+CLASSES:
+None defined in this file.
+
+DATA MODELS:
+None defined in this file.
+
+DEPENDENCIES:
+- Standard library xml.etree.ElementTree for XML handling
+- Standard library typing for type hints
+
+USAGE CONTEXT:
+These helper functions are fundamental utilities used throughout the DOCX parser system. They provide a consistent and safe way to interact with XML elements and attributes, handling edge cases like None values and namespace prefixes. The functions abstract away the complexity of XML namespace handling and provide a clean interface for extracting data from DOCX XML structures.
+
+ERROR HANDLING:
+All functions are designed to handle None inputs gracefully, returning None rather than raising exceptions. This defensive programming approach ensures that the parser can continue processing even when encountering malformed or incomplete XML structures. 

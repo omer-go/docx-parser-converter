@@ -1,0 +1,132 @@
+DOCX PARSER CONVERTER - TXT_GENERATOR.PY DOCUMENTATION
+======================================================
+
+FILE PURPOSE:
+This file contains the TxtGenerator class that generates plain text output from processed DOCX document schemas. It serves as the main text generation engine, coordinating the conversion of document elements into clean, readable plain text format while preserving document structure and formatting where appropriate.
+
+IMPORTS:
+- docx_parser_converter.docx_parsers.models.paragraph_models.Paragraph: For paragraph data model
+- docx_parser_converter.docx_parsers.models.document_models.DocumentSchema: For document structure data model
+- docx_parser_converter.docx_parsers.models.table_models.Table: For table data model
+- docx_parser_converter.docx_to_txt.converters.paragraph_converter.ParagraphConverter: For paragraph text conversion
+- docx_parser_converter.docx_to_txt.converters.table_converter.TableConverter: For table text conversion
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. TxtGenerator
+   Purpose: Class to generate plain text from the document schema
+   Description: This class provides static methods for converting processed DOCX document schemas into clean, readable plain text format. It coordinates the conversion of different document elements while maintaining document structure and applying appropriate formatting for text output.
+
+   METHODS:
+
+   generate_txt(document_schema: DocumentSchema, numbering_schema, indent: bool) -> str [STATIC METHOD]
+   Purpose: Generate plain text from the document schema
+   Parameters:
+   - document_schema (DocumentSchema): The document schema containing all document elements
+   - numbering_schema: The numbering schema for list formatting
+   - indent (bool): Whether to apply indentation to the text output
+   Returns: str - Plain text representation of the document
+   Description: Main text generation method that processes the complete document schema and generates a plain text representation. Delegates the actual conversion work to generate_txt_body() and returns the final text output.
+
+   generate_txt_body(doc_margins, elements, numbering_schema, indent: bool) -> str [STATIC METHOD]
+   Purpose: Generate the body text from document elements
+   Parameters:
+   - doc_margins: The document margins (for potential future use)
+   - elements: The document elements (paragraphs, tables, etc.)
+   - numbering_schema: The numbering schema for list formatting
+   - indent (bool): Whether to apply indentation to the text output
+   Returns: str - Body text as a string
+   Description: Core text generation method that processes individual document elements and converts them to plain text. Handles:
+   
+   1. **Element Processing**: Iterates through all document elements
+   2. **Paragraph Conversion**: Converts paragraphs using ParagraphConverter
+   3. **Table Conversion**: Converts tables using TableConverter
+   4. **Spacing Management**: Adds appropriate spacing between paragraphs
+   5. **Structure Preservation**: Maintains document flow and organization
+
+   The method processes elements sequentially and maintains context for proper spacing and formatting.
+
+INSTANCE ATTRIBUTES:
+None (static method class).
+
+DATA MODELS USED:
+- DocumentSchema: Complete document structure with elements and margins
+- Paragraph: Individual paragraph elements with content and formatting
+- Table: Table elements with rows, cells, and structure
+- Numbering schema: For list and numbering formatting
+
+DEPENDENCIES:
+- ParagraphConverter for converting paragraph elements to text
+- TableConverter for converting table elements to text
+- Document data models for structured input
+
+USAGE CONTEXT:
+This generator is the final stage in the text conversion pipeline. It provides:
+- **Clean Text Output**: Generates readable plain text from complex DOCX structures
+- **Structure Preservation**: Maintains document organization and flow
+- **Flexible Formatting**: Supports optional indentation and spacing
+- **Element Coordination**: Handles mixed content (paragraphs, tables, etc.)
+
+TEXT GENERATION FEATURES:
+- **Paragraph Processing**: Converts formatted paragraphs to plain text
+- **Table Processing**: Converts complex tables to readable text format
+- **Spacing Management**: Adds appropriate line breaks and spacing
+- **Indentation Support**: Optional indentation for improved readability
+- **Sequential Processing**: Maintains document element order
+
+CONVERSION WORKFLOW:
+1. **Schema Input**: Receives processed document schema with all elements
+2. **Element Iteration**: Processes each document element in order
+3. **Type-Specific Conversion**: Uses appropriate converter for each element type
+4. **Spacing Application**: Adds proper spacing between elements
+5. **Text Assembly**: Combines all converted elements into final text output
+
+ELEMENT HANDLING:
+- **Paragraphs**: Converted using ParagraphConverter with numbering support
+- **Tables**: Converted using TableConverter with structure preservation
+- **Mixed Content**: Handles documents with both paragraphs and tables
+- **Context Tracking**: Maintains previous element context for spacing decisions
+
+SPACING AND FORMATTING:
+- **Paragraph Spacing**: Adds appropriate spacing between consecutive paragraphs
+- **Line Breaks**: Ensures proper line breaks after paragraphs
+- **Table Spacing**: Resets paragraph context after tables
+- **Indentation**: Optional indentation support for improved readability
+
+ERROR HANDLING:
+- **Element Type Safety**: Uses isinstance() checks for safe element processing
+- **Graceful Degradation**: Continues processing even if individual elements fail
+- **Context Management**: Properly resets context when encountering different element types
+
+TECHNICAL FEATURES:
+- **Static Methods**: Stateless operation for efficiency
+- **Modular Design**: Delegates specific conversions to specialized converters
+- **Context Awareness**: Tracks previous elements for proper spacing
+- **Flexible Output**: Supports various text formatting options
+
+INTEGRATION POINTS:
+- **ParagraphConverter**: Handles paragraph-to-text conversion
+- **TableConverter**: Handles table-to-text conversion
+- **Document Models**: Receives structured document data
+
+USAGE EXAMPLES:
+
+**Basic Text Generation:**
+```python
+txt_content = TxtGenerator.generate_txt(document_schema, numbering_schema, indent=True)
+```
+
+**Body Text Generation:**
+```python
+body_text = TxtGenerator.generate_txt_body(doc_margins, elements, numbering_schema, indent=False)
+```
+
+TECHNICAL NOTES:
+- Uses static methods for stateless operation
+- Maintains document element order during conversion
+- Provides clean separation between different element types
+- Supports flexible formatting options for various use cases
+- Integrates seamlessly with the broader text conversion pipeline 

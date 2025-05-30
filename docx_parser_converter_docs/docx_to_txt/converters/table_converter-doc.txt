@@ -1,0 +1,152 @@
+DOCX PARSER CONVERTER - TXT TABLE_CONVERTER.PY DOCUMENTATION
+=============================================================
+
+FILE PURPOSE:
+This file contains the TableConverter class that converts DOCX table elements to plain text representation. It handles the conversion of complete tables including rows, cells, and contained paragraphs to create properly formatted plain text output with appropriate structure preservation.
+
+IMPORTS:
+- docx_parser_converter.docx_parsers.models.table_models: For table data models (Table, TableRow, TableCell)
+- docx_parser_converter.docx_to_txt.converters.paragraph_converter.ParagraphConverter: For converting cell content
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. TableConverter
+   Purpose: Class to convert tables to plain text format
+   Description: This class provides static methods for converting DOCX table elements to plain text representation. It handles complete table structures including rows, cells, and contained paragraphs to create properly formatted plain text output with appropriate structure and separators.
+
+   METHODS:
+
+   convert_table(table: Table, numbering_schema=None, indent: bool = False) -> str [STATIC METHOD]
+   Purpose: Convert a table to plain text format
+   Parameters:
+   - table (Table): The table to convert
+   - numbering_schema: The numbering schema to use for paragraphs within the table
+   - indent (bool): Whether to apply indentation to paragraphs within the table
+   Returns: str - Plain text representation of the table
+   Description: Main conversion method that processes a complete table and generates plain text. The method:
+   
+   1. **Table Validation**: Checks for valid table and rows
+   2. **Row Processing**: Converts all table rows to text
+   3. **Separator Addition**: Adds newlines between rows
+   4. **Structure Formatting**: Adds newlines before and after table
+   
+   Handles complete table structures including:
+   - Multiple rows with individual processing
+   - Row separation with newlines
+   - Table boundaries with newlines
+   - Empty table handling
+
+   convert_row(row: TableRow, numbering_schema=None, indent: bool = False) -> str [STATIC METHOD]
+   Purpose: Convert a table row to plain text format
+   Parameters:
+   - row (TableRow): The table row to convert
+   - numbering_schema: The numbering schema to use for paragraphs within the row
+   - indent (bool): Whether to apply indentation to paragraphs within the row
+   Returns: str - Plain text representation of the row
+   Description: Converts individual table row with all contained cells to plain text. Processes all cells and adds pipe separators between cells for structure preservation.
+
+   convert_cell(cell: TableCell, numbering_schema=None, indent: bool = False) -> str [STATIC METHOD]
+   Purpose: Convert a table cell to plain text format
+   Parameters:
+   - cell (TableCell): The table cell to convert
+   - numbering_schema: The numbering schema to use for paragraphs within the cell
+   - indent (bool): Whether to apply indentation to paragraphs within the cell
+   Returns: str - Plain text representation of the cell
+   Description: Converts individual table cell with all contained paragraphs to plain text. Processes all paragraphs and adds space separators between paragraphs within the same cell.
+
+INSTANCE ATTRIBUTES:
+None (static method class).
+
+DATA MODELS USED:
+- Table: Complete table representation with rows
+- TableRow: Individual row elements with cells
+- TableCell: Individual cell elements with paragraphs
+- Paragraph: Paragraph content within cells
+
+DEPENDENCIES:
+- ParagraphConverter for converting cell content
+- Table data models for structured input
+
+USAGE CONTEXT:
+This converter is used throughout the text generation pipeline to convert table elements. Tables are complex document structures containing:
+- **Table Structure**: Multiple rows and columns
+- **Row Content**: Individual rows with multiple cells
+- **Cell Content**: Individual cells with paragraph content
+- **Text Output**: Plain text with structure preservation
+
+TABLE FEATURES SUPPORTED:
+- **Table Structure**: Complete table with rows and cells
+- **Row Processing**: Individual row conversion with separators
+- **Cell Processing**: Individual cell conversion with content
+- **Paragraph Content**: Paragraph content within cells
+- **Text Generation**: Clean plain text output with structure
+
+CONVERSION PROCESS:
+- **Table Assembly**: Processes complete table structure
+- **Row Processing**: Converts all rows with separators
+- **Cell Processing**: Converts all cells with content
+- **Paragraph Processing**: Converts all paragraphs within cells
+- **Structure Preservation**: Maintains table structure through separators
+
+SEPARATOR HANDLING:
+- **Row Separators**: Newlines between table rows
+- **Cell Separators**: Pipe characters (|) between cells
+- **Paragraph Separators**: Spaces between paragraphs in cells
+- **Table Boundaries**: Newlines before and after tables
+
+STRUCTURE PRESERVATION:
+- **Table Boundaries**: Clear table start and end with newlines
+- **Row Structure**: Maintains row separation for readability
+- **Cell Structure**: Uses pipe separators for column identification
+- **Content Structure**: Preserves paragraph content within cells
+
+ERROR HANDLING:
+- **Empty Tables**: Returns empty string for tables without rows
+- **Empty Rows**: Returns empty string for rows without cells
+- **Empty Cells**: Returns empty string for cells without paragraphs
+- **Missing Content**: Handles missing components gracefully
+
+TECHNICAL FEATURES:
+- **Static Methods**: Stateless operation for efficiency
+- **Hierarchical Processing**: Processes table structure hierarchically
+- **Text Generation**: Creates clean plain text output
+- **Structure Maintenance**: Preserves table structure through separators
+
+INTEGRATION POINTS:
+- **ParagraphConverter**: Handles cell content conversion
+- **Text Generator**: Integrates with document-level text generation
+
+USAGE EXAMPLES:
+
+**Basic Table Conversion:**
+```python
+text = TableConverter.convert_table(table, numbering_schema, indent=True)
+```
+
+**Row Conversion:**
+```python
+row_text = TableConverter.convert_row(row, numbering_schema, indent=False)
+```
+
+**Cell Conversion:**
+```python
+cell_text = TableConverter.convert_cell(cell, numbering_schema, indent=True)
+```
+
+OUTPUT FORMAT:
+```
+[newline]
+Cell1 | Cell2 | Cell3
+Cell4 | Cell5 | Cell6
+[newline]
+```
+
+TECHNICAL NOTES:
+- Uses static methods for stateless operation
+- Supports complex table structures with multiple levels
+- Maintains table structure through text separators
+- Integrates seamlessly with the broader text conversion system
+- Provides complete table representation for accurate document rendering 

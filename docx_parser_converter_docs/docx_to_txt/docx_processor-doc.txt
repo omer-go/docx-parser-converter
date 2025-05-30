@@ -1,0 +1,124 @@
+DOCX PARSER CONVERTER - DOCX_TO_TXT DOCX_PROCESSOR.PY DOCUMENTATION
+====================================================================
+
+FILE PURPOSE:
+This file contains the DocxProcessor class specifically designed for text conversion workflows. It processes DOCX files and extracts document schemas with enhanced flexibility to handle both binary DOCX files and pre-extracted XML content, making it suitable for various text processing scenarios.
+
+IMPORTS:
+- typing: For type hints (Union, Optional, Dict, Tuple)
+- docx_parser_converter.docx_parsers.models.document_models.DocumentSchema: For document structure data model
+- docx_parser_converter.docx_parsers.models.styles_models.StylesSchema: For styles data model
+- docx_parser_converter.docx_parsers.models.numbering_models.NumberingSchema: For numbering data model
+- docx_parser_converter.docx_parsers.styles.styles_parser.StylesParser: For parsing styles
+- docx_parser_converter.docx_parsers.document.document_parser.DocumentParser: For parsing document content
+- docx_parser_converter.docx_parsers.numbering.numbering_parser.NumberingParser: For parsing numbering
+- docx_parser_converter.docx_parsers.styles.styles_merger.StyleMerger: For merging styles with document content
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. DocxProcessor
+   Purpose: Class to process the DOCX file and extract the schemas for text conversion
+   Description: This class provides static methods for processing DOCX files with enhanced flexibility for text conversion workflows. It supports both binary DOCX files and pre-extracted XML content, making it suitable for various text processing scenarios and batch operations.
+
+   METHODS:
+
+   process_docx(source: Union[bytes, Dict[str, str]]) -> tuple[DocumentSchema, StylesSchema, NumberingSchema] [STATIC METHOD]
+   Purpose: Process the DOCX file or XML content to extract document, styles, and numbering schemas
+   Parameters:
+   - source (Union[bytes, Dict[str, str]]): Either the DOCX file content as bytes, or a dictionary containing XML content as strings with keys: 'document', 'styles', and 'numbering'
+   Returns: tuple[DocumentSchema, StylesSchema, NumberingSchema] - A tuple containing DocumentSchema, StylesSchema, and NumberingSchema
+   Raises: 
+   - Exception: If the document.xml cannot be parsed
+   - ValueError: If the source dictionary is missing required keys
+   - TypeError: If source is neither bytes nor dictionary
+   Description: Enhanced processing method that handles multiple input types for flexible text conversion workflows. The method:
+   
+   1. **Input Type Detection**: Determines whether input is binary DOCX or XML dictionary
+   2. **Source Validation**: Validates dictionary structure and required keys
+   3. **Flexible Processing**: Handles both complete DOCX files and individual XML components
+   4. **Error Recovery**: Provides fallback mechanisms for missing or corrupted components
+   5. **Style Integration**: Merges all components using StyleMerger for complete document representation
+   
+   Supports two input modes:
+   - **Binary Mode**: Traditional DOCX file processing from bytes
+   - **XML Mode**: Direct processing from extracted XML strings (useful for pre-processed content)
+
+   get_default_styles_schema() -> StylesSchema [STATIC METHOD]
+   Purpose: Returns the default styles schema
+   Returns: StylesSchema - The default styles schema
+   Description: Provides a fallback styles schema when styles.xml cannot be parsed or is not available. Ensures text conversion can proceed even without style information. (Implementation details not shown in current code)
+
+   get_default_numbering_schema() -> NumberingSchema [STATIC METHOD]
+   Purpose: Returns the default numbering schema
+   Returns: NumberingSchema - The default numbering schema
+   Description: Provides a fallback numbering schema when numbering.xml cannot be parsed or is not available. Ensures text conversion can proceed even without numbering information. (Implementation details not shown in current code)
+
+INSTANCE ATTRIBUTES:
+None (static method class).
+
+DATA MODELS USED:
+- DocumentSchema: Complete document structure with elements and margins
+- StylesSchema: Style definitions and formatting information
+- NumberingSchema: List and numbering definitions
+
+DEPENDENCIES:
+- Specialized parsers for different DOCX components
+- StyleMerger for integrating styles with document content
+- Document data models for structured representation
+
+USAGE CONTEXT:
+This processor is specifically designed for text conversion workflows and provides enhanced flexibility over the HTML processor. It supports:
+- **Batch Processing**: Handle pre-extracted XML content for efficiency
+- **Flexible Input**: Support both DOCX files and XML strings
+- **Text-Focused Processing**: Optimized for text extraction scenarios
+- **Error Resilience**: Robust handling of missing or corrupted components
+
+INPUT MODES:
+
+**Binary Mode (Traditional DOCX Processing):**
+```python
+docx_file = read_binary_from_file_path('document.docx')
+document_schema, styles_schema, numbering_schema = DocxProcessor.process_docx(docx_file)
+```
+
+**XML Mode (Pre-extracted Content):**
+```python
+xml_content = {
+    'document': '<w:document>...</w:document>',
+    'styles': '<w:styles>...</w:styles>',
+    'numbering': '<w:numbering>...</w:numbering>'
+}
+document_schema, styles_schema, numbering_schema = DocxProcessor.process_docx(xml_content)
+```
+
+PROCESSING WORKFLOW:
+1. **Input Validation**: Verify source type and required components
+2. **Component Extraction**: Extract or reference XML components based on input type
+3. **Parallel Processing**: Process styles, numbering, and document components
+4. **Error Handling**: Apply fallback schemas for missing components
+5. **Style Integration**: Merge all components for complete document representation
+6. **Return Results**: Provide integrated schemas ready for text conversion
+
+ERROR HANDLING STRATEGY:
+- **Styles Processing**: Continue with defaults if styles.xml fails (non-critical)
+- **Numbering Processing**: Continue with defaults if numbering.xml fails (non-critical)
+- **Document Processing**: Abort if document.xml fails (critical component)
+- **Input Validation**: Provide clear error messages for invalid input types
+- **Comprehensive Logging**: Detailed error messages for debugging
+
+ADVANTAGES OVER HTML PROCESSOR:
+- **Flexible Input**: Supports both binary and XML string inputs
+- **Batch Processing**: Efficient for processing multiple pre-extracted documents
+- **Text Optimization**: Focused on text extraction rather than visual rendering
+- **Enhanced Error Handling**: More robust error recovery mechanisms
+- **Validation**: Comprehensive input validation with clear error messages
+
+TECHNICAL NOTES:
+- Uses static methods for stateless operation
+- Implements comprehensive input type checking
+- Provides graceful degradation for missing components
+- Supports both traditional and modern processing workflows
+- Optimized for text conversion scenarios with enhanced flexibility 

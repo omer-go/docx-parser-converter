@@ -1,0 +1,213 @@
+DOCX PARSER CONVERTER - RUN_PROPERTIES_PARSER.PY DOCUMENTATION
+================================================================
+
+FILE PURPOSE:
+This file contains the RunPropertiesParser class that extracts and parses run-level formatting properties from DOCX XML elements. It handles the conversion of run property XML elements into structured RunStyleProperties objects, covering text formatting, fonts, colors, effects, and advanced typography settings.
+
+IMPORTS:
+- xml.etree.ElementTree: For XML parsing and manipulation (aliased as ET)
+- typing.Optional: For type hints
+- docx_parser_converter.docx_parsers.helpers.common_helpers: For XML helper functions (extract_element, extract_attribute, extract_boolean_attribute)
+- docx_parser_converter.docx_parsers.utils.convert_half_points_to_points: For unit conversion
+- docx_parser_converter.docx_parsers.models.styles_models: For style data models (RunStyleProperties, FontProperties, LanguageProperties)
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. RunPropertiesParser
+   Purpose: A parser for extracting run properties from an XML element
+   Description: This class extracts and parses various properties related to run formatting, converting them into structured Pydantic models for further processing or conversion to other formats. Runs are the smallest unit of formatted text in DOCX documents.
+
+   METHODS:
+
+   parse(self, rPr_element: ET.Element) -> RunStyleProperties
+   Purpose: Parses run properties from the given XML element
+   Parameters:
+   - rPr_element (ET.Element): The run properties XML element
+   Returns: RunStyleProperties - The parsed run style properties
+   Description: Main parsing method that extracts all run property components and assembles them into a complete RunStyleProperties object. Coordinates the parsing of fonts, sizing, colors, formatting effects, and advanced typography settings.
+
+   extract_fonts(self, rPr_element: ET.Element) -> Optional[FontProperties]
+   Purpose: Extracts font properties from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[FontProperties] - The extracted font properties, or None if not found
+   Description: Parses font family settings including ASCII, high ANSI, East Asian, and complex script fonts. Handles different font specifications for various character sets and languages.
+
+   extract_font_size(self, rPr_element: ET.Element) -> Optional[float]
+   Purpose: Extracts font size from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[float] - The extracted font size in points, or None if not found
+   Description: Parses font size settings and converts from half-points to points for consistency. Handles the DOCX font size format which uses half-point units.
+
+   extract_font_color(self, rPr_element: ET.Element) -> Optional[str]
+   Purpose: Extracts font color from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[str] - The extracted font color, or None if not found
+   Description: Parses text color settings, typically in hexadecimal format (e.g., "FF0000" for red).
+
+   extract_bold(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts bold property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted bold property, or None if not found
+   Description: Parses bold formatting settings. Uses boolean attribute extraction to handle both explicit and implicit bold settings.
+
+   extract_italic(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts italic property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted italic property, or None if not found
+   Description: Parses italic formatting settings. Uses boolean attribute extraction to handle both explicit and implicit italic settings.
+
+   extract_underline(self, rPr_element: ET.Element) -> Optional[str]
+   Purpose: Extracts underline property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[str] - The extracted underline property, or None if not found
+   Description: Parses underline formatting settings including style types (single, double, dotted, dashed, etc.).
+
+   extract_strikethrough(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts strikethrough property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted strikethrough property, or None if not found
+   Description: Parses strikethrough formatting settings for crossed-out text.
+
+   extract_hidden(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts hidden property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted hidden property, or None if not found
+   Description: Parses hidden text settings for text that should not be displayed or printed.
+
+   extract_language_settings(self, rPr_element: ET.Element) -> Optional[LanguageProperties]
+   Purpose: Extracts language settings from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[LanguageProperties] - The extracted language properties, or None if not found
+   Description: Parses language and locale settings for spell checking, hyphenation, and other language-specific features.
+
+   extract_highlight(self, rPr_element: ET.Element) -> Optional[str]
+   Purpose: Extracts highlight property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[str] - The extracted highlight property, or None if not found
+   Description: Parses text highlighting settings (background color highlighting like a marker).
+
+   extract_shading(self, rPr_element: ET.Element) -> Optional[str]
+   Purpose: Extracts shading property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[str] - The extracted shading property, or None if not found
+   Description: Parses background shading settings for text background colors and patterns.
+
+   extract_text_position(self, rPr_element: ET.Element) -> Optional[float]
+   Purpose: Extracts text position from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[float] - The extracted text position in points, or None if not found
+   Description: Parses vertical text positioning for superscript and subscript effects.
+
+   extract_kerning(self, rPr_element: ET.Element) -> Optional[int]
+   Purpose: Extracts kerning property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[int] - The extracted kerning property, or None if not found
+   Description: Parses font kerning settings for automatic character spacing adjustments.
+
+   extract_character_spacing(self, rPr_element: ET.Element) -> Optional[float]
+   Purpose: Extracts character spacing from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[float] - The extracted character spacing in points, or None if not found
+   Description: Parses manual character spacing adjustments for expanded or condensed text.
+
+   extract_emboss(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts emboss property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted emboss property, or None if not found
+   Description: Parses embossed text effect settings for raised appearance.
+
+   extract_outline(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts outline property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted outline property, or None if not found
+   Description: Parses outline text effect settings for hollow character appearance.
+
+   extract_shadow(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts shadow property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted shadow property, or None if not found
+   Description: Parses shadow text effect settings for drop shadow appearance.
+
+   extract_all_caps(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts all caps property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted all caps property, or None if not found
+   Description: Parses all capitals formatting settings for uppercase text display.
+
+   extract_small_caps(self, rPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts small caps property from the given run properties element
+   Parameters:
+   - rPr_element (ET.Element): The run properties element
+   Returns: Optional[bool] - The extracted small caps property, or None if not found
+   Description: Parses small capitals formatting settings for small caps text display.
+
+INSTANCE ATTRIBUTES:
+None explicitly defined (methods are instance methods).
+
+DATA MODELS USED:
+- RunStyleProperties: Container for all run-level formatting properties
+- FontProperties: Font family specifications for different character sets
+- LanguageProperties: Language and locale settings
+
+DEPENDENCIES:
+- XML parsing utilities for element and attribute extraction
+- Unit conversion utilities for font size and spacing
+- Helper functions for boolean attribute handling
+- Style data models for structured representation
+
+USAGE CONTEXT:
+This parser is used by higher-level style parsers to extract comprehensive text formatting information. Run properties control the appearance of individual text runs within paragraphs, including:
+- Font specifications and sizing
+- Text colors and highlighting
+- Basic formatting (bold, italic, underline)
+- Advanced effects (emboss, outline, shadow)
+- Typography settings (kerning, spacing, positioning)
+- Language and locale settings
+
+RUN PROPERTY TYPES SUPPORTED:
+- **Font Properties**: Family, size, color specifications
+- **Basic Formatting**: Bold, italic, underline, strikethrough
+- **Text Effects**: Highlight, shading, emboss, outline, shadow
+- **Typography**: Kerning, character spacing, text positioning
+- **Capitalization**: All caps, small caps
+- **Language**: Locale and language settings
+- **Visibility**: Hidden text settings
+
+UNIT CONVERSION:
+- Converts font sizes from half-points to points
+- Converts spacing measurements to points for consistency
+- Handles various measurement units used in DOCX format
+- Maintains precision during conversion
+
+ERROR HANDLING:
+- Returns None for missing property elements
+- Uses safe attribute extraction to handle malformed values
+- Handles boolean attributes with proper default values
+- Provides graceful degradation when properties are incomplete
+
+TECHNICAL NOTES:
+- Uses instance methods for stateful parsing operations
+- Supports comprehensive run-level formatting coverage
+- Maintains compatibility with various DOCX formatting features
+- Integrates with the broader style parsing system for complete document formatting 

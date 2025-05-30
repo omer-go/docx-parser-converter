@@ -1,0 +1,161 @@
+DOCX PARSER CONVERTER - TXT NUMBERING_CONVERTER.PY DOCUMENTATION
+==================================================================
+
+FILE PURPOSE:
+This file contains the NumberingConverter class that converts DOCX numbering and list formatting to plain text representation. It handles the conversion of numbered and bulleted lists, maintaining proper numbering sequences and formatting for text output.
+
+IMPORTS:
+- docx_parser_converter.docx_parsers.models.paragraph_models.Paragraph: For paragraph data model
+- docx_parser_converter.docx_parsers.models.numbering_models.NumberingLevel: For numbering level data model
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. NumberingConverter
+   Purpose: Class to convert numbering to plain text
+   Description: This class provides static methods for converting DOCX numbering and list formatting to plain text representation. It maintains numbering counters across multiple levels, handles various numbering formats, and generates appropriate text formatting for lists and numbered content.
+
+   CLASS ATTRIBUTES:
+   - numbering_counters: Dictionary maintaining counter state for different numbering instances
+
+   METHODS:
+
+   convert_numbering(paragraph: Paragraph, numbering_schema) -> str [STATIC METHOD]
+   Purpose: Convert numbering to plain text
+   Parameters:
+   - paragraph (Paragraph): The paragraph object
+   - numbering_schema: The numbering schema
+   Returns: str - Plain text representation of the numbering
+   Description: Main conversion method that processes paragraph numbering and generates plain text markup. The method:
+   
+   1. **Level Retrieval**: Gets the appropriate numbering level from the schema
+   2. **Counter Management**: Updates and maintains counters for hierarchical numbering
+   3. **Format Application**: Applies the specified numbering format (decimal, roman, letters, bullets)
+   4. **Text Generation**: Replaces placeholders in level text with formatted numbers
+   5. **Text Output**: Creates plain text numbering with space separator
+   
+   Handles complex numbering scenarios including:
+   - Multi-level hierarchical numbering
+   - Various numbering formats (decimal, roman numerals, letters, bullets)
+   - Counter management across document sections
+   - Placeholder replacement in numbering text
+
+   get_numbering_level(numbering_schema, numId: int, ilvl: int) -> NumberingLevel [STATIC METHOD]
+   Purpose: Get the numbering level from the numbering schema
+   Parameters:
+   - numbering_schema: The numbering schema
+   - numId (int): The numbering ID
+   - ilvl (int): The indent level
+   Returns: NumberingLevel - The corresponding numbering level
+   Raises: ValueError - If the numbering level is not found
+   Description: Locates and returns the specific numbering level definition from the numbering schema based on numbering ID and level.
+
+   format_number(counter: int, numFmt: str) -> str [STATIC METHOD]
+   Purpose: Format the counter according to the specified numbering format
+   Parameters:
+   - counter (int): The counter value
+   - numFmt (str): The numbering format
+   Returns: str - The formatted number
+   Description: Converts numeric counters to various numbering formats including decimal, roman numerals, letters, and bullets.
+
+   to_roman(num: int) -> str [STATIC METHOD]
+   Purpose: Convert an integer to a Roman numeral
+   Parameters:
+   - num (int): The integer to convert
+   Returns: str - The Roman numeral representation
+   Description: Helper method that converts integers to Roman numeral format using standard conversion algorithms.
+
+   to_upper_letter(num: int) -> str [STATIC METHOD]
+   Purpose: Convert an integer to an uppercase letter (A-Z)
+   Parameters:
+   - num (int): The integer to convert
+   Returns: str - The uppercase letter representation
+   Description: Converts numbers to uppercase letters (A, B, C, etc.) for alphabetic numbering.
+
+   to_lower_letter(num: int) -> str [STATIC METHOD]
+   Purpose: Convert an integer to a lowercase letter (a-z)
+   Parameters:
+   - num (int): The integer to convert
+   Returns: str - The lowercase letter representation
+   Description: Converts numbers to lowercase letters (a, b, c, etc.) for alphabetic numbering.
+
+INSTANCE ATTRIBUTES:
+None (static method class with class-level counter storage).
+
+DATA MODELS USED:
+- Paragraph: Paragraph elements with numbering information
+- NumberingLevel: Individual level specifications with formatting
+- NumberingSchema: Complete numbering definitions and instances
+
+DEPENDENCIES:
+- Numbering data models for structured input
+- Plain text generation for output
+
+USAGE CONTEXT:
+This converter is used throughout the text conversion pipeline to handle numbered and bulleted lists. It provides:
+- **Hierarchical Numbering**: Supports multi-level numbering with proper counter management
+- **Format Variety**: Handles decimal, roman, alphabetic, and bullet formats
+- **Text Generation**: Creates plain text numbering representation
+- **Counter Management**: Maintains numbering state across paragraphs
+
+NUMBERING FEATURES SUPPORTED:
+- **Multi-Level Lists**: Hierarchical numbering with up to 9 levels
+- **Format Types**: Decimal, roman numerals (upper/lower), letters (upper/lower), bullets
+- **Counter Management**: Automatic counter incrementing and resetting
+- **Text Output**: Plain text numbering with space separation
+- **Placeholder Processing**: Replaces numbering placeholders with formatted values
+
+COUNTER MANAGEMENT:
+- **State Tracking**: Maintains counters for each numbering instance
+- **Level Hierarchy**: Properly resets deeper levels when higher levels increment
+- **Instance Isolation**: Separate counter tracking for different numbering instances
+- **Persistent State**: Maintains numbering state across document sections
+
+TEXT GENERATION:
+- **Simple Output**: Creates clean plain text numbering
+- **Space Separation**: Adds appropriate spacing after numbering
+- **Format Conversion**: Comprehensive number-to-format conversion
+- **Placeholder Replacement**: Processes numbering text templates
+
+ERROR HANDLING:
+- **Missing Levels**: Provides fallback bullet character for missing numbering levels
+- **Invalid Formats**: Handles unknown numbering formats gracefully
+- **Schema Errors**: Continues processing when numbering schema is incomplete
+- **Counter Errors**: Maintains state even when individual operations fail
+
+TECHNICAL FEATURES:
+- **Static Methods**: Stateless operation with class-level state management
+- **Format Conversion**: Comprehensive number-to-format conversion
+- **Text Generation**: Creates clean plain text output
+- **Counter Persistence**: Maintains numbering state across conversions
+
+INTEGRATION POINTS:
+- **Paragraph Converter**: Used by paragraph converters for list handling
+- **Text Generator**: Integrates with text generation pipeline
+- **Numbering Models**: Uses structured numbering data
+
+USAGE EXAMPLES:
+
+**Basic Numbering Conversion:**
+```python
+numbering_text = NumberingConverter.convert_numbering(paragraph, numbering_schema)
+```
+
+**Format Number:**
+```python
+formatted = NumberingConverter.format_number(1, "decimal")  # "1"
+```
+
+**Roman Conversion:**
+```python
+roman = NumberingConverter.to_roman(5)  # "V"
+```
+
+TECHNICAL NOTES:
+- Uses class-level counters to maintain state across conversions
+- Supports complex hierarchical numbering scenarios
+- Provides comprehensive format conversion capabilities
+- Generates clean plain text output for numbered lists
+- Handles edge cases in numbering format and counter management 

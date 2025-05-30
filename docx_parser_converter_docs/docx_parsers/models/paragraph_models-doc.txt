@@ -1,0 +1,71 @@
+DOCX PARSER CONVERTER - PARAGRAPH_MODELS.PY DOCUMENTATION
+=========================================================
+
+FILE PURPOSE:
+This file defines Pydantic data models for representing paragraph-related structures in DOCX documents. It provides models for paragraphs, runs, text content, numbering, and tabs, which are fundamental building blocks for document parsing and representation.
+
+IMPORTS:
+- pydantic.BaseModel, pydantic.Field: For data validation and modeling
+- typing.List, typing.Optional, typing.Union: For type hints
+- docx_parser_converter.docx_parsers.models.styles_models.ParagraphStyleProperties: For paragraph style properties
+- docx_parser_converter.docx_parsers.models.styles_models.RunStyleProperties: For run style properties
+
+FUNCTIONS:
+None defined in this file.
+
+CLASSES/DATA MODELS:
+
+1. Numbering(BaseModel)
+   Purpose: Represents the numbering properties of a paragraph (for lists)
+   Fields:
+   - ilvl (int): The indent level of the numbering (required)
+   - numId (int): The ID of the numbering definition (required)
+   Description: Models the numbering properties that define how a paragraph participates in a numbered or bulleted list. The ilvl determines the nesting level, and numId references a specific numbering definition.
+
+2. TextContent(BaseModel)
+   Purpose: Represents text content in a run
+   Fields:
+   - text (str): The text content (required)
+   Description: Models plain text content within a run element. This is the most basic content type for text in DOCX documents.
+
+3. TabContent(BaseModel)
+   Purpose: Represents a tab character in a run
+   Fields:
+   - type (str): The type of content, default is 'tab'
+   Description: Models tab characters that can appear within runs. Tabs are used for text alignment and spacing.
+
+4. RunContent(BaseModel)
+   Purpose: Represents the content of a run, which can be either text or a tab
+   Fields:
+   - run (Union[TextContent, TabContent]): The content of the run (required)
+   Description: A union type that can hold either text content or tab content, representing the different types of content that can appear within a run.
+
+5. Run(BaseModel)
+   Purpose: Represents a run within a paragraph, containing text and formatting properties
+   Fields:
+   - contents (List[RunContent]): The list of run contents (text or tabs) (required)
+   - properties (Optional[RunStyleProperties]): The style properties of the run (optional)
+   Description: Models a run, which is a sequence of text with consistent formatting. Runs are the smallest unit of formatted text in DOCX documents.
+
+6. Paragraph(BaseModel)
+   Purpose: Represents a paragraph in the document, containing text runs and optional numbering
+   Fields:
+   - properties (ParagraphStyleProperties): The style properties of the paragraph (required)
+   - runs (List[Run]): The list of text runs within the paragraph (required)
+   - numbering (Optional[Numbering]): The numbering properties, if the paragraph is part of a list (optional)
+   Description: Models a complete paragraph, which is composed of one or more runs and has paragraph-level formatting properties. Can optionally be part of a numbered or bulleted list.
+
+DEPENDENCIES:
+- Pydantic for data validation and modeling
+- styles_models module for style-related data models
+- Standard typing module for type hints
+
+DATA RELATIONSHIPS:
+- Paragraph contains multiple Run objects
+- Run contains multiple RunContent objects
+- RunContent can be either TextContent or TabContent
+- Paragraph can optionally have Numbering properties
+- Both Paragraph and Run reference style properties from styles_models
+
+USAGE CONTEXT:
+These models are used throughout the DOCX parser to represent the hierarchical structure of paragraphs and their content. They provide a structured way to store and manipulate paragraph data during the parsing and conversion process. 

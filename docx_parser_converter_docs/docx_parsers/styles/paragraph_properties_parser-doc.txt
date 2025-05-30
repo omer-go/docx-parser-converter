@@ -1,0 +1,160 @@
+DOCX PARSER CONVERTER - PARAGRAPH_PROPERTIES_PARSER.PY DOCUMENTATION
+====================================================================
+
+FILE PURPOSE:
+This file contains the ParagraphPropertiesParser class that extracts and parses paragraph-level formatting properties from DOCX XML elements. It handles the conversion of paragraph property XML elements into structured ParagraphStyleProperties objects, covering spacing, indentation, alignment, and advanced paragraph formatting settings.
+
+IMPORTS:
+- xml.etree.ElementTree: For XML parsing and manipulation (aliased as ET)
+- typing: For type hints (Optional, List)
+- docx_parser_converter.docx_parsers.helpers.common_helpers: For XML helper functions (extract_element, extract_attribute, extract_boolean_attribute)
+- docx_parser_converter.docx_parsers.utils.convert_twips_to_points: For unit conversion
+- docx_parser_converter.docx_parsers.models.styles_models: For style data models (ParagraphStyleProperties, SpacingProperties, IndentationProperties)
+
+FUNCTIONS:
+None defined outside of classes.
+
+CLASSES:
+
+1. ParagraphPropertiesParser
+   Purpose: Parses the paragraph properties from a DOCX paragraph properties element
+   Description: This class extracts and parses various properties related to paragraph formatting, converting them into structured Pydantic models for further processing or conversion to other formats. Handles comprehensive paragraph-level formatting including spacing, indentation, alignment, and advanced layout properties.
+
+   METHODS:
+
+   parse(self, pPr_element: ET.Element) -> ParagraphStyleProperties
+   Purpose: Parses the given paragraph properties element into a ParagraphStyleProperties object
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: ParagraphStyleProperties - The parsed paragraph style properties
+   Description: Main parsing method that extracts all paragraph property components and assembles them into a complete ParagraphStyleProperties object. Coordinates the parsing of spacing, indentation, alignment, outline levels, and advanced paragraph formatting settings.
+
+   extract_spacing(self, pPr_element: ET.Element) -> Optional[SpacingProperties]
+   Purpose: Extracts spacing properties from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[SpacingProperties] - The extracted spacing properties, or None if not found
+   Description: Parses paragraph spacing settings including before, after, and line spacing. Converts spacing values from twips to points for consistency. Handles various spacing types for proper paragraph layout.
+
+   extract_indentation(self, pPr_element: ET.Element) -> Optional[IndentationProperties]
+   Purpose: Extracts indentation properties from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[IndentationProperties] - The extracted indentation properties, or None if not found
+   Description: Parses paragraph indentation settings including left, right, first line, and hanging indents. Handles both standard and alternative attribute names (start/end for left/right). Properly processes hanging indents as negative first-line indents.
+
+   convert_to_points(self, element: ET.Element, attrs: List[str]) -> Optional[float]
+   Purpose: Converts the given attribute values to points
+   Parameters:
+   - element (ET.Element): The XML element containing the attributes
+   - attrs (List[str]): The list of attribute names to convert
+   Returns: Optional[float] - The converted value in points, or None if not found
+   Description: Helper method that searches through multiple attribute names and converts the first found value from twips to points. Supports alternative attribute naming conventions for internationalization.
+
+   extract_outline_level(self, pPr_element: ET.Element) -> Optional[int]
+   Purpose: Extracts the outline level from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[int] - The extracted outline level, or None if not found
+   Description: Parses outline level settings for hierarchical document structure. Used for heading levels and document navigation.
+
+   extract_widow_control(self, pPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts the widow control setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[bool] - The widow control setting, or None if not found
+   Description: Parses widow control settings that prevent single lines of a paragraph from appearing alone at the top or bottom of a page.
+
+   extract_suppress_auto_hyphens(self, pPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts the suppress auto hyphens setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[bool] - The suppress auto hyphens setting, or None if not found
+   Description: Parses automatic hyphenation suppression settings for paragraphs that should not be hyphenated.
+
+   extract_bidi(self, pPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts the bidirectional text setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[bool] - The bidirectional text setting, or None if not found
+   Description: Parses bidirectional text settings for right-to-left languages and mixed text direction support.
+
+   extract_justification(self, pPr_element: ET.Element) -> Optional[str]
+   Purpose: Extracts the justification setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[str] - The justification setting, or None if not found
+   Description: Parses text alignment settings including left, center, right, justify, and distribute options for paragraph alignment.
+
+   extract_keep_next(self, pPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts the keep next setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[bool] - The keep next setting, or None if not found
+   Description: Parses keep-with-next settings that prevent page breaks between this paragraph and the following paragraph.
+
+   extract_suppress_line_numbers(self, pPr_element: ET.Element) -> Optional[bool]
+   Purpose: Extracts the suppress line numbers setting from the given paragraph properties element
+   Parameters:
+   - pPr_element (ET.Element): The paragraph properties element
+   Returns: Optional[bool] - The suppress line numbers setting, or None if not found
+   Description: Parses line numbering suppression settings for paragraphs that should not display line numbers.
+
+INSTANCE ATTRIBUTES:
+None explicitly defined (methods are instance methods).
+
+DATA MODELS USED:
+- ParagraphStyleProperties: Container for all paragraph-level formatting properties
+- SpacingProperties: Paragraph spacing specifications (before, after, line)
+- IndentationProperties: Paragraph indentation specifications (left, right, first-line)
+
+DEPENDENCIES:
+- XML parsing utilities for element and attribute extraction
+- Unit conversion utilities for spacing and indentation measurements
+- Helper functions for boolean attribute handling
+- Style data models for structured representation
+
+USAGE CONTEXT:
+This parser is used by higher-level style parsers to extract comprehensive paragraph formatting information. Paragraph properties control the layout and appearance of entire paragraphs, including:
+- Spacing and line height settings
+- Indentation and margin specifications
+- Text alignment and justification
+- Advanced layout controls (widow/orphan control, keep-with-next)
+- Document structure (outline levels)
+- Language-specific formatting (bidirectional text)
+
+PARAGRAPH PROPERTY TYPES SUPPORTED:
+- **Spacing Properties**: Before, after, and line spacing
+- **Indentation Properties**: Left, right, first-line, and hanging indents
+- **Alignment Properties**: Text justification and alignment
+- **Layout Controls**: Widow control, keep-next, line numbering
+- **Structure Properties**: Outline levels for hierarchical documents
+- **Language Properties**: Bidirectional text support
+- **Typography Properties**: Hyphenation control
+
+UNIT CONVERSION:
+- Converts spacing measurements from twips to points
+- Converts indentation measurements from twips to points
+- Handles various measurement units used in DOCX format
+- Maintains precision during conversion
+- Supports alternative measurement attributes
+
+SPECIAL HANDLING:
+- **Hanging Indents**: Properly converts hanging indents to negative first-line indents
+- **Alternative Attributes**: Supports both standard and alternative attribute names (left/start, right/end)
+- **Boolean Properties**: Uses proper boolean attribute extraction for on/off settings
+- **Outline Levels**: Converts string outline levels to integer values
+
+ERROR HANDLING:
+- Returns None for missing property elements
+- Uses safe attribute extraction to handle malformed values
+- Handles boolean attributes with proper default values
+- Provides graceful degradation when properties are incomplete
+- Supports multiple attribute name variations for robustness
+
+TECHNICAL NOTES:
+- Uses instance methods for stateful parsing operations
+- Supports comprehensive paragraph-level formatting coverage
+- Maintains compatibility with various DOCX formatting features
+- Integrates with the broader style parsing system for complete document formatting
+- Handles complex indentation scenarios including hanging indents 

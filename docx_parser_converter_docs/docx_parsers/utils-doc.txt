@@ -1,0 +1,71 @@
+DOCX PARSER CONVERTER - UTILS.PY DOCUMENTATION
+==============================================
+
+FILE PURPOSE:
+This file provides utility functions for working with DOCX files and XML processing. It contains helper functions for extracting XML content from DOCX files, file I/O operations, unit conversions, and property merging operations.
+
+IMPORTS:
+- io: For handling byte streams
+- zipfile: For working with ZIP archives (DOCX files are ZIP archives)
+- xml.etree.ElementTree as ET: For XML parsing and manipulation
+- typing.Union, typing.Optional: For type hints
+- pydantic.BaseModel: For data validation and modeling
+
+FUNCTIONS:
+
+1. extract_xml_root_from_docx(docx_file: bytes, xml_filename: str) -> ET.Element
+   Purpose: Extracts the root element from a specified XML file within a DOCX file
+   Parameters:
+   - docx_file (bytes): The binary content of the DOCX file
+   - xml_filename (str): The name of the XML file to extract (e.g., 'document.xml')
+   Returns: ET.Element - The root element of the extracted XML file
+   Description: Opens the DOCX file as a ZIP archive, extracts the specified XML file from the 'word/' directory, parses it, and returns the root element.
+
+2. extract_xml_root_from_string(xml_content: str) -> ET.Element
+   Purpose: Extracts the root element from an XML string
+   Parameters:
+   - xml_content (str): The XML content as a string
+   Returns: ET.Element - The root element of the parsed XML
+   Description: Parses XML content from a string and returns the root element.
+
+3. read_binary_from_file_path(file_path: str) -> bytes
+   Purpose: Reads the binary content from a specified file path
+   Parameters:
+   - file_path (str): The path to the file to read
+   Returns: bytes - The binary content of the file
+   Description: Opens a file in binary read mode and returns its content as bytes.
+
+4. convert_twips_to_points(twips: int) -> float
+   Purpose: Converts twips (twentieths of a point) to points
+   Parameters:
+   - twips (int): The value in twips
+   Returns: float - The value in points
+   Description: Converts measurement units from twips to points by dividing by 20. Twips are commonly used in Microsoft Word documents.
+
+5. convert_half_points_to_points(half_points: int) -> float
+   Purpose: Converts half-points to points
+   Parameters:
+   - half_points (int): The value in half-points
+   Returns: float - The value in points
+   Description: Converts measurement units from half-points to points by dividing by 2.
+
+6. merge_properties(base_props: Union[BaseModel, None], derived_props: Union[BaseModel, None]) -> Union[BaseModel, None]
+   Purpose: Merges two sets of properties, with derived properties taking precedence over base properties
+   Parameters:
+   - base_props (Union[BaseModel, None]): The base properties
+   - derived_props (Union[BaseModel, None]): The derived properties
+   Returns: Union[BaseModel, None] - The merged properties
+   Description: Performs a deep merge of two Pydantic BaseModel objects. The derived properties override base properties, and nested dictionaries are merged recursively. Returns None if both inputs are None.
+
+CLASSES:
+None defined in this file.
+
+DATA MODELS:
+This file uses Pydantic BaseModel for type hints but doesn't define specific data models. It works with generic BaseModel instances for property merging.
+
+DEPENDENCIES:
+- Pydantic BaseModel for data validation and modeling
+- Standard library modules for XML processing and file operations
+
+USAGE CONTEXT:
+This utility module is used throughout the DOCX parser converter system to handle common operations like XML extraction, unit conversions, and property merging. It provides the foundational functionality needed by other parser modules. 
