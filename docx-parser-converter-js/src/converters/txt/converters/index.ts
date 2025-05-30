@@ -9,6 +9,9 @@ export { RunConverter } from './run-converter.ts';
 export { TableConverter } from './table-converter.ts';
 export { NumberingConverter } from './numbering-converter.ts';
 
+// Import the NumberingSchema type
+import type { NumberingSchema } from '@/models/numbering-models.js';
+
 // Common interfaces for TXT conversion
 export interface TxtElement {
   /** Plain text content */
@@ -40,4 +43,6 @@ export interface ConversionContext {
   includeHeadingMarkers: boolean;
   /** Warnings encountered during conversion */
   warnings: string[];
+  /** Numbering schema for proper list/numbering conversion */
+  numberingSchema?: NumberingSchema;
 } 

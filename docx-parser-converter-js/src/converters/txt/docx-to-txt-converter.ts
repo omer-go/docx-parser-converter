@@ -45,6 +45,9 @@ export class DocxToTxtConverter {
   async convert(document: DocumentSchema): Promise<TxtConversionResult> {
     const startTime = performance.now();
     
+    // Extract numbering schema if available
+    const numberingSchema = (document as any)._numberingSchema;
+    
     // Create conversion context
     const context: ConversionContext = {
       indentLevel: 0,
@@ -55,6 +58,7 @@ export class DocxToTxtConverter {
       preserveTableStructure: this.options.preserveTableStructure,
       includeHeadingMarkers: this.options.includeHeadingMarkers,
       warnings: [],
+      numberingSchema, // Pass the numbering schema to the context
     };
 
     try {

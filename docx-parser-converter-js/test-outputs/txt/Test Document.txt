@@ -2,30 +2,30 @@ Document Title Style
 
 This is the first paragraph with Liberation Serif font (Default Paragraph Style).
 Numbering test:
-• First numbering level, the capital roman letter I with a dot (I.).
-• First numbering level, the capital roman letter II with a dot (II.), in red.
-    ◦ Second numbering level, the capital roman letter A with a dot (A.).
-    ◦ Second numbering level, the capital roman letter B with a dot (B.), in Tahoma font.
-        ▪ Third numbering level, the number 1 with a dot (1.), in Tahoma font.
-        ▪ Third numbering level, the number 2 with a dot (2.), in Calibri font.
-    ◦ Second numbering level, the capital roman letter C with a dot (C.), in red color.
-        ▪ Third numbering level, the number 1 with a dot (1.), the wordpreserveis underlined.preserve
-            ▫ Fourth numbering level, the letter a with a dot (a.), the wordpreserveboldis bold.preserve
-                ‣ Firth numbering level, the roman letter I with a dot (i.).
-                    • Sixth numbering level, a bullet.
+I. First numbering level, the capital roman letter I with a dot (I.).
+II. First numbering level, the capital roman letter II with a dot (II.), in red.
+    A. Second numbering level, the capital roman letter A with a dot (A.).
+    B. Second numbering level, the capital roman letter B with a dot (B.), in Tahoma font.
+        1. Third numbering level, the number 1 with a dot (1.), in Tahoma font.
+        2. Third numbering level, the number 2 with a dot (2.), in Calibri font.
+    C. Second numbering level, the capital roman letter C with a dot (C.), in red color.
+        1. Third numbering level, the number 1 with a dot (1.), the wordpreserveis underlined.preserve
+            a. Fourth numbering level, the letter a with a dot (a.), the wordpreserveboldis bold.preserve
+                i. Firth numbering level, the roman letter I with a dot (i.).
+                     Sixth numbering level, a bullet.
 Numbering test #2:
-• First numbering level, the number 1 (without any dots or brackets).
-    ◦ Second numbering level – 1.1
-        ▪ Third numbering level – 1.1.1
-            ▫ Fourth numbering level – 1.1.1.1
-            ▫ Fourth numbering level – 1.1.1.2
-            ▫ Fourth numbering level – 1.1.1.3
-        ▪ Third numbering level – 1.1.2
-        ▪ Third numbering level – 1.1.3
-            ▫ Fourth numbering level – 1.1.3.1
-            ▫ Fourth numbering level – 1.1.3.2
-            ▫ Fourth numbering level – 1.1.3.3
-                ‣ Fifth numbering level – 1.1.3.3.1
+1 First numbering level, the number 1 (without any dots or brackets).
+    1.1 Second numbering level – 1.1
+        1.1.1 Third numbering level – 1.1.1
+            1.1.1.1 Fourth numbering level – 1.1.1.1
+            1.1.1.2 Fourth numbering level – 1.1.1.2
+            1.1.1.3 Fourth numbering level – 1.1.1.3
+        1.1.2 Third numbering level – 1.1.2
+        1.1.3 Third numbering level – 1.1.3
+            1.1.3.1 Fourth numbering level – 1.1.3.1
+            1.1.3.2 Fourth numbering level – 1.1.3.2
+            1.1.3.3 Fourth numbering level – 1.1.3.3
+                1.1.3.3.1 Fifth numbering level – 1.1.3.3.1
 Table test:
 Another Table with only outline visible borders:
 +------------+--------------+-----+-------------+-----------------+

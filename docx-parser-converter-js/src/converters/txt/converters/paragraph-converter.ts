@@ -26,7 +26,7 @@ export class ParagraphConverter {
     
     // Add numbering if present
     if (paragraph.numbering) {
-      const numberingElement = NumberingConverter.convertParagraphNumbering(
+      const numberingElement = NumberingConverter.convertNumbering(
         paragraph.numbering,
         context
       );
