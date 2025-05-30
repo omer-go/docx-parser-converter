@@ -1,0 +1,34 @@
+import { z } from 'zod';
+
+import { TableSchema } from './table_models';
+import { ParagraphSchema } from './paragraph_models';
+
+// Placeholder types and schemas for Paragraph and Table
+// These will be replaced with actual imports later
+// type Paragraph = any; // Paragraph type will be inferred from ParagraphSchema
+// type Table = any; // Table type will be inferred from TableSchema
+// const ParagraphSchema = z.any(); // Replaced by import
+// const TableSchema = z.any(); // Replaced by import
+
+// Schema for Document Margins
+export const DocMarginsSchema = z.object({
+  top_pt: z.number().optional(),
+  right_pt: z.number().optional(),
+  bottom_pt: z.number().optional(),
+  left_pt: z.number().optional(),
+  header_pt: z.number().optional(),
+  footer_pt: z.number().optional(),
+  gutter_pt: z.number().optional(),
+});
+
+// Interface for Document Margins
+export type DocMargins = z.infer<typeof DocMarginsSchema>;
+
+// Schema for Document Structure
+export const DocumentSchemaSchema = z.object({
+  elements: z.array(z.union([ParagraphSchema, TableSchema])),
+  doc_margins: DocMarginsSchema.optional(),
+});
+
+// Interface for Document Structure
+export type DocumentSchema = z.infer<typeof DocumentSchemaSchema>;

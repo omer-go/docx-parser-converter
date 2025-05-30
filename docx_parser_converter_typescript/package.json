@@ -1,0 +1,22 @@
+{
+  "name": "docx_parser_converter_typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fast-xml-parser": "^5.2.3",
+    "rollup": "^4.41.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "zod": "^3.25.41"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.26"
+  }
+}
