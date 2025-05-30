@@ -3,7 +3,7 @@ import {
   extractAttribute,
   safeInt,
   extractBooleanAttribute,
-  DEFAULT_ATTRIBUTE_PREFIX,
+  DEFAULT_ATTRIBUTES_GROUP_NAME,
 } from '../../helpers/common_helpers';
 import { convertTwipsToPoints } from '../../utils';
 import {
@@ -201,12 +201,12 @@ function parseTableLook(tblLookElement: any, attrPrefix: string): Partial<TableL
 /**
  * Parses the <w:tblPr> (Table Properties) element from DOCX XML.
  * @param tblPrElement The <w:tblPr> XML element object, or undefined.
- * @param attributeObjectPrefix The prefix used by fast-xml-parser for attribute objects.
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group.
  * @returns A TablePropertiesModel object or undefined if no properties are found or input is invalid.
  */
 export function parseTableProperties(
   tblPrElement: any | undefined,
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): TablePropertiesModel | undefined {
   if (!tblPrElement) {
     return undefined;
@@ -216,31 +216,31 @@ export function parseTableProperties(
 
   const tblStyleElement = extractElement(tblPrElement, 'w:tblStyle');
   if (tblStyleElement) {
-    props.style_id = extractAttribute(tblStyleElement, 'w:val', attributeObjectPrefix);
+    props.style_id = extractAttribute(tblStyleElement, 'w:val', attributesGroupName);
   }
 
-  props.width = parseTableWidth(tblPrElement['w:tblW'], attributeObjectPrefix);
+  props.width = parseTableWidth(tblPrElement['w:tblW'], attributesGroupName);
 
   const jcElement = extractElement(tblPrElement, 'w:jc');
   if (jcElement) {
-    props.alignment = extractAttribute(jcElement, 'w:val', attributeObjectPrefix);
+    props.alignment = extractAttribute(jcElement, 'w:val', attributesGroupName);
   }
 
-  props.indent = parseTableIndent(tblPrElement['w:tblInd'], attributeObjectPrefix);
-  props.cell_margins = parseCellMargins(tblPrElement['w:tblCellMar'], attributeObjectPrefix);
-  props.borders = parseTableCellBorders(tblPrElement['w:tblBorders'], attributeObjectPrefix);
-  props.shading = parseShadingProperties(tblPrElement['w:shd'], attributeObjectPrefix);
+  props.indent = parseTableIndent(tblPrElement['w:tblInd'], attributesGroupName);
+  props.cell_margins = parseCellMargins(tblPrElement['w:tblCellMar'], attributesGroupName);
+  props.borders = parseTableCellBorders(tblPrElement['w:tblBorders'], attributesGroupName);
+  props.shading = parseShadingProperties(tblPrElement['w:shd'], attributesGroupName);
 
   const tblLayoutElement = extractElement(tblPrElement, 'w:tblLayout');
   if (tblLayoutElement) {
-    props.layout_type = extractAttribute(tblLayoutElement, 'w:type', attributeObjectPrefix);
+    props.layout_type = extractAttribute(tblLayoutElement, 'w:type', attributesGroupName);
   }
 
-  props.look = parseTableLook(tblPrElement['w:tblLook'], attributeObjectPrefix);
+  props.look = parseTableLook(tblPrElement['w:tblLook'], attributesGroupName);
 
   const tblCellSpacingElement = extractElement(tblPrElement, 'w:tblCellSpacing');
   if (tblCellSpacingElement) {
-      const spacingVal = extractAttribute(tblCellSpacingElement, 'w:w', attributeObjectPrefix);
+      const spacingVal = extractAttribute(tblCellSpacingElement, 'w:w', attributesGroupName);
       const spacingTwips = safeInt(spacingVal);
       if (spacingTwips !== undefined) {
           props.cell_spacing_dxa = spacingTwips; // Assuming model field is cell_spacing_dxa (twips)

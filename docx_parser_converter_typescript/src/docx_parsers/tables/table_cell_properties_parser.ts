@@ -3,7 +3,7 @@ import {
   extractAttribute,
   safeInt,
   extractBooleanAttribute,
-  DEFAULT_ATTRIBUTE_PREFIX,
+  DEFAULT_ATTRIBUTES_GROUP_NAME,
 } from '../../helpers/common_helpers';
 import { convertTwipsToPoints } from '../../utils';
 import {
@@ -139,12 +139,12 @@ function parseTcCellMargins(tcMarElement: any, attrPrefix: string): Partial<Marg
 /**
  * Parses the <w:tcPr> (Table Cell Properties) element from DOCX XML.
  * @param tcPrElement The <w:tcPr> XML element object, or undefined.
- * @param attributeObjectPrefix The prefix used by fast-xml-parser for attribute objects.
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group.
  * @returns A TableCellPropertiesModel object or undefined if no properties are found or input is invalid.
  */
 export function parseTableCellProperties(
   tcPrElement: any | undefined,
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): TableCellPropertiesModel | undefined {
   if (!tcPrElement) {
     return undefined;
@@ -152,41 +152,41 @@ export function parseTableCellProperties(
 
   const props: Partial<TableCellPropertiesModel> = {};
 
-  props.width = parseTcWidth(tcPrElement['w:tcW'], attributeObjectPrefix);
-  props.borders = parseTcBorders(tcPrElement['w:tcBorders'], attributeObjectPrefix);
-  props.shading = parseTcShading(tcPrElement['w:shd'], attributeObjectPrefix);
-  props.margins = parseTcCellMargins(tcPrElement['w:tcMar'], attributeObjectPrefix);
+  props.width = parseTcWidth(tcPrElement['w:tcW'], attributesGroupName);
+  props.borders = parseTcBorders(tcPrElement['w:tcBorders'], attributesGroupName);
+  props.shading = parseTcShading(tcPrElement['w:shd'], attributesGroupName);
+  props.margins = parseTcCellMargins(tcPrElement['w:tcMar'], attributesGroupName);
 
   const textDirectionElement = extractElement(tcPrElement, 'w:textDirection');
   if (textDirectionElement) {
-    props.textDirection = extractAttribute(textDirectionElement, 'w:val', attributeObjectPrefix);
+    props.textDirection = extractAttribute(textDirectionElement, 'w:val', attributesGroupName);
   }
 
   const vAlignElement = extractElement(tcPrElement, 'w:vAlign');
   if (vAlignElement) {
-    props.vAlign = extractAttribute(vAlignElement, 'w:val', attributeObjectPrefix);
+    props.vAlign = extractAttribute(vAlignElement, 'w:val', attributesGroupName);
   }
 
   const hideMarkElement = extractElement(tcPrElement, 'w:hideMark');
   if (hideMarkElement !== undefined) { // Boolean property, presence matters
-    props.hideMark = extractBooleanAttribute(hideMarkElement, 'w:val', attributeObjectPrefix);
+    props.hideMark = extractBooleanAttribute(hideMarkElement, 'w:val', attributesGroupName);
   }
 
   const noWrapElement = extractElement(tcPrElement, 'w:noWrap');
   if (noWrapElement !== undefined) {
-    props.noWrap = extractBooleanAttribute(noWrapElement, 'w:val', attributeObjectPrefix);
+    props.noWrap = extractBooleanAttribute(noWrapElement, 'w:val', attributesGroupName);
   }
 
   const vMergeElement = extractElement(tcPrElement, 'w:vMerge');
   if (vMergeElement) {
     // vMerge can be an empty tag (implies 'continue') or have w:val="restart"
-    const vMergeVal = extractAttribute(vMergeElement, 'w:val', attributeObjectPrefix);
+    const vMergeVal = extractAttribute(vMergeElement, 'w:val', attributesGroupName);
     props.vMerge = vMergeVal ? vMergeVal : 'continue'; // Default to 'continue' if element present but no val
   }
 
   const gridSpanElement = extractElement(tcPrElement, 'w:gridSpan');
   if (gridSpanElement) {
-    const val = extractAttribute(gridSpanElement, 'w:val', attributeObjectPrefix);
+    const val = extractAttribute(gridSpanElement, 'w:val', attributesGroupName);
     props.gridSpan = safeInt(val);
   }
 

@@ -3,7 +3,7 @@ import {
   extractElement,
   extractAttribute,
   // WORDML_NAMESPACE_PREFIX, // Not directly used if prefixes are part of keys
-  DEFAULT_ATTRIBUTE_PREFIX,
+  DEFAULT_ATTRIBUTES_GROUP_NAME,
 } from '../helpers/common_helpers';
 import {
   StylesModel,
@@ -39,10 +39,8 @@ export class StylesParser {
    * @param xmlContent The string content of styles.xml.
    */
   constructor(xmlContent: string) {
-    // this.attributePrefix = DEFAULT_ATTRIBUTE_PREFIX;
     const options = {
-      // attributeNamePrefix: "@_", // Using attributesGroupName instead
-      attributesGroupName: "$attributes", // Group attributes under $attributes
+      attributesGroupName: DEFAULT_ATTRIBUTES_GROUP_NAME, // Use the consistent group name
       ignoreAttributes: false,
       parseTagValue: false,
       parseAttributeValue: false,

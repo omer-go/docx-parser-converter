@@ -12,9 +12,9 @@ export const NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml
 export const WORDML_NAMESPACE_PREFIX = "w";
 
 /**
- * Default prefix for attribute objects in fast-xml-parser.
+ * Default key for attribute group object in fast-xml-parser.
  */
-export const DEFAULT_ATTRIBUTE_PREFIX = "@_";
+export const DEFAULT_ATTRIBUTES_GROUP_NAME = "$attributes";
 
 /**
  * Extracts a nested element from a parent JavaScript object (from fast-xml-parser) based on a path.
@@ -65,20 +65,20 @@ export function extractElement(parent: any, path: string | string[]): any | unde
  * Extracts an attribute from a parsed XML element.
  * @param element The element object.
  * @param attributeName The name of the attribute (e.g., "w:val" or "val").
- * @param attributeObjectPrefix The prefix key used by fast-xml-parser for attributes. Defaults to "@_".
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group. Defaults to "$attributes".
  * @returns The attribute value string or undefined if not found.
  */
 export function extractAttribute(
   element: any,
   attributeName: string,
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): string | undefined {
   console.debug(`extractAttribute: attributeName='${attributeName}', element type='${typeof element}'`);
-  if (element === null || element === undefined || typeof element !== 'object' || !element[attributeObjectPrefix]) {
+  if (element === null || element === undefined || typeof element !== 'object' || !element[attributesGroupName]) {
     console.debug(`extractAttribute: result='undefined' (element null/undefined, not an object, or no attribute object)`);
     return undefined;
   }
-  const result = element[attributeObjectPrefix][attributeName];
+  const result = element[attributesGroupName][attributeName];
   console.debug(`extractAttribute: result='${result}'`);
   return result;
 }
@@ -102,13 +102,13 @@ export function safeInt(value: string | null | undefined): number | undefined {
  * unless a "val" attribute explicitly states "false" or "0".
  * @param element The element object.
  * @param valAttributeName The name of the attribute that might contain "false" or "0" (e.g., "w:val"). Defaults to "w:val".
- * @param attributeObjectPrefix The prefix key used by fast-xml-parser for attributes. Defaults to "@_".
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group. Defaults to "$attributes".
  * @returns True, false, or undefined if the element itself is null/undefined.
  */
 export function extractBooleanAttribute(
   element: any,
   valAttributeName: string = "w:val",
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): boolean | undefined {
   console.debug(`extractBooleanAttribute: valAttributeName='${valAttributeName}', element type='${typeof element}'`);
   if (element === null || element === undefined) {
@@ -120,7 +120,7 @@ export function extractBooleanAttribute(
   // unless its valAttributeName specifically indicates false.
   let result = true;
 
-  const attributes = element[attributeObjectPrefix];
+  const attributes = element[attributesGroupName];
   if (attributes && attributes[valAttributeName] !== undefined) {
     const attrValue = attributes[valAttributeName];
     if (attrValue === "false" || attrValue === "0" || attrValue === false) { // also check boolean false

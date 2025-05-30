@@ -1,7 +1,7 @@
 import {
   extractAttribute,
   safeInt,
-  DEFAULT_ATTRIBUTE_PREFIX,
+  DEFAULT_ATTRIBUTES_GROUP_NAME,
 } from '../../helpers/common_helpers';
 import { convertTwipsToPoints } from '../../utils';
 import { TableGridModel } from '../../models/index';
@@ -20,12 +20,12 @@ const ensureArray = (item: any): any[] => {
 /**
  * Parses the <w:tblGrid> element from DOCX XML, extracting column widths.
  * @param tblGridElement The <w:tblGrid> XML element object, or undefined.
- * @param attributeObjectPrefix The prefix used by fast-xml-parser for attribute objects.
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group.
  * @returns A TableGridModel object containing column widths in points, or undefined if no valid columns are found.
  */
 export function parseTableGrid(
   tblGridElement: any | undefined,
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): TableGridModel | undefined {
   if (!tblGridElement) {
     return undefined;
@@ -35,7 +35,7 @@ export function parseTableGrid(
   const gridColElements = ensureArray(tblGridElement['w:gridCol']);
 
   for (const gridColElement of gridColElements) {
-    const widthStr = extractAttribute(gridColElement, 'w:w', attributeObjectPrefix);
+    const widthStr = extractAttribute(gridColElement, 'w:w', attributesGroupName);
     const widthTwips = safeInt(widthStr);
 
     if (widthTwips !== undefined) {

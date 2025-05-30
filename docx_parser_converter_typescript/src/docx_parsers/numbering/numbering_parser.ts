@@ -3,7 +3,7 @@ import {
   extractElement,
   extractAttribute,
   safeInt,
-  DEFAULT_ATTRIBUTE_PREFIX,
+  DEFAULT_ATTRIBUTES_GROUP_NAME,
 } from '../../helpers/common_helpers';
 // import { convertTwipsToPoints } from '../../utils'; // Not directly used here, but by property parsers
 import {
@@ -32,32 +32,32 @@ const ensureArray = (item: any): any[] => {
  * @param lvlElement The <w:lvl> XML element object.
  * @param numId The numId of the parent numbering instance.
  * @param ilvl The ilvl of this level.
- * @param attributeObjectPrefix The prefix for attribute objects.
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group.
  * @returns A partial NumberingLevelModel object.
  */
 function parseLevelProperties(
   lvlElement: any,
   numId: number,
   ilvl: number,
-  attributeObjectPrefix: string
+  attributesGroupName: string
 ): Partial<NumberingLevelModel> {
   const props: Partial<NumberingLevelModel> = { numId, ilvl };
 
-  const start = extractAttribute(extractElement(lvlElement, 'w:start'), 'w:val', attributeObjectPrefix);
+  const start = extractAttribute(extractElement(lvlElement, 'w:start'), 'w:val', attributesGroupName);
   props.start = safeInt(start) ?? 1; // Default start to 1 if not specified
 
-  const numFmt = extractAttribute(extractElement(lvlElement, 'w:numFmt'), 'w:val', attributeObjectPrefix);
+  const numFmt = extractAttribute(extractElement(lvlElement, 'w:numFmt'), 'w:val', attributesGroupName);
   if (numFmt) props.numFmt = numFmt;
 
-  const lvlText = extractAttribute(extractElement(lvlElement, 'w:lvlText'), 'w:val', attributeObjectPrefix);
+  const lvlText = extractAttribute(extractElement(lvlElement, 'w:lvlText'), 'w:val', attributesGroupName);
   if (lvlText) props.lvlText = lvlText;
 
-  const lvlJc = extractAttribute(extractElement(lvlElement, 'w:lvlJc'), 'w:val', attributeObjectPrefix);
+  const lvlJc = extractAttribute(extractElement(lvlElement, 'w:lvlJc'), 'w:val', attributesGroupName);
   if (lvlJc) props.lvlJc = lvlJc;
 
   const pPrElement = lvlElement['w:pPr'];
   if (pPrElement) {
-    const pStyleProps = parseParagraphProperties(pPrElement, attributeObjectPrefix);
+    const pStyleProps = parseParagraphProperties(pPrElement, attributesGroupName);
     if (pStyleProps?.indentation) {
       props.indent = pStyleProps.indentation;
     }
@@ -72,7 +72,7 @@ function parseLevelProperties(
 
   const rPrElement = lvlElement['w:rPr'];
   if (rPrElement) {
-    const rStyleProps = parseRunProperties(rPrElement, attributeObjectPrefix);
+    const rStyleProps = parseRunProperties(rPrElement, attributesGroupName);
     if (rStyleProps?.fonts) { // Assuming fonts are the primary run property for numbering levels
       props.fonts = rStyleProps.fonts;
     }
@@ -85,19 +85,19 @@ function parseLevelProperties(
 /**
  * Parses the numbering.xml file content from a DOCX document.
  * @param xmlString The string content of numbering.xml.
- * @param attributeObjectPrefix The prefix used by fast-xml-parser for attribute objects (e.g., "@_" or "$attributes").
+ * @param attributesGroupName The key used by fast-xml-parser for the attributes group (e.g., "$attributes").
  * @returns A NumberingModel object or undefined if parsing fails or input is invalid.
  */
 export function parseNumberingXml(
   xmlString: string,
-  attributeObjectPrefix: string = DEFAULT_ATTRIBUTE_PREFIX
+  attributesGroupName: string = DEFAULT_ATTRIBUTES_GROUP_NAME
 ): NumberingModel | undefined {
   if (!xmlString) {
     return undefined;
   }
 
   const parser = new XMLParser({
-    attributeNamePrefix: attributeObjectPrefix,
+    attributesGroupName: attributesGroupName, // Use the provided group name
     ignoreAttributes: false,
     parseTagValue: false,
     parseAttributeValue: false,
@@ -132,7 +132,7 @@ export function parseNumberingXml(
   const abstractNumMap: Map<number, any> = new Map();
   const abstractNums = ensureArray(numberingRoot['w:abstractNum']);
   for (const abstractNumElement of abstractNums) {
-    const abstractNumId = safeInt(extractAttribute(abstractNumElement, 'w:abstractNumId', attributeObjectPrefix));
+    const abstractNumId = safeInt(extractAttribute(abstractNumElement, 'w:abstractNumId', attributesGroupName));
     if (abstractNumId !== undefined) {
       abstractNumMap.set(abstractNumId, abstractNumElement);
     }
@@ -142,10 +142,10 @@ export function parseNumberingXml(
   const nums = ensureArray(numberingRoot['w:num']);
 
   for (const numElement of nums) {
-    const numId = safeInt(extractAttribute(numElement, 'w:numId', attributeObjectPrefix));
+    const numId = safeInt(extractAttribute(numElement, 'w:numId', attributesGroupName));
     if (numId === undefined) continue;
 
-    const abstractNumIdVal = extractAttribute(extractElement(numElement, 'w:abstractNumId'), 'w:val', attributeObjectPrefix);
+    const abstractNumIdVal = extractAttribute(extractElement(numElement, 'w:abstractNumId'), 'w:val', attributesGroupName);
     const abstractNumId = safeInt(abstractNumIdVal);
     if (abstractNumId === undefined) continue;
 
@@ -158,18 +158,18 @@ export function parseNumberingXml(
     const levelDefinitions: Map<number, Partial<NumberingLevelModel>> = new Map();
     const abstractLvls = ensureArray(abstractNumElement['w:lvl']);
     for (const lvlElement of abstractLvls) {
-      const ilvl = safeInt(extractAttribute(lvlElement, 'w:ilvl', attributeObjectPrefix));
+      const ilvl = safeInt(extractAttribute(lvlElement, 'w:ilvl', attributesGroupName));
       if (ilvl !== undefined) {
-        levelDefinitions.set(ilvl, parseLevelProperties(lvlElement, numId, ilvl, attributeObjectPrefix));
+        levelDefinitions.set(ilvl, parseLevelProperties(lvlElement, numId, ilvl, attributesGroupName));
       }
     }
 
     const lvlOverrides = ensureArray(numElement['w:lvlOverride']);
     for (const overrideElement of lvlOverrides) {
-        const overrideIlvl = safeInt(extractAttribute(overrideElement, 'w:ilvl', attributeObjectPrefix));
+        const overrideIlvl = safeInt(extractAttribute(overrideElement, 'w:ilvl', attributesGroupName));
         if (overrideIlvl === undefined) continue;
 
-        const startOverrideVal = extractAttribute(extractElement(overrideElement, 'w:startOverride'), 'w:val', attributeObjectPrefix);
+        const startOverrideVal = extractAttribute(extractElement(overrideElement, 'w:startOverride'), 'w:val', attributesGroupName);
         if (startOverrideVal !== undefined) {
             const existingLevel = levelDefinitions.get(overrideIlvl);
             if (existingLevel) {
@@ -183,7 +183,7 @@ export function parseNumberingXml(
         const lvlElementOverride = overrideElement['w:lvl']; // Check for a full w:lvl override
         if (lvlElementOverride) {
             // Full override of the level
-            levelDefinitions.set(overrideIlvl, parseLevelProperties(lvlElementOverride, numId, overrideIlvl, attributeObjectPrefix));
+            levelDefinitions.set(overrideIlvl, parseLevelProperties(lvlElementOverride, numId, overrideIlvl, attributesGroupName));
         }
     }
 

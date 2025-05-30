@@ -91,9 +91,14 @@ export type TableCell = z.infer<typeof TableCellModel>;
 // 10. TableRowProperties
 export const TableRowPropertiesModel = z.object({
   cantSplit: z.boolean().optional(),
-  isHeader: z.boolean().optional(),
-  height_type: z.string().optional(), // e.g., "atLeast", "exact"
-  height_val_pt: z.number().optional(),
+  tblHeader: z.boolean().optional(), // Renamed from isHeader for consistency with tag
+  trHeight_val: z.number().optional(), // Height value in points
+  trHeight_hRule: z.string().optional(), // e.g., "atLeast", "exact", "auto"
+  justification: z.string().optional(), // e.g., "left", "center", "right"
+  tblBorders: TableCellBordersModel.optional(), // Row-level default cell borders
+  shd: ShadingPropertiesModel.optional(), // Row-level shading
+  tblCellSpacing_val: z.number().optional(), // Spacing value in points
+  tblCellSpacing_type: z.string().optional(), // Spacing type e.g., "dxa"
 });
 export type TableRowProperties = z.infer<typeof TableRowPropertiesModel>;
 
