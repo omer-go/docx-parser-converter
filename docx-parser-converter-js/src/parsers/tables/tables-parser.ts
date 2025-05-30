@@ -31,29 +31,41 @@ export class TablesParser extends BaseParser<Table> {
    * @returns Promise resolving to Table model
    */
   protected async parseInternal(xmlObj: Record<string, unknown>): Promise<Table> {
+    this.logInfo('Starting table parsing');
+    this.logXmlStructure(xmlObj);
+    
     // Extract w:tbl element
     let tblElement: Record<string, unknown>;
 
     if (xmlObj['w:tbl']) {
       const tblValue = xmlObj['w:tbl'];
+      this.logDebug('Found w:tbl property in xmlObj', tblValue, 'TBL_PROPERTY');
       
       // Handle case where w:tbl is an array
       if (Array.isArray(tblValue)) {
         if (tblValue.length === 0) {
           throw new Error('Empty w:tbl array found in XML');
         }
+        this.logInfo(`w:tbl is array with ${tblValue.length} elements, taking first`);
         tblElement = tblValue[0] as Record<string, unknown>;
       } else {
+        this.logInfo('w:tbl is single object');
         tblElement = tblValue as Record<string, unknown>;
       }
     } else if (xmlObj && typeof xmlObj === 'object' && Object.keys(xmlObj).length > 0) {
       // If the root object itself is the w:tbl element
+      this.logInfo('xmlObj itself appears to be the w:tbl element');
       tblElement = xmlObj;
     } else {
+      this.logError('No w:tbl element found in XML', xmlObj);
       throw new Error('No w:tbl element found in XML');
     }
 
-    return this.parseTableElement(tblElement);
+    this.logDebug('Extracted table element', tblElement, 'TABLE_ELEMENT');
+    const result = await this.parseTableElement(tblElement);
+    this.logDebug('Final table result', result, 'FINAL_TABLE');
+    
+    return result;
   }
 
   /**
@@ -62,9 +74,13 @@ export class TablesParser extends BaseParser<Table> {
    * @returns Parsed Table
    */
   private async parseTableElement(tblElement: Record<string, unknown>): Promise<Table> {
+    this.logInfo('Starting parseTableElement');
+    this.logDebug('Input table element', tblElement, 'TABLE_ELEMENT_INPUT');
+    
     const props: Partial<Table> = {};
 
     // Parse table properties - support both w:tblPr (standard) and w:tblPrEx (extended/real-world)
+    this.logInfo('Parsing table properties');
     let tblPrElement = this.getFirstChild(tblElement, 'w:tblPr');
     let isExtendedFormat = false;
 
@@ -74,38 +90,58 @@ export class TablesParser extends BaseParser<Table> {
       isExtendedFormat = true;
     }
     
+    this.logDebug('Found table properties element', { tblPrElement, isExtendedFormat }, 'TABLE_PROPERTIES');
+    
     if (tblPrElement) {
       try {
+        this.logInfo(`Parsing table properties (${isExtendedFormat ? 'extended' : 'standard'} format)`);
         // Create a wrapped object for the properties parser and serialize to XML
         const rootTag = isExtendedFormat ? 'w:tblPrEx' : 'w:tblPr';
         const tblPrWrapper = { [rootTag]: tblPrElement };
         const tblPrXml = this.serializeToXml(tblPrWrapper, rootTag);
         const propertiesResult = await this.propertiesParser.parse(tblPrXml);
         props.properties = propertiesResult.data;
+        this.logDebug('Parsed table properties', props.properties, 'PARSED_TABLE_PROPERTIES');
       } catch (error) {
+        this.logError('Failed to parse table properties', error);
         this.addWarning(`Failed to parse table properties: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
+    } else {
+      this.logInfo('No table properties found');
     }
 
     // Parse table grid from w:tblGrid element (may not exist in real-world format)
+    this.logInfo('Parsing table grid');
     const tblGridElement = this.getFirstChild(tblElement, 'w:tblGrid');
+    this.logDebug('Found table grid element', tblGridElement, 'TABLE_GRID');
     
     if (tblGridElement) {
       try {
+        this.logInfo('Parsing table grid structure');
         // Create a wrapped object for the grid parser and serialize to XML
         const tblGridWrapper = { 'w:tblGrid': tblGridElement };
         const tblGridXml = this.serializeToXml(tblGridWrapper, 'w:tblGrid');
         const gridResult = await this.gridParser.parse(tblGridXml);
         props.grid = gridResult.data;
+        this.logDebug('Parsed table grid', props.grid, 'PARSED_TABLE_GRID');
       } catch (error) {
+        this.logError('Failed to parse table grid', error);
         this.addWarning(`Failed to parse table grid: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
+    } else {
+      this.logInfo('No table grid found');
     }
 
     // Parse table rows - handle both standard format (w:tr elements) and real-world format (direct w:tc elements)
+    this.logInfo('Parsing table rows');
     const rowElements = this.getChildElements(tblElement, 'w:tr');
     const directCellElements = this.getChildElements(tblElement, 'w:tc');
     
+    this.logDebug('Found table structure', { 
+      rowElementsCount: rowElements.length, 
+      directCellElementsCount: directCellElements.length 
+    }, 'TABLE_STRUCTURE');
+
     const rows: TableRow[] = [];
 
     if (rowElements.length > 0) {

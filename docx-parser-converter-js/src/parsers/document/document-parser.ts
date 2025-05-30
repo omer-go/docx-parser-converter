@@ -39,31 +39,52 @@ export class DocumentParser extends BaseParser<DocumentSchema> {
    * @returns Promise resolving to DocumentSchema model
    */
   protected async parseInternal(xmlObj: Record<string, unknown>): Promise<DocumentSchema> {
+    this.logInfo('Starting document parsing');
+    this.logXmlStructure(xmlObj);
+    
     try {
       // Extract document element
+      this.logInfo('Extracting document element');
       const documentElement = this.extractDocumentElement(xmlObj);
+      this.logDebug('Extracted document element', documentElement, 'DOCUMENT_ELEMENT');
       
       // Extract document body
+      this.logInfo('Extracting document body');
       const bodyElement = this.extractBodyElement(documentElement);
+      this.logDebug('Extracted body element', bodyElement, 'BODY_ELEMENT');
       
       // Parse document elements (paragraphs and tables) in document order
+      this.logInfo('Parsing document elements (paragraphs and tables)');
       const elements = await this.parseDocumentElements(bodyElement);
+      this.logDebug('Parsed document elements', elements, 'ELEMENTS');
+      this.logInfo(`Total parsed elements: ${elements.length}`);
       
       // Parse document margins from sectPr elements
+      this.logInfo('Parsing document margins');
       const docMargins = await this.parseDocumentMargins(bodyElement);
+      this.logDebug('Parsed document margins', docMargins, 'MARGINS');
 
-      return DocumentSchemaModel.create({
+      const finalDocument = DocumentSchemaModel.create({
         elements,
         doc_margins: docMargins,
       });
+
+      this.logInfo('Successfully created final document');
+      this.logDebug('Final document schema', finalDocument, 'FINAL_DOCUMENT');
+
+      return finalDocument;
     } catch (error) {
       // For now, return a minimal document structure with warnings
+      this.logError(`Document parsing failed: ${error instanceof Error ? error.message : 'Unknown error'}`, error);
       this.addWarning(`Document parsing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       
-      return DocumentSchemaModel.create({
+      const fallbackDocument = DocumentSchemaModel.create({
         elements: [],
         doc_margins: undefined,
       });
+
+      this.logDebug('Fallback document created', fallbackDocument, 'FALLBACK');
+      return fallbackDocument;
     }
   }
 
@@ -117,39 +138,63 @@ export class DocumentParser extends BaseParser<DocumentSchema> {
    * @returns Promise resolving to array of document elements
    */
   private async parseDocumentElements(bodyElement: Record<string, unknown>): Promise<DocumentElement[]> {
+    this.logInfo('Starting parseDocumentElements');
     const elements: DocumentElement[] = [];
     
     // Handle empty body
     if (Object.keys(bodyElement).length === 0) {
+      this.logInfo('Body element is empty, returning empty elements array');
       return elements;
     }
     
     try {
       // Get all paragraphs
       const paragraphs = this.getChildElements(bodyElement, 'w:p');
-      for (const paragraphData of paragraphs) {
+      this.logInfo(`Found ${paragraphs.length} paragraphs to parse`);
+      this.logDebug('Raw paragraph elements', paragraphs, 'RAW_PARAGRAPHS');
+      
+      for (const [index, paragraphData] of paragraphs.entries()) {
         try {
+          this.logInfo(`Parsing paragraph ${index + 1}/${paragraphs.length}`);
+          this.logDebug(`Paragraph ${index + 1} raw data`, paragraphData, 'PARAGRAPH_RAW');
+          
           const paragraph = await this.parseParagraphElement({ 'w:p': paragraphData });
+          this.logDebug(`Paragraph ${index + 1} parsed result`, paragraph, 'PARAGRAPH_PARSED');
+          
           elements.push(paragraph);
+          this.logInfo(`Successfully parsed paragraph ${index + 1}`);
         } catch (error) {
+          this.logError(`Failed to parse paragraph ${index + 1}`, error);
           this.addWarning(`Failed to parse paragraph: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
       }
       
       // Get all tables
       const tables = this.getChildElements(bodyElement, 'w:tbl');
-      for (const tableData of tables) {
+      this.logInfo(`Found ${tables.length} tables to parse`);
+      this.logDebug('Raw table elements', tables, 'RAW_TABLES');
+      
+      for (const [index, tableData] of tables.entries()) {
         try {
+          this.logInfo(`Parsing table ${index + 1}/${tables.length}`);
+          this.logDebug(`Table ${index + 1} raw data`, tableData, 'TABLE_RAW');
+          
           const table = await this.parseTableElement({ 'w:tbl': tableData });
+          this.logDebug(`Table ${index + 1} parsed result`, table, 'TABLE_PARSED');
+          
           elements.push(table);
+          this.logInfo(`Successfully parsed table ${index + 1}`);
         } catch (error) {
+          this.logError(`Failed to parse table ${index + 1}`, error);
           this.addWarning(`Failed to parse table: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
       }
     } catch (error) {
+      this.logError('Error in parseDocumentElements', error);
       this.addWarning(`Error parsing document elements: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
+    this.logInfo(`parseDocumentElements completed with ${elements.length} total elements`);
     return elements;
   }
 

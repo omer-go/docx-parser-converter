@@ -276,4 +276,60 @@ export abstract class BaseParser<T extends BaseModel> {
     }
     return count;
   }
+
+  /**
+   * Add debug log for parsing steps
+   * @param step - Current parsing step
+   * @param data - Data being parsed or result
+   * @param prefix - Optional prefix for the log message
+   */
+  protected logDebug(step: string, data: unknown, prefix?: string): void {
+    const logPrefix = prefix ? `[${this.parserType}:${prefix}]` : `[${this.parserType}]`;
+    console.log(`${logPrefix} ${step}:`, JSON.stringify(data, null, 2));
+  }
+
+  /**
+   * Add info log for major parsing milestones
+   * @param message - Log message
+   * @param data - Optional data to include
+   */
+  protected logInfo(message: string, data?: unknown): void {
+    console.log(`[${this.parserType}:INFO] ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  }
+
+  /**
+   * Add error log for parsing failures
+   * @param message - Error message
+   * @param error - Error object or data
+   */
+  protected logError(message: string, error?: unknown): void {
+    console.error(`[${this.parserType}:ERROR] ${message}`, error);
+  }
+
+  /**
+   * Log the structure of XML object for debugging
+   * @param obj - XML object to log
+   * @param maxDepth - Maximum depth to log (default: 3)
+   */
+  protected logXmlStructure(obj: unknown, maxDepth: number = 3): void {
+    const getStructure = (value: unknown, depth: number): unknown => {
+      if (depth >= maxDepth) return '[...truncated...]';
+      
+      if (Array.isArray(value)) {
+        return value.length > 0 ? [getStructure(value[0], depth + 1), `...${value.length - 1} more items`] : [];
+      }
+      
+      if (typeof value === 'object' && value !== null) {
+        const result: Record<string, unknown> = {};
+        for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+          result[key] = getStructure(val, depth + 1);
+        }
+        return result;
+      }
+      
+      return typeof value;
+    };
+
+    this.logDebug('XML Structure', getStructure(obj, 0), 'STRUCTURE');
+  }
 }

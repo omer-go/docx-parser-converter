@@ -30,30 +30,42 @@ export class RunParser extends BaseParser<Run> {
    * @returns Promise resolving to Run model
    */
   protected async parseInternal(xmlObj: Record<string, unknown>): Promise<Run> {
+    this.logInfo('Starting run parsing');
+    this.logXmlStructure(xmlObj);
+    
     // Extract w:r element
     let runElement: Record<string, unknown>;
 
     if (xmlObj['w:r']) {
       // If w:r is a property of the root object
       const runValue = xmlObj['w:r'];
+      this.logDebug('Found w:r property in xmlObj', runValue, 'WR_PROPERTY');
       
       // Handle case where w:r is an array (due to XML parser configuration)
       if (Array.isArray(runValue)) {
         if (runValue.length === 0) {
           throw new Error('Empty w:r array found in XML');
         }
+        this.logInfo(`w:r is array with ${runValue.length} elements, taking first`);
         runElement = runValue[0] as Record<string, unknown>;
       } else {
+        this.logInfo('w:r is single object');
         runElement = runValue as Record<string, unknown>;
       }
     } else if (xmlObj && typeof xmlObj === 'object' && Object.keys(xmlObj).length > 0) {
       // If the root object itself is the w:r element
+      this.logInfo('xmlObj itself appears to be the w:r element');
       runElement = xmlObj;
     } else {
+      this.logError('No w:r element found in XML', xmlObj);
       throw new Error('No w:r element found in XML');
     }
 
-    return this.parseRunElement(runElement);
+    this.logDebug('Extracted run element', runElement, 'RUN_ELEMENT');
+    const result = await this.parseRunElement(runElement);
+    this.logDebug('Final run result', result, 'FINAL_RUN');
+    
+    return result;
   }
 
   /**
@@ -62,27 +74,44 @@ export class RunParser extends BaseParser<Run> {
    * @returns Parsed Run
    */
   private async parseRunElement(runElement: Record<string, unknown>): Promise<Run> {
+    this.logInfo('Starting parseRunElement');
+    this.logDebug('Input run element', runElement, 'RUN_ELEMENT_INPUT');
+    
     // Parse run properties
     const rPr = getFirstChildElement(runElement, 'w:rPr');
+    this.logDebug('Found run properties (w:rPr)', rPr, 'RPR_ELEMENT');
+    
     let properties = undefined;
     
     if (rPr) {
       try {
+        this.logInfo('Parsing run properties');
         // Try to parse properties directly with our fallback method
         properties = await this.parseRunPropertiesDirectly(rPr);
+        this.logDebug('Parsed run properties', properties, 'PARSED_PROPERTIES');
       } catch (error) {
+        this.logError('Failed to parse run properties', error);
         this.addWarning(`Failed to parse run properties: ${error instanceof Error ? error.message : 'Unknown error'}`);
         properties = undefined;
       }
+    } else {
+      this.logInfo('No run properties found');
     }
 
     // Parse run contents
+    this.logInfo('Parsing run contents');
     const contents = await this.parseRunContents(runElement);
+    this.logDebug('Parsed run contents', contents, 'PARSED_CONTENTS');
 
-    return RunModel.create({
+    const finalRun = RunModel.create({
       properties,
       contents,
     });
+
+    this.logInfo('Successfully created run model');
+    this.logDebug('Final run model', finalRun, 'FINAL_RUN_MODEL');
+
+    return finalRun;
   }
 
   /**
@@ -167,8 +196,9 @@ export class RunParser extends BaseParser<Run> {
       const directText = extractTextFromElements(runElement, 'w:t');
       if (directText) {
         contents.push({
-          type: 'text',
-          text: directText,
+          run: {
+            text: directText,
+          }
         });
       }
     }
@@ -186,14 +216,11 @@ export class RunParser extends BaseParser<Run> {
     
     if (!text) return null;
 
-    // Check for xml:space="preserve" attribute
-    const xmlSpace = this.getAttribute(textElement, 'xml:space');
-    const preserveSpace = xmlSpace === 'preserve';
-
+    // Return structure that matches RunContentSchema
     return {
-      type: 'text',
-      text: text,
-      preserve_space: preserveSpace,
+      run: {
+        text: text,
+      }
     };
   }
 
@@ -204,7 +231,9 @@ export class RunParser extends BaseParser<Run> {
    */
   private async parseTabContent(_tabElement: Record<string, unknown>): Promise<Record<string, unknown>> {
     return {
-      type: 'tab',
+      run: {
+        type: 'tab',
+      }
     };
   }
 

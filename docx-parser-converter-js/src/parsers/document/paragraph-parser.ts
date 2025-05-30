@@ -38,9 +38,17 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
    * @returns Promise resolving to Paragraph model
    */
   protected async parseInternal(xmlObj: Record<string, unknown>): Promise<Paragraph> {
+    this.logInfo('Starting paragraph parsing');
+    this.logXmlStructure(xmlObj);
+    
     // Extract paragraph element
     const paragraphElement = this.extractParagraphElement(xmlObj);
-    return this.parseParagraphElement(paragraphElement);
+    this.logDebug('Extracted paragraph element', paragraphElement, 'PARAGRAPH_ELEMENT');
+    
+    const result = await this.parseParagraphElement(paragraphElement);
+    this.logDebug('Final paragraph result', result, 'FINAL_PARAGRAPH');
+    
+    return result;
   }
 
   /**
@@ -135,34 +143,54 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
    * @returns Parsed Paragraph
    */
   private async parseParagraphElement(pElement: Record<string, unknown>): Promise<Paragraph> {
+    this.logInfo('Starting parseParagraphElement');
+    this.logDebug('Input paragraph element', pElement, 'P_ELEMENT');
+    
     // Parse paragraph properties using the dedicated parser
     let properties: ParagraphStyleProperties = ParagraphStylePropertiesModel.create({});
     const pPr = this.getFirstChild(pElement, 'w:pPr');
     
+    this.logDebug('Found paragraph properties (w:pPr)', pPr, 'PPR_ELEMENT');
+    
     if (pPr) {
       try {
+        this.logInfo('Parsing paragraph properties');
         const parsedProperties = await this.paragraphPropertiesParser.parse(`<w:pPr>${this.getInnerXml(pPr)}</w:pPr>`);
         properties = parsedProperties.data;
+        this.logDebug('Parsed paragraph properties', properties, 'PARSED_PROPERTIES');
       } catch (error) {
+        this.logError('Failed to parse paragraph properties', error);
         this.addWarning(
           `Failed to parse paragraph properties: ${
             error instanceof Error ? error.message : 'Unknown error'
           }`
         );
       }
+    } else {
+      this.logInfo('No paragraph properties found, using defaults');
     }
 
     // Parse paragraph numbering with enhanced logic
+    this.logInfo('Parsing paragraph numbering');
     const numbering = pPr ? await this.parseEnhancedNumbering(pPr) : undefined;
+    this.logDebug('Parsed paragraph numbering', numbering, 'PARSED_NUMBERING');
 
     // Parse runs using the dedicated run parser
+    this.logInfo('Parsing paragraph runs');
     const runs = await this.parseRuns(pElement);
+    this.logDebug('Parsed paragraph runs', runs, 'PARSED_RUNS');
+    this.logInfo(`Total runs parsed: ${runs.length}`);
 
-    return ParagraphModel.create({
+    const finalParagraph = ParagraphModel.create({
       properties,
       runs,
       numbering,
     });
+
+    this.logInfo('Successfully created paragraph model');
+    this.logDebug('Final paragraph model', finalParagraph, 'FINAL_PARAGRAPH_MODEL');
+
+    return finalParagraph;
   }
 
   /**
@@ -243,9 +271,8 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
    * @returns Inner XML string
    */
   private getInnerXml(element: Record<string, unknown>): string {
-    // This is a simplified implementation
-    // In a real implementation, you'd need proper XML serialization
-    return JSON.stringify(element);
+    // Use proper XML serialization instead of JSON.stringify
+    return this.serializeElementContent(element);
   }
 
   /**
@@ -254,9 +281,88 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
    * @returns XML string
    */
   private elementToXml(element: Record<string, unknown>): string {
-    // This is a simplified implementation
-    // In a real implementation, you'd need proper XML serialization
-    return `<w:r>${JSON.stringify(element)}</w:r>`;
+    // Serialize the element content properly
+    const content = this.serializeElementContent(element);
+    return `<w:r>${content}</w:r>`;
+  }
+
+  /**
+   * Serialize element content to XML
+   * @param element - XML element
+   * @returns Serialized content
+   */
+  private serializeElementContent(element: Record<string, unknown>): string {
+    let content = '';
+    
+    for (const [key, value] of Object.entries(element)) {
+      if (key.startsWith('@_')) {
+        // Skip attributes - they should be handled by parent element
+        continue;
+      }
+      
+      if (Array.isArray(value)) {
+        // Handle array of elements
+        for (const item of value) {
+          if (typeof item === 'object' && item !== null) {
+            const attrs = this.serializeAttributes(item as Record<string, unknown>);
+            const innerContent = this.serializeElementContent(item as Record<string, unknown>);
+            if (innerContent) {
+              content += `<${key}${attrs}>${innerContent}</${key}>`;
+            } else {
+              content += `<${key}${attrs}/>`;
+            }
+          } else if (typeof item === 'string') {
+            content += `<${key}>${this.escapeXml(item)}</${key}>`;
+          }
+        }
+      } else if (typeof value === 'object' && value !== null) {
+        // Handle single object
+        const attrs = this.serializeAttributes(value as Record<string, unknown>);
+        const innerContent = this.serializeElementContent(value as Record<string, unknown>);
+        if (innerContent) {
+          content += `<${key}${attrs}>${innerContent}</${key}>`;
+        } else {
+          content += `<${key}${attrs}/>`;
+        }
+      } else if (typeof value === 'string') {
+        // Handle text content
+        content += `<${key}>${this.escapeXml(value)}</${key}>`;
+      }
+    }
+    
+    return content;
+  }
+
+  /**
+   * Serialize element attributes
+   * @param element - XML element
+   * @returns Attribute string
+   */
+  private serializeAttributes(element: Record<string, unknown>): string {
+    let attrs = '';
+    
+    for (const [key, value] of Object.entries(element)) {
+      if (key.startsWith('@_')) {
+        const attrName = key.substring(2); // Remove @_ prefix
+        attrs += ` ${attrName}="${this.escapeXml(String(value))}"`;
+      }
+    }
+    
+    return attrs;
+  }
+
+  /**
+   * Escape XML special characters
+   * @param text - Text to escape
+   * @returns Escaped text
+   */
+  private escapeXml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   /**
