@@ -64,7 +64,7 @@ export function parseTableGrid(
       return undefined;
     }
   }
-  
+
   // If no columns were successfully parsed, it might mean the grid is invalid or empty.
   // Depending on requirements, an empty grid { columns: [] } might be valid.
   // For now, returning undefined if no columns are parsed.

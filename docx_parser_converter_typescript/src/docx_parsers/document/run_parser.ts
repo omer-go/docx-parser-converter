@@ -106,7 +106,7 @@ export function parseRun(
         // or other non-content marker. For now, return undefined if no standard content/props.
         // Or, return an empty run if that's more appropriate for the consumer.
         // console.debug("Parsed run has no standard content or properties:", rElement);
-        return undefined; 
+        return undefined;
     }
     return RunModel.parse({ properties, contents });
   } catch (error) {

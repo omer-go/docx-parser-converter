@@ -118,7 +118,7 @@ export function extractBooleanAttribute(
 
   // If the element exists, it's considered true by default,
   // unless its valAttributeName specifically indicates false.
-  let result = true; 
+  let result = true;
 
   const attributes = element[attributeObjectPrefix];
   if (attributes && attributes[valAttributeName] !== undefined) {

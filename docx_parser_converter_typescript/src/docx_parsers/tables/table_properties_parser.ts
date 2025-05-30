@@ -37,7 +37,7 @@ function parseBorder(borderElement: any, attrPrefix: string): Partial<BorderProp
   if (size) props.size = safeInt(size); // Stored as eighths of a point
   if (space) props.space = safeInt(space); // Stored as points
   if (val) props.val = val;
-  
+
   return Object.keys(props).length > 0 ? props : undefined;
 }
 
@@ -50,7 +50,7 @@ function parseBorder(borderElement: any, attrPrefix: string): Partial<BorderProp
 function parseTableCellBorders(tblBordersElement: any, attrPrefix: string): Partial<TableCellBordersModel> | undefined {
   if (!tblBordersElement) return undefined;
   const borders: Partial<TableCellBordersModel> = {};
-  
+
   borders.top = parseBorder(tblBordersElement['w:top'], attrPrefix);
   borders.left = parseBorder(tblBordersElement['w:left'], attrPrefix);
   borders.bottom = parseBorder(tblBordersElement['w:bottom'], attrPrefix);
@@ -163,7 +163,7 @@ function parseCellMargins(tblCellMarElement: any, attrPrefix: string): Partial<M
 function parseTableLook(tblLookElement: any, attrPrefix: string): Partial<TableLookModel> | undefined {
   if (!tblLookElement) return undefined;
   const props: Partial<TableLookModel> = {};
-  
+
   // Direct boolean attributes (優先)
   const firstRow = extractBooleanAttribute(tblLookElement, 'w:firstRow', attrPrefix);
   const lastRow = extractBooleanAttribute(tblLookElement, 'w:lastRow', attrPrefix);
@@ -220,7 +220,7 @@ export function parseTableProperties(
   }
 
   props.width = parseTableWidth(tblPrElement['w:tblW'], attributeObjectPrefix);
-  
+
   const jcElement = extractElement(tblPrElement, 'w:jc');
   if (jcElement) {
     props.alignment = extractAttribute(jcElement, 'w:val', attributeObjectPrefix);
@@ -235,7 +235,7 @@ export function parseTableProperties(
   if (tblLayoutElement) {
     props.layout_type = extractAttribute(tblLayoutElement, 'w:type', attributeObjectPrefix);
   }
-  
+
   props.look = parseTableLook(tblPrElement['w:tblLook'], attributeObjectPrefix);
 
   const tblCellSpacingElement = extractElement(tblPrElement, 'w:tblCellSpacing');

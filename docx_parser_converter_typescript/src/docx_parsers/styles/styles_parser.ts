@@ -44,11 +44,11 @@ export class StylesParser {
       // attributeNamePrefix: "@_", // Using attributesGroupName instead
       attributesGroupName: "$attributes", // Group attributes under $attributes
       ignoreAttributes: false,
-      parseTagValue: false, 
-      parseAttributeValue: false, 
-      allowBooleanAttributes: true, 
-      trimValues: true, 
-      removeNSPrefix: false, 
+      parseTagValue: false,
+      parseAttributeValue: false,
+      allowBooleanAttributes: true,
+      trimValues: true,
+      removeNSPrefix: false,
       tagValueProcessor: (_tagName: string, tagValue: string, _jPath: string, _hasAttributes: boolean, _isLeafNode: boolean) => {
         return tagValue;
       },
@@ -56,7 +56,7 @@ export class StylesParser {
         if (!isAttribute && !isLeafNode) {
             if (jpath === "w:styles.w:style") return true;
         }
-        return false; 
+        return false;
       }
     };
     this.parserOptions = options; // Store options
@@ -159,11 +159,11 @@ export class StylesParser {
     const styleId = extractAttribute(styleElement, 'w:styleId', this.parserOptions.attributesGroupName);
     if (!styleId) {
         console.warn("Found a style element without a w:styleId. Skipping.", styleElement);
-        return undefined; 
+        return undefined;
     }
 
     const type = extractAttribute(styleElement, 'w:type', this.parserOptions.attributesGroupName);
-    
+
     let name: string | undefined;
     const nameElement = styleElement['w:name'];
     if (nameElement) {
@@ -175,7 +175,7 @@ export class StylesParser {
 
     const linkElement = styleElement['w:link'];
     const linkId = linkElement ? extractAttribute(linkElement, 'w:val', this.parserOptions.attributesGroupName) : undefined;
-    
+
     const pPrElement = styleElement['w:pPr'];
     const paragraphProperties = pPrElement ? parseParagraphProperties(pPrElement, this.parserOptions.attributesGroupName) : undefined;
 
@@ -192,7 +192,7 @@ export class StylesParser {
       if (linkId) styleData.link = linkId;
       if (paragraphProperties) styleData.paragraph_properties = paragraphProperties;
       if (runProperties) styleData.run_properties = runProperties;
-      
+
       return StyleModel.parse(styleData);
     } catch (error) {
       console.error(`Failed to parse style '${styleId}':`, error, styleElement, "Attempted data:", JSON.stringify(styleData));

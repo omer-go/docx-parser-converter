@@ -35,7 +35,7 @@ function parseTcBorder(borderElement: any, attrPrefix: string): Partial<BorderPr
   if (size) props.size = safeInt(size);
   if (space) props.space = safeInt(space);
   if (val) props.val = val;
-  
+
   return Object.keys(props).length > 0 ? props : undefined;
 }
 
@@ -48,7 +48,7 @@ function parseTcBorder(borderElement: any, attrPrefix: string): Partial<BorderPr
 function parseTcBorders(tcBordersElement: any, attrPrefix: string): Partial<TableCellBordersModel> | undefined {
   if (!tcBordersElement) return undefined;
   const borders: Partial<TableCellBordersModel> = {};
-  
+
   borders.top = parseTcBorder(tcBordersElement['w:top'], attrPrefix);
   borders.left = parseTcBorder(tcBordersElement['w:left'], attrPrefix);
   borders.bottom = parseTcBorder(tcBordersElement['w:bottom'], attrPrefix);
@@ -128,7 +128,7 @@ function parseTcCellMargins(tcMarElement: any, attrPrefix: string): Partial<Marg
   margins.left_pt = parseTcMarginProperty(tcMarElement, 'w:left', attrPrefix);
   margins.bottom_pt = parseTcMarginProperty(tcMarElement, 'w:bottom', attrPrefix);
   margins.right_pt = parseTcMarginProperty(tcMarElement, 'w:right', attrPrefix);
-  
+
   const filteredMargins = Object.fromEntries(Object.entries(margins).filter(([_, v]) => v !== undefined));
   return Object.keys(filteredMargins).length > 0 ? filteredMargins : undefined;
 }
@@ -171,7 +171,7 @@ export function parseTableCellProperties(
   if (hideMarkElement !== undefined) { // Boolean property, presence matters
     props.hideMark = extractBooleanAttribute(hideMarkElement, 'w:val', attributeObjectPrefix);
   }
-  
+
   const noWrapElement = extractElement(tcPrElement, 'w:noWrap');
   if (noWrapElement !== undefined) {
     props.noWrap = extractBooleanAttribute(noWrapElement, 'w:val', attributeObjectPrefix);
@@ -189,7 +189,7 @@ export function parseTableCellProperties(
     const val = extractAttribute(gridSpanElement, 'w:val', attributeObjectPrefix);
     props.gridSpan = safeInt(val);
   }
-  
+
   // Filter out undefined properties before final check and parse
   const filteredProps = Object.fromEntries(Object.entries(props).filter(([_, v]) => v !== undefined));
 

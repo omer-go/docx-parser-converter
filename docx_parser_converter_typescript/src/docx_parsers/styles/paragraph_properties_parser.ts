@@ -110,7 +110,7 @@ export function parseParagraphProperties(
   if (widowControlElement !== undefined) {
     props.widow_control = extractBooleanAttribute(widowControlElement, 'w:val', attributeObjectPrefix);
   }
-  
+
   // Suppress Auto Hyphens (w:suppressAutoHyphens)
   const suppressAutoHyphensElement = extractElement(pPrElement, 'w:suppressAutoHyphens');
   if (suppressAutoHyphensElement !== undefined) {
@@ -141,7 +141,7 @@ export function parseParagraphProperties(
   if (keepLinesElement !== undefined) {
     props.keep_lines = extractBooleanAttribute(keepLinesElement, 'w:val', attributeObjectPrefix);
   }
-  
+
   // Page Break Before (w:pageBreakBefore)
   const pageBreakBeforeElement = extractElement(pPrElement, 'w:pageBreakBefore');
   if (pageBreakBeforeElement !== undefined) {
@@ -153,7 +153,7 @@ export function parseParagraphProperties(
   if (suppressLineNumbersElement !== undefined) {
     props.suppress_line_numbers = extractBooleanAttribute(suppressLineNumbersElement, 'w:val', attributeObjectPrefix);
   }
-  
+
   // Tabs (w:tabs)
   const tabsElement = extractElement(pPrElement, 'w:tabs');
   if (tabsElement) {

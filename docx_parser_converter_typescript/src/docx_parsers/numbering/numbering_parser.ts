@@ -163,7 +163,7 @@ export function parseNumberingXml(
         levelDefinitions.set(ilvl, parseLevelProperties(lvlElement, numId, ilvl, attributeObjectPrefix));
       }
     }
-    
+
     const lvlOverrides = ensureArray(numElement['w:lvlOverride']);
     for (const overrideElement of lvlOverrides) {
         const overrideIlvl = safeInt(extractAttribute(overrideElement, 'w:ilvl', attributeObjectPrefix));
@@ -201,7 +201,7 @@ export function parseNumberingXml(
         console.error(`Error parsing NumberingLevelModel for numId ${numId}, ilvl ${partialLevel.ilvl}:`, error, partialLevel);
       }
     }
-    
+
     levels.sort((a, b) => a.ilvl - b.ilvl); // Ensure levels are sorted by ilvl
 
     if (levels.length > 0) {

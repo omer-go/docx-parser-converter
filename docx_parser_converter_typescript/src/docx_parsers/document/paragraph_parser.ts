@@ -74,7 +74,7 @@ export function parseParagraph(
 
       const ilvlVal = ilvlElement ? extractAttribute(ilvlElement, 'w:val', attributeObjectPrefix) : undefined;
       const numIdVal = numIdElement ? extractAttribute(numIdElement, 'w:val', attributeObjectPrefix) : undefined;
-      
+
       const ilvl = safeInt(ilvlVal);
       const numId = safeInt(numIdVal);
 
@@ -89,7 +89,7 @@ export function parseParagraph(
       }
     }
   }
-  
+
   // Ensure paragraphProperties is at least an empty object if it's still undefined,
   // if ParagraphModel requires `properties` to be defined.
   // Based on current ParagraphModel, `properties` is required.

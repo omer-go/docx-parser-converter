@@ -97,10 +97,10 @@ export function parseRunProperties(
   if (dstrikeElement !== undefined) {
      // If dstrike is present and true, it implies strike is also true
     if (extractBooleanAttribute(dstrikeElement, 'w:val', attributeObjectPrefix)) {
-        props.strike = true; 
+        props.strike = true;
     }
   }
-  
+
   // Hidden (w:vanish) - maps to RunStylePropertiesModel.hidden if such a field exists
   const vanishElement = extractElement(rPrElement, 'w:vanish');
   if (vanishElement !== undefined) {
@@ -153,7 +153,7 @@ export function parseRunProperties(
       props.position_pt = convertHalfPointsToPoints(posHalfPts);
     }
   }
-  
+
   // Kerning (w:kern) - in half-points
   const kernElement = extractElement(rPrElement, 'w:kern');
   if (kernElement) {
@@ -170,7 +170,7 @@ export function parseRunProperties(
     const val = extractAttribute(spacingElement, 'w:val', attributeObjectPrefix);
     const spacingTwips = safeInt(val);
     if (spacingTwips !== undefined) {
-      props.character_spacing_twips = spacingTwips; 
+      props.character_spacing_twips = spacingTwips;
       // If model expects points: (props as any).character_spacing_pt = convertTwipsToPoints(spacingTwips);
     }
   }
@@ -192,7 +192,7 @@ export function parseRunProperties(
   if (shadowElement !== undefined) {
     props.shadow = extractBooleanAttribute(shadowElement, 'w:val', attributeObjectPrefix);
   }
-  
+
   // AllCaps (w:caps)
   const capsElement = extractElement(rPrElement, 'w:caps');
   if (capsElement !== undefined) {
