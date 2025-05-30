@@ -62,7 +62,23 @@ export class RunParser extends BaseParser<Run> {
     }
 
     this.logDebug('Extracted run element', runElement, 'RUN_ELEMENT');
-    const result = await this.parseRunElement(runElement);
+    const result = await this.parseRunElementInternal(runElement);
+    this.logDebug('Final run result', result, 'FINAL_RUN');
+    
+    return result;
+  }
+
+  /**
+   * Parse run element directly from parsed object (public method for use by other parsers)
+   * @param runElement - Parsed w:r element object
+   * @returns Promise resolving to Run model
+   */
+  public async parseRunElement(runElement: Record<string, unknown>): Promise<Run> {
+    this.logInfo('Starting run parsing from element');
+    this.logXmlStructure(runElement);
+    
+    this.logDebug('Input run element', runElement, 'RUN_ELEMENT');
+    const result = await this.parseRunElementInternal(runElement);
     this.logDebug('Final run result', result, 'FINAL_RUN');
     
     return result;
@@ -73,7 +89,7 @@ export class RunParser extends BaseParser<Run> {
    * @param runElement - w:r element
    * @returns Parsed Run
    */
-  private async parseRunElement(runElement: Record<string, unknown>): Promise<Run> {
+  private async parseRunElementInternal(runElement: Record<string, unknown>): Promise<Run> {
     this.logInfo('Starting parseRunElement');
     this.logDebug('Input run element', runElement, 'RUN_ELEMENT_INPUT');
     
@@ -122,26 +138,56 @@ export class RunParser extends BaseParser<Run> {
   private async parseRunPropertiesDirectly(rPrElement: Record<string, unknown>): Promise<Record<string, unknown>> {
     const props: Record<string, unknown> = {};
 
-    // Basic text formatting
-    if (getFirstChildElement(rPrElement, 'w:b')) {
+    // Basic text formatting - check for direct properties first, then child elements
+    if (rPrElement['w:b'] !== undefined || getFirstChildElement(rPrElement, 'w:b')) {
       props.bold = true;
     }
 
-    if (getFirstChildElement(rPrElement, 'w:i')) {
+    if (rPrElement['w:i'] !== undefined || getFirstChildElement(rPrElement, 'w:i')) {
       props.italic = true;
     }
 
-    const color = getFirstChildElement(rPrElement, 'w:color');
-    if (color) {
-      props.color = this.getAttribute(color, 'w:val');
+    // Check for underline
+    if (rPrElement['w:u'] !== undefined || getFirstChildElement(rPrElement, 'w:u')) {
+      props.underline = true;
     }
 
-    const sz = getFirstChildElement(rPrElement, 'w:sz');
-    if (sz) {
-      const sizeValue = this.getAttribute(sz, 'w:val');
-      if (sizeValue) {
-        props.size_pt = parseInt(sizeValue, 10) / 2; // Half-points to points
+    // Color can be a direct property or child element
+    let color = null;
+    if (rPrElement['w:color']) {
+      // Direct property case
+      const colorObj = rPrElement['w:color'] as Record<string, unknown>;
+      if (colorObj && typeof colorObj === 'object' && colorObj['@_w:val']) {
+        color = colorObj['@_w:val'] as string;
       }
+    } else {
+      // Child element case
+      const colorElement = getFirstChildElement(rPrElement, 'w:color');
+      if (colorElement) {
+        color = this.getAttribute(colorElement, 'w:val');
+      }
+    }
+    if (color) {
+      props.color = color;
+    }
+
+    // Font size can be a direct property or child element
+    let fontSize = null;
+    if (rPrElement['w:sz']) {
+      // Direct property case
+      const szObj = rPrElement['w:sz'] as Record<string, unknown>;
+      if (szObj && typeof szObj === 'object' && szObj['@_w:val']) {
+        fontSize = szObj['@_w:val'] as string;
+      }
+    } else {
+      // Child element case
+      const szElement = getFirstChildElement(rPrElement, 'w:sz');
+      if (szElement) {
+        fontSize = this.getAttribute(szElement, 'w:val');
+      }
+    }
+    if (fontSize) {
+      props.size_pt = parseInt(fontSize, 10) / 2; // Half-points to points
     }
 
     return props;

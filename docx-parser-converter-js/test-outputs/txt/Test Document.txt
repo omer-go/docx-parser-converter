@@ -9,7 +9,7 @@ Numbering test:
         ▪ Third numbering level, the number 1 with a dot (1.), in Tahoma font.
         ▪ Third numbering level, the number 2 with a dot (2.), in Calibri font.
     ◦ Second numbering level, the capital roman letter C with a dot (C.), in red color.
-        ▪ Third numbering level, the number 1 with a dot (1.), the wordpreserveunderlineis underlined.preserve
+        ▪ Third numbering level, the number 1 with a dot (1.), the wordpreserveis underlined.preserve
             ▫ Fourth numbering level, the letter a with a dot (a.), the wordpreserveboldis bold.preserve
                 ‣ Firth numbering level, the roman letter I with a dot (i.).
                     • Sixth numbering level, a bullet.
@@ -28,15 +28,15 @@ Numbering test #2:
                 ‣ Fifth numbering level – 1.1.3.3.1
 Table test:
 Another Table with only outline visible borders:
-+------------+--------------+------------+-------------+-----------------+
-| First cell |              |            |             | Very large font |
-+------------+--------------+------------+-------------+-----------------+
-|            |              | Third cell |             |                 |
-+------------+--------------+------------+-------------+-----------------+
-|            | BOLD CONTENT |            | Purple font |                 |
-+------------+--------------+------------+-------------+-----------------+
-|            |              |            |             | Small font      |
-+------------+--------------+------------+-------------+-----------------+
++------------+--------------+-----+-------------+-----------------+
+| First cell |              |     |             | Very large font |
++------------+--------------+-----+-------------+-----------------+
+|            |              |     |             |                 |
++------------+--------------+-----+-------------+-----------------+
+|            | BOLD CONTENT |     | Purple font |                 |
++------------+--------------+-----+-------------+-----------------+
+|            |              |     |             | Small font      |
++------------+--------------+-----+-------------+-----------------+
 
 +-----+-----+-----+-----+
 |     |     |     |     |

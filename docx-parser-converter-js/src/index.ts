@@ -7,7 +7,6 @@
  * @license MIT
  */
 
-import { extractMainDocumentXml } from './utils/file-utils';
 import type { DocumentSchema } from './models/document-models';
 import { DocumentParser } from './parsers/document/document-parser';
 // Import converters and types for non-worker path and method signatures
@@ -224,10 +223,10 @@ export class DocxParserConverter {
   }
 
   /**
-   * Parse DOCX file and extract structured data (with optional Web Worker support)
+   * Parse DOCX file to DocumentSchema (with optional Web Worker support)
    * @param docxFile - DOCX file to parse
    * @param progressCallback - Optional progress callback
-   * @returns Promise resolving to parsed document structure
+   * @returns Promise resolving to document parsing result
    */
   public async parseDocument(
     docxFile: File,
@@ -238,14 +237,24 @@ export class DocxParserConverter {
 
     try {
       if (this.config.useWebWorkers && this.workerManager) {
+        // Worker parsing implementation - extract XML first
         if (progressCallback) progressCallback(0, 'Reading DOCX file...');
+        const { extractMainDocumentXml, extractMultipleXMLFromDocx } = await import('./utils/file-utils.js');
+        const arrayBuffer = await docxFile.arrayBuffer();
+        
+        // Extract main document XML
         const xmlData = await extractMainDocumentXml(docxFile);
+        
+        // Extract numbering.xml if it exists
+        const xmlFiles = await extractMultipleXMLFromDocx(arrayBuffer, ['numbering.xml']);
+        const numberingXml = xmlFiles.get('numbering.xml');
+        
         if (progressCallback) progressCallback(20, 'Starting worker parsing...');
 
         const documentSchema: DocumentSchema = await this.workerManager.parseDocument(
           xmlData,
           'document',
-          {},
+          { numberingXml },
           (workerProgress, details) => {
             if (progressCallback) progressCallback(20 + workerProgress * 0.8, details);
           }
@@ -256,12 +265,44 @@ export class DocxParserConverter {
       } else {
         // Non-worker path implementation
         if (progressCallback) progressCallback(0, 'Reading DOCX file (main thread)...');
+        
+        // Extract both document.xml and numbering.xml
+        const { extractMainDocumentXml, extractMultipleXMLFromDocx } = await import('./utils/file-utils.js');
+        const arrayBuffer = await docxFile.arrayBuffer();
+        
+        // Extract main document XML
         const xmlData = await extractMainDocumentXml(docxFile);
+        
+        // Extract numbering.xml if it exists
+        const xmlFiles = await extractMultipleXMLFromDocx(arrayBuffer, ['numbering.xml']);
+        const numberingXml = xmlFiles.get('numbering.xml');
+        
         if (progressCallback) progressCallback(20, 'Parsing XML (main thread)...');
         
         const parser = new DocumentParser();
+        
+        // Parse numbering schema if numbering.xml exists
+        let numberingSchema = undefined;
+        if (numberingXml) {
+          try {
+            const { DocumentNumberingParser } = await import('./parsers/document/document-numbering-parser.js');
+            const numberingParser = new DocumentNumberingParser();
+            const numberingResult = await numberingParser.parse(numberingXml);
+            numberingSchema = numberingResult.data;
+          } catch (error) {
+            console.warn('Failed to parse numbering schema:', error);
+          }
+        }
+        
+        // Pass numbering schema to document parser - note: parser.parse only accepts XML string
         const parserResult = await parser.parse(xmlData); // Returns ParserResult<DocumentSchema>
-        // TODO: Consider how progress is reported for main thread parsing if possible
+        
+        // TODO: For now we'll store the numbering schema for later use by converters
+        // This is a temporary solution until we refactor the parser to accept numbering schema
+        if (numberingSchema) {
+          // Store numbering schema in the parser result data for later use
+          (parserResult.data as any)._numberingSchema = numberingSchema;
+        }
         
         result = {
           success: true, // Assuming parser.parse throws on critical failure

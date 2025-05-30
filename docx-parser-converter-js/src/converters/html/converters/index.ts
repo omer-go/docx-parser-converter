@@ -10,6 +10,9 @@ export { RunConverter } from './run-converter';
 export { TableConverter } from './table-converter';
 export { NumberingConverter } from './numbering-converter';
 
+// Import the NumberingSchema type
+import type { NumberingSchema } from '@/models/numbering-models.js';
+
 // Common interfaces for HTML conversion
 export interface HtmlElement {
   /** HTML tag name */
@@ -38,4 +41,6 @@ export interface ConversionContext {
   cssRules: CssRule[];
   /** Warnings encountered during conversion */
   warnings: string[];
+  /** Numbering schema for proper list/numbering conversion */
+  numberingSchema?: NumberingSchema;
 } 

@@ -43,12 +43,16 @@ export class DocxToHtmlConverter {
   async convert(document: DocumentSchema): Promise<HtmlConversionResult> {
     const startTime = performance.now();
     
+    // Extract numbering schema if available
+    const numberingSchema = (document as any)._numberingSchema;
+    
     // Create conversion context
     const context: ConversionContext = {
       classPrefix: this.options.classPrefix,
       includeDebugComments: this.options.includeDebugComments,
       cssRules: [], // Not used in Python-compatible mode
       warnings: [],
+      numberingSchema, // Pass the numbering schema to the context
     };
 
     try {

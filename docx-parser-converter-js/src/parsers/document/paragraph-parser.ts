@@ -243,9 +243,10 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
 
     for (const [index, runElement] of runElements.entries()) {
       try {
-        const runXml = this.elementToXml(runElement);
-        const parsedRun = await this.runParser.parse(runXml);
-        runs.push(parsedRun.data);
+        // Pass the run element directly to the RunParser instead of serializing to XML
+        // The RunParser can handle parsed objects directly
+        const parsedRun = await this.runParser.parseRunElement(runElement);
+        runs.push(parsedRun);
       } catch (error) {
         this.addWarning(
           `Failed to parse run ${index}: ${
@@ -273,17 +274,6 @@ export class DocumentParagraphParser extends BaseParser<Paragraph> {
   private getInnerXml(element: Record<string, unknown>): string {
     // Use proper XML serialization instead of JSON.stringify
     return this.serializeElementContent(element);
-  }
-
-  /**
-   * Convert element to XML string
-   * @param element - XML element
-   * @returns XML string
-   */
-  private elementToXml(element: Record<string, unknown>): string {
-    // Serialize the element content properly
-    const content = this.serializeElementContent(element);
-    return `<w:r>${content}</w:r>`;
   }
 
   /**
