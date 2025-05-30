@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { FontPropertiesSchema, IndentationPropertiesSchema } from './styles_models';
+import { FontPropertiesModel, IndentationPropertiesModel } from './styles_models';
 
 // Schema for Numbering Level
-export const NumberingLevelSchema = z.object({
+export const NumberingLevelModel = z.object({
   numId: z.number(),
   ilvl: z.number(),
   start: z.number(),
@@ -10,27 +10,27 @@ export const NumberingLevelSchema = z.object({
   lvlText: z.string(),
   lvlJc: z.string(),
   counter: z.number().optional(),
-  indent: IndentationPropertiesSchema.optional(),
+  indent: IndentationPropertiesModel.optional(),
   tab_pt: z.number().optional(),
-  fonts: FontPropertiesSchema.optional(),
+  fonts: FontPropertiesModel.optional(),
 });
 
 // Interface for Numbering Level
-export type NumberingLevel = z.infer<typeof NumberingLevelSchema>;
+export type NumberingLevel = z.infer<typeof NumberingLevelModel>;
 
 // Schema for Numbering Instance
-export const NumberingInstanceSchema = z.object({
+export const NumberingInstanceModel = z.object({
   numId: z.number(),
-  levels: z.array(NumberingLevelSchema),
+  levels: z.array(NumberingLevelModel),
 });
 
 // Interface for Numbering Instance
-export type NumberingInstance = z.infer<typeof NumberingInstanceSchema>;
+export type NumberingInstance = z.infer<typeof NumberingInstanceModel>;
 
 // Schema for Overall Numbering Schema
-export const NumberingSchemaSchema = z.object({
-  instances: z.array(NumberingInstanceSchema),
+export const NumberingModel = z.object({
+  instances: z.array(NumberingInstanceModel),
 });
 
 // Interface for Overall Numbering Schema
-export type NumberingSchema = z.infer<typeof NumberingSchemaSchema>;
+export type NumberingSchema = z.infer<typeof NumberingModel>;

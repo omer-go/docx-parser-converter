@@ -11,12 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "fast-xml-parser": "^5.2.3",
+    "jszip": "^3.10.1",
     "rollup": "^4.41.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "zod": "^3.25.41"
   },
   "devDependencies": {
+    "@types/jszip": "^3.4.1",
     "@types/node": "^22.15.26"
   }
 }

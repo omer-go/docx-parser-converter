@@ -1,48 +1,48 @@
 import { z } from 'zod';
-import { ParagraphSchema } from './paragraph_models'; // Assuming ParagraphSchema will be used for cell content
+import { ParagraphModel } from './paragraph_models'; // Assuming ParagraphModel will be used for cell content
 
 // 1. BorderProperties
-export const BorderPropertiesSchema = z.object({
+export const BorderPropertiesModel = z.object({
   val: z.string().optional(), // e.g., "single", "double"
   color: z.string().optional(), // Hex color
   size: z.number().optional(), // Points * 8
   space: z.number().optional(), // Points
 });
-export type BorderProperties = z.infer<typeof BorderPropertiesSchema>;
+export type BorderProperties = z.infer<typeof BorderPropertiesModel>;
 
 // 2. ShadingProperties
-export const ShadingPropertiesSchema = z.object({
+export const ShadingPropertiesModel = z.object({
   val: z.string().optional(), // e.g., "clear", "solid"
   color: z.string().optional(), // Hex color
   fill: z.string().optional(), // Hex color
 });
-export type ShadingProperties = z.infer<typeof ShadingPropertiesSchema>;
+export type ShadingProperties = z.infer<typeof ShadingPropertiesModel>;
 
 // 3. MarginProperties (for cell margins)
-export const MarginPropertiesSchema = z.object({
+export const MarginPropertiesModel = z.object({
   top_pt: z.number().optional(),
   left_pt: z.number().optional(),
   bottom_pt: z.number().optional(),
   right_pt: z.number().optional(),
 });
-export type MarginProperties = z.infer<typeof MarginPropertiesSchema>;
+export type MarginProperties = z.infer<typeof MarginPropertiesModel>;
 
 // 4. TableWidth
-export const TableWidthSchema = z.object({
+export const TableWidthModel = z.object({
   type: z.string().optional(), // e.g., "dxa", "pct"
   val: z.number().optional(), // Width value
 });
-export type TableWidth = z.infer<typeof TableWidthSchema>;
+export type TableWidth = z.infer<typeof TableWidthModel>;
 
 // 5. TableIndent
-export const TableIndentSchema = z.object({
+export const TableIndentModel = z.object({
   type: z.string().optional(), // e.g., "dxa"
   val: z.number().optional(), // Indentation value
 });
-export type TableIndent = z.infer<typeof TableIndentSchema>;
+export type TableIndent = z.infer<typeof TableIndentModel>;
 
 // 6. TableLook
-export const TableLookSchema = z.object({
+export const TableLookModel = z.object({
   firstRow: z.boolean().optional(),
   lastRow: z.boolean().optional(),
   firstColumn: z.boolean().optional(),
@@ -50,84 +50,84 @@ export const TableLookSchema = z.object({
   noHBand: z.boolean().optional(),
   noVBand: z.boolean().optional(),
 });
-export type TableLook = z.infer<typeof TableLookSchema>;
+export type TableLook = z.infer<typeof TableLookModel>;
 
 // 7. TableCellBorders
-export const TableCellBordersSchema = z.object({
-  top: BorderPropertiesSchema.optional(),
-  left: BorderPropertiesSchema.optional(),
-  bottom: BorderPropertiesSchema.optional(),
-  right: BorderPropertiesSchema.optional(),
-  insideH: BorderPropertiesSchema.optional(),
-  insideV: BorderPropertiesSchema.optional(),
+export const TableCellBordersModel = z.object({
+  top: BorderPropertiesModel.optional(),
+  left: BorderPropertiesModel.optional(),
+  bottom: BorderPropertiesModel.optional(),
+  right: BorderPropertiesModel.optional(),
+  insideH: BorderPropertiesModel.optional(),
+  insideV: BorderPropertiesModel.optional(),
 });
-export type TableCellBorders = z.infer<typeof TableCellBordersSchema>;
+export type TableCellBorders = z.infer<typeof TableCellBordersModel>;
 
 // 8. TableCellProperties
-export const TableCellPropertiesSchema = z.object({
-  width: TableWidthSchema.optional(),
-  borders: TableCellBordersSchema.optional(),
-  shading: ShadingPropertiesSchema.optional(),
-  margins: MarginPropertiesSchema.optional(),
+export const TableCellPropertiesModel = z.object({
+  width: TableWidthModel.optional(),
+  borders: TableCellBordersModel.optional(),
+  shading: ShadingPropertiesModel.optional(),
+  margins: MarginPropertiesModel.optional(),
   gridSpan: z.number().optional(),
   vAlign: z.string().optional(), // e.g., "top", "center", "bottom"
   textDirection: z.string().optional(), // e.g., "lrTb", "tbRl"
   hideMark: z.boolean().optional(),
   noWrap: z.boolean().optional(),
 });
-export type TableCellProperties = z.infer<typeof TableCellPropertiesSchema>;
+export type TableCellProperties = z.infer<typeof TableCellPropertiesModel>;
 
 // 9. TableCell
 // Assuming cell content can be a list of Paragraphs or other Tables (recursive definition might be complex)
 // For now, sticking to Paragraphs as per typical DOCX structure for cell content.
-// If tables can be nested, TableSchema would need to be part of the union.
-export const TableCellSchema = z.object({
-  elements: z.array(z.union([ParagraphSchema, z.lazy(() => TableSchema)]))), // Content: Paragraphs or nested Tables
-  properties: TableCellPropertiesSchema.optional(),
+// If tables can be nested, TableModel would need to be part of the union.
+export const TableCellModel = z.object({
+  elements: z.array(z.union([ParagraphModel, z.lazy(() => TableModel)]))), // Content: Paragraphs or nested Tables
+  properties: TableCellPropertiesModel.optional(),
 });
-export type TableCell = z.infer<typeof TableCellSchema>;
+export type TableCell = z.infer<typeof TableCellModel>;
 
 // 10. TableRowProperties
-export const TableRowPropertiesSchema = z.object({
+export const TableRowPropertiesModel = z.object({
   cantSplit: z.boolean().optional(),
   isHeader: z.boolean().optional(),
   height_type: z.string().optional(), // e.g., "atLeast", "exact"
   height_val_pt: z.number().optional(),
 });
-export type TableRowProperties = z.infer<typeof TableRowPropertiesSchema>;
+export type TableRowProperties = z.infer<typeof TableRowPropertiesModel>;
 
 // 11. TableRow
-export const TableRowSchema = z.object({
-  cells: z.array(TableCellSchema),
-  properties: TableRowPropertiesSchema.optional(),
+export const TableRowModel = z.object({
+  cells: z.array(TableCellModel),
+  properties: TableRowPropertiesModel.optional(),
 });
-export type TableRow = z.infer<typeof TableRowSchema>;
+export type TableRow = z.infer<typeof TableRowModel>;
 
 // 12. TableProperties
-export const TablePropertiesSchema = z.object({
+export const TablePropertiesModel = z.object({
   style_id: z.string().optional(),
-  width: TableWidthSchema.optional(),
-  indent: TableIndentSchema.optional(),
+  width: TableWidthModel.optional(),
+  indent: TableIndentModel.optional(),
   alignment: z.string().optional(), // e.g., "left", "center", "right"
-  borders: TableCellBordersSchema.optional(), // Table-level default borders
-  shading: ShadingPropertiesSchema.optional(), // Table-level default shading
-  cell_margins: MarginPropertiesSchema.optional(), // Table-level default cell margins
-  look: TableLookSchema.optional(),
+  borders: TableCellBordersModel.optional(), // Table-level default borders
+  shading: ShadingPropertiesModel.optional(), // Table-level default shading
+  cell_margins: MarginPropertiesModel.optional(), // Table-level default cell margins
+  look: TableLookModel.optional(),
   cell_spacing_dxa: z.number().optional(),
   layout_type: z.string().optional(), // e.g., "fixed", "autofit"
 });
-export type TableProperties = z.infer<typeof TablePropertiesSchema>;
+export type TableProperties = z.infer<typeof TablePropertiesModel>;
 
 // 13. TableGrid
-export const TableGridSchema = z.object({
+export const TableGridModel = z.object({
   columns: z.array(z.number()), // Array of column widths in dxa
 });
-export type TableGrid = z.infer<typeof TableGridSchema>;
+export type TableGrid = z.infer<typeof TableGridModel>;
 
 // 14. Table
-export const TableSchema = z.object({
-  grid: TableGridSchema,
-  rows: z.array(TableRowSchema),
-  properties: TablePropertiesSchema.optional(),
+export const TableModel = z.object({
+  grid: TableGridModel,
+  rows: z.array(TableRowModel),
+  properties: TablePropertiesModel.optional(),
 });
-export type Table = z.infer<typeof TableSchema>;
+export type Table = z.infer<typeof TableModel>;
