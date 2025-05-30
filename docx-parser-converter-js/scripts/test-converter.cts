@@ -37,47 +37,51 @@ async function main() {
     // For this test, let's proceed and see if conversions fail gracefully
   }
 
-  const files = fs.readdirSync(fixturesDir);
+  // Process only the Test Document.docx file for focused debugging
+  const targetFile = 'Test Document.docx';
+  const docxFilePath = path.join(fixturesDir, targetFile);
+  
+  if (!fs.existsSync(docxFilePath)) {
+    console.error(`Target file not found: ${docxFilePath}`);
+    return;
+  }
 
-  for (const file of files) {
-    if (path.extname(file) === '.docx') {
-      const docxFilePath = path.join(fixturesDir, file);
-      const baseName = path.basename(file, '.docx');
+  const baseName = path.basename(targetFile, '.docx');
 
-      try {
-        console.log(`Processing ${file}...`);
-        const docxBuffer = fs.readFileSync(docxFilePath);
-        
-        const docxFileMock = {
-          name: file,
-          arrayBuffer: async () => docxBuffer,
-          // To make it more File-like for the converter, which expects a File object:
-          // size: docxBuffer.length, // Example: add size property
-          // type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // Example: add type
-        };
+  try {
+    console.log(`Processing ${targetFile}...`);
+    const docxBuffer = fs.readFileSync(docxFilePath);
+    
+    const docxFileMock = {
+      name: targetFile,
+      arrayBuffer: async () => docxBuffer,
+      // To make it more File-like for the converter, which expects a File object:
+      // size: docxBuffer.length, // Example: add size property
+      // type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // Example: add type
+    };
 
-        const htmlResult = await converter.convertToHtml(docxFileMock as any);
-        if (htmlResult && typeof htmlResult.html === 'string') {
-          const htmlFilePath = path.join(htmlOutputDir, `${baseName}.html`);
-          fs.writeFileSync(htmlFilePath, htmlResult.html);
-          console.log(`Converted ${file} to HTML: ${htmlFilePath}`);
-        } else {
-          console.error(`Failed to get HTML string for ${file}. Result:`, htmlResult);
-        }
-
-        const txtResult = await converter.convertToTxt(docxFileMock as any);
-        if (txtResult && typeof txtResult.text === 'string') {
-          const txtFilePath = path.join(txtOutputDir, `${baseName}.txt`);
-          fs.writeFileSync(txtFilePath, txtResult.text);
-          console.log(`Converted ${file} to TXT: ${txtFilePath}`);
-        } else {
-          console.error(`Failed to get TXT string for ${file}. Result:`, txtResult);
-        }
-
-      } catch (error) {
-        console.error(`Error processing file ${file}:`, error);
-      }
+    console.log('\n=== Starting HTML conversion ===\n');
+    const htmlResult = await converter.convertToHtml(docxFileMock as any);
+    if (htmlResult && typeof htmlResult.html === 'string') {
+      const htmlFilePath = path.join(htmlOutputDir, `${baseName}.html`);
+      fs.writeFileSync(htmlFilePath, htmlResult.html);
+      console.log(`\nConverted ${targetFile} to HTML: ${htmlFilePath}`);
+    } else {
+      console.error(`Failed to get HTML string for ${targetFile}. Result:`, htmlResult);
     }
+
+    console.log('\n=== Starting TXT conversion ===\n');
+    const txtResult = await converter.convertToTxt(docxFileMock as any);
+    if (txtResult && typeof txtResult.text === 'string') {
+      const txtFilePath = path.join(txtOutputDir, `${baseName}.txt`);
+      fs.writeFileSync(txtFilePath, txtResult.text);
+      console.log(`\nConverted ${targetFile} to TXT: ${txtFilePath}`);
+    } else {
+      console.error(`Failed to get TXT string for ${targetFile}. Result:`, txtResult);
+    }
+
+  } catch (error) {
+    console.error(`Error processing file ${targetFile}:`, error);
   }
 }
 
