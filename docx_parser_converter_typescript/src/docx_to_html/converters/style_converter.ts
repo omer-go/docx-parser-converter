@@ -6,6 +6,12 @@ import {
   RunStylePropertiesModel,
   ParagraphStylePropertiesModel,
   ShadingPropertiesModel,
+  BorderPropertiesModel,
+  TableCellBordersModel,
+  TablePropertiesModel,
+  TableRowPropertiesModel,
+  TableCellPropertiesModel,
+  MarginPropertiesModel,
 } from '../../../docx_parsers/models/index';
 
 // --- Helper for CSS String Aggregation ---
@@ -16,7 +22,7 @@ import {
  * @param cssParts Array of CSS style strings.
  * @returns A single CSS style string.
  */
-function aggregateCss(...cssParts: string[]): string {
+export function aggregateCss(...cssParts: string[]): string { // Added export
   return cssParts.filter(part => part && part.trim() !== '').join('');
 }
 
@@ -262,6 +268,228 @@ export function convertDocMarginsToCss(margins?: DocMarginsModel): string {
  */
 export function convertPageBreakBefore(pageBreakBefore?: boolean): string {
     return pageBreakBefore ? 'break-before:page;' : ''; // or 'always'
+}
+
+// --- Table Style Converters ---
+
+/**
+ * Maps DOCX border type and color to a CSS border string part.
+ * @param docxBorder A BorderPropertiesModel object.
+ * @returns CSS string for a single border (e.g., "1pt solid #000000").
+ */
+export function mapDocxBorderToCss(docxBorder?: BorderPropertiesModel): string {
+  if (!docxBorder || !docxBorder.val || docxBorder.val === 'nil' || docxBorder.val === 'none') {
+    return 'none'; // Explicitly 'none' if border is not set or 'nil'
+  }
+
+  // Size is in eighths of a point. Default to 1pt if size is 0 or undefined.
+  const sizeInPts = (docxBorder.size ?? 8) / 8;
+  const color = docxBorder.color && docxBorder.color !== 'auto' ? `#${docxBorder.color}` : 'black'; // Default to black if auto
+
+  // Map DOCX border types to CSS border styles
+  // This is a simplified mapping. More complex DOCX borders exist (e.g., themed, art borders).
+  let style = 'solid'; // Default
+  switch (docxBorder.val) {
+    case 'single': style = 'solid'; break;
+    case 'double': style = 'double'; break;
+    case 'dotted': style = 'dotted'; break;
+    case 'dashed': style = 'dashed'; break;
+    // TODO: Add more mappings (e.g., dashDot, dashSmallGap, dotDash, dotDotDash, etc.)
+    // Some might need creative CSS or be approximated.
+    // For 'nil' or 'none', we already returned 'none'.
+  }
+  return `${sizeInPts}pt ${style} ${color}`;
+}
+
+
+/**
+ * Converts a single BorderPropertiesModel to a full CSS border property string.
+ * @param border The BorderPropertiesModel object.
+ * @param side The border side (e.g., "top", "left").
+ * @returns Full CSS border string (e.g., "border-top:1pt solid #FF0000;").
+ */
+export function getBorderCss(border?: BorderPropertiesModel, side?: string): string {
+  if (!border || !side) return '';
+  const borderStyle = mapDocxBorderToCss(border);
+  return borderStyle !== 'none' ? `border-${side}:${borderStyle};` : `border-${side}:none;`;
+}
+
+/**
+ * Converts TableCellBordersModel to a CSS string.
+ * @param borders The TableCellBordersModel object.
+ * @returns Aggregated CSS string for all borders.
+ */
+export function getTableCellBordersCss(borders?: TableCellBordersModel): string {
+  if (!borders) return '';
+  return aggregateCss(
+    getBorderCss(borders.top, 'top'),
+    getBorderCss(borders.right, 'right'),
+    getBorderCss(borders.bottom, 'bottom'),
+    getBorderCss(borders.left, 'left')
+    // Note: insideH and insideV are for table-level defaults, not directly applied with border-* properties
+    // They are used by browsers for internal cell borders if not overridden by cell-specific borders.
+  );
+}
+
+
+/**
+ * Maps DOCX vertical alignment values to CSS vertical-align.
+ * @param vAlign DOCX vertical alignment string ('top', 'center', 'bottom').
+ * @returns CSS vertical-align value or empty string.
+ */
+export function mapVerticalAlignment(vAlign?: string): string {
+  switch (vAlign) {
+    case 'top': return 'top';
+    case 'center': return 'middle';
+    case 'bottom': return 'bottom';
+    default: return '';
+  }
+}
+
+/**
+ * Gets CSS styles for TablePropertiesModel.
+ * @param props The TablePropertiesModel object.
+ * @returns A concatenated string of CSS styles for the <table> element.
+ */
+export function getTablePropertiesCss(props?: TablePropertiesModel): string {
+  if (!props) return '';
+  let css = '';
+  if (props.width?.val && props.width.type) {
+    if (props.width.type === 'dxa') { // Twips
+      css += `width:${convertTwipsToPoints(props.width.val)}pt;`;
+    } else if (props.width.type === 'pct') { // Fiftieths of a percent
+      css += `width:${props.width.val / 50}%;`;
+    } else if (props.width.type === 'auto') {
+      css += `width:auto;`;
+    }
+  } else {
+    css += `width:auto;`; // Default if not specified
+  }
+
+  if (props.alignment) { // 'left', 'center', 'right'
+    if (props.alignment === 'center') {
+      css += 'margin-left:auto;margin-right:auto;';
+    } else if (props.alignment === 'right') {
+      css += 'margin-left:auto;margin-right:0;'; // Or float:right; clear:both;
+    } else {
+      // css += 'margin-left:0;margin-right:auto;'; // Default for left
+    }
+  }
+
+  if (props.indent?.val) { // Assuming val is in points from parser
+      css += `margin-left:${props.indent.val}pt;`; // This might conflict with alignment
+  }
+
+  // Default cell margins (applied as padding to the table, then cells can override)
+  // This is a simplification; usually, cell margins are on cells.
+  // if (props.cell_margins) {
+  //   if (props.cell_margins.left_pt) css += `padding-left:${props.cell_margins.left_pt}pt;`;
+  //   if (props.cell_margins.top_pt) css += `padding-top:${props.cell_margins.top_pt}pt;`;
+  // }
+
+  // Table layout
+  if (props.layout_type === 'fixed') {
+    css += 'table-layout:fixed;';
+  }
+
+  // Table-level default cell borders (can be complex to translate directly to table CSS)
+  // Often managed by browser's interpretation of border-collapse and individual cell borders.
+  // css += getTableCellBordersCss(props.borders); // This might be too aggressive on <table>
+
+  // Table shading
+  css += convertShadingToCss(props.shading);
+
+  // Cell spacing (HTML border-spacing attribute)
+  if (props.cell_spacing_dxa !== undefined) {
+      css += `border-spacing:${convertTwipsToPoints(props.cell_spacing_dxa)}pt;border-collapse:separate;`;
+  } else {
+      css += `border-collapse:collapse;`; // Default for most modern looks
+  }
+
+  return css;
+}
+
+/**
+ * Gets CSS styles for TableRowPropertiesModel.
+ * @param props The TableRowPropertiesModel object.
+ * @returns A concatenated string of CSS styles for the <tr> element.
+ */
+export function getTableRowPropertiesCss(props?: TableRowPropertiesModel): string {
+  if (!props) return '';
+  let css = '';
+  if (props.trHeight_val !== undefined) {
+    css += `height:${props.trHeight_val}pt;`;
+    // TODO: Handle props.trHeight_hRule ('atLeast', 'exact', 'auto')
+    // 'exact' means height is strict. 'atLeast' means min-height. 'auto' is default.
+    if (props.trHeight_hRule === 'atLeast') {
+        css = `min-height:${props.trHeight_val}pt;`; // replace height with min-height
+    }
+  }
+  // Justification for row content (usually handled by cells)
+  // if (props.justification) css += `text-align:${props.justification};`;
+
+  // Row-level default shading and borders are less common to apply directly to <tr>
+  // and are usually superseded by cell-specific formatting.
+  // css += convertShadingToCss(props.shd);
+  // css += getTableCellBordersCss(props.tblBorders); // These are default cell borders
+
+  return css;
+}
+
+/**
+ * Gets CSS styles for TableCellPropertiesModel.
+ * @param props The TableCellPropertiesModel object.
+ * @param defaultCellMar Optional default cell margins from table properties (not typically used this way).
+ * @returns A concatenated string of CSS styles for <td> or <th>.
+ */
+export function getTableCellPropertiesCss(props?: TableCellPropertiesModel, _defaultCellMar?: MarginPropertiesModel): string {
+  if (!props) return '';
+  let css = '';
+
+  // Cell width
+  if (props.width?.val && props.width.type) {
+    if (props.width.type === 'dxa') {
+      css += `width:${convertTwipsToPoints(props.width.val)}pt;`;
+    } else if (props.width.type === 'pct') {
+      css += `width:${props.width.val / 50}%;`;
+    } else if (props.width.type === 'auto' || props.width.type === 'nil') {
+        // css += `width:auto;`; // browser default
+    }
+  }
+
+  // Cell margins (applied as padding to the cell)
+  if (props.margins) {
+    if (props.margins.top_pt !== undefined) css += `padding-top:${props.margins.top_pt}pt;`;
+    if (props.margins.right_pt !== undefined) css += `padding-right:${props.margins.right_pt}pt;`;
+    if (props.margins.bottom_pt !== undefined) css += `padding-bottom:${props.margins.bottom_pt}pt;`;
+    if (props.margins.left_pt !== undefined) css += `padding-left:${props.margins.left_pt}pt;`;
+  }
+
+  // Cell borders
+  css += getTableCellBordersCss(props.borders);
+
+  // Cell shading
+  css += convertShadingToCss(props.shading);
+
+  // Vertical alignment
+  if (props.vAlign) {
+    css += `vertical-align:${mapVerticalAlignment(props.vAlign)};`;
+  }
+
+  // Text direction
+  if (props.textDirection) {
+    // e.g., "tbRl" (top to bottom, right to left)
+    // This is complex, might need writing-mode CSS property.
+    // Example: if (props.textDirection === 'tbRl') css += 'writing-mode:vertical-rl;';
+    // console.warn(`Text direction ${props.textDirection} not fully supported in CSS.`);
+  }
+
+  // NoWrap
+  if (props.noWrap) {
+    css += 'white-space:nowrap;';
+  }
+
+  return css;
 }
 
 

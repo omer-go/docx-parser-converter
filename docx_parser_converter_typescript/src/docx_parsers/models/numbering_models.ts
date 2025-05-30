@@ -10,9 +10,11 @@ export const NumberingLevelModel = z.object({
   lvlText: z.string(),
   lvlJc: z.string(),
   counter: z.number().optional(),
-  indent: IndentationPropertiesModel.optional(),
-  tab_pt: z.number().optional(),
-  fonts: FontPropertiesModel.optional(),
+  // indent: IndentationPropertiesModel.optional(), // Replaced by paragraph_properties
+  // tab_pt: z.number().optional(), // Potentially part of paragraph_properties.tabs
+  // fonts: FontPropertiesModel.optional(), // Replaced by run_properties
+  paragraph_properties: ParagraphStylePropertiesModel.optional(),
+  run_properties: RunStylePropertiesModel.optional(),
 });
 
 // Interface for Numbering Level

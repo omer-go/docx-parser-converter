@@ -11,8 +11,9 @@ import {
   NumberingInstanceModel,
   NumberingLevelModel,
   IndentationPropertiesModel, // For typing if needed, though props are partial
-  FontPropertiesModel,      // For typing if needed
-} from '../../models/index'; // Assuming models are exported via an index.ts
+  // IndentationPropertiesModel, // No longer directly used here
+  // FontPropertiesModel,      // No longer directly used here
+} from '../../models/index';
 import { parseParagraphProperties } from '../styles/paragraph_properties_parser';
 import { parseRunProperties } from '../styles/run_properties_parser';
 
@@ -58,25 +59,17 @@ function parseLevelProperties(
   const pPrElement = lvlElement['w:pPr'];
   if (pPrElement) {
     const pStyleProps = parseParagraphProperties(pPrElement, attributesGroupName);
-    if (pStyleProps?.indentation) {
-      props.indent = pStyleProps.indentation;
-    }
-    // Extract tab position from pStyleProps.tabs if needed for numbering
-    if (pStyleProps?.tabs && pStyleProps.tabs.length > 0) {
-        // Assuming the relevant tab for numbering is the first one, or specific logic is needed.
-        // For example, Word often uses a tab stop for the number text.
-        // This simplistic approach takes the first tab. More sophisticated logic might be needed.
-        // props.tab_pt = pStyleProps.tabs[0].pos; // 'pos' is already in points
+    if (pStyleProps) {
+      props.paragraph_properties = pStyleProps;
     }
   }
 
   const rPrElement = lvlElement['w:rPr'];
   if (rPrElement) {
     const rStyleProps = parseRunProperties(rPrElement, attributesGroupName);
-    if (rStyleProps?.fonts) { // Assuming fonts are the primary run property for numbering levels
-      props.fonts = rStyleProps.fonts;
+    if (rStyleProps) {
+      props.run_properties = rStyleProps;
     }
-    // Add other relevant rPr properties if needed, e.g. size, color directly to NumberingLevelModel
   }
 
   return props;
