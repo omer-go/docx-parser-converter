@@ -183,12 +183,26 @@ export function getTextContent(element: Record<string, unknown>): string {
   if (element && typeof element === 'object') {
     const textNode = element['#text'];
     if (typeof textNode === 'string') {
-      return textNode;
+      // Check if we should preserve whitespace
+      const xmlSpaceAttr = element['@_xml:space'];
+      if (xmlSpaceAttr === 'preserve') {
+        // Preserve whitespace exactly as is
+        return textNode;
+      } else {
+        // Normal text handling (can be trimmed if needed)
+        return textNode;
+      }
     }
 
     // If no direct text node, try to concatenate all text nodes
+    // but exclude XML attributes (keys starting with @)
     const textNodes: string[] = [];
-    for (const value of Object.values(element)) {
+    for (const [key, value] of Object.entries(element)) {
+      // Skip XML attributes (keys starting with @)
+      if (key.startsWith('@')) {
+        continue;
+      }
+      
       if (typeof value === 'string') {
         textNodes.push(value);
       } else if (Array.isArray(value)) {
