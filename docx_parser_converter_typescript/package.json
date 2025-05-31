@@ -9,6 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:convert": "npx ts-node ./scripts/run_test_conversion.ts"
+  },
   "dependencies": {
     "fast-xml-parser": "^5.2.3",
     "jszip": "^3.10.1",
