@@ -137,17 +137,15 @@
         const runButton = document.getElementById('runTestsButton');
         const resultsContainer = document.getElementById('testResultsContainer');
 
-        runButton.addEventListener('click', () => {
+        runButton.addEventListener('click', async () => {
             resultsContainer.innerHTML = '<p>Running tests...</p>';
-            setTimeout(() => {
-                try {
-                    const allResults = runAllTests();
-                    renderTestResults(resultsContainer, allResults);
-                } catch (e) {
-                    console.error("Error during test execution:", e);
-                    resultsContainer.innerHTML = `<p style="color:red;">An error occurred while running tests. Check console.</p>`;
-                }
-            }, 50);
+            try {
+                const allResults = await runAllTests();
+                renderTestResults(resultsContainer, allResults);
+            } catch (e) {
+                console.error("Error during test execution or rendering:", e);
+                resultsContainer.innerHTML = `<p style="color:red;">An error occurred while running tests or rendering results. Check console.</p>`;
+            }
         });
         console.log("Test runner HTML loaded. Click 'Run All Automated Tests'.");
 

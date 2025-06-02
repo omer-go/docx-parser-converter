@@ -3,7 +3,7 @@ import type { TestResult } from './test-utils'; // Correct: test-utils.ts is in 
 
 interface TestSuite {
     name: string;
-    tests: () => TestResult[];
+    tests: () => TestResult[]; // This function itself is synchronous and returns an array of test definitions
 }
 
 const testSuites: TestSuite[] = [];
@@ -12,40 +12,64 @@ export function describe(suiteName: string, testsFn: () => TestResult[]): void {
     testSuites.push({ name: suiteName, tests: testsFn });
 }
 
-export function runAllTests(): { suiteName: string; results: TestResult[] }[] {
-    const allResults: { suiteName: string; results: TestResult[] }[] = [];
+export async function runAllTests(): Promise<{ suiteName: string; results: TestResult[] }[]> {
+    const allSuiteExecutionResults: { suiteName: string; results: TestResult[] }[] = [];
     console.log('Starting all tests...');
 
     for (const suite of testSuites) {
         console.log(`\nRunning suite: ${suite.name}`);
+        const processedResults: TestResult[] = [];
         try {
-            const results = suite.tests();
-            allResults.push({ suiteName: suite.name, results });
-            results.forEach(result => {
-                if (result.passed) {
-                    console.log(`  ✅ PASSED: ${result.description}`);
-                } else {
-                    console.error(`  ❌ FAILED: ${result.description} - ${result.message}`);
-                    if (result.error) console.error('     Error:', result.error);
+            const testDefinitions = suite.tests(); // Get all test definitions for the suite
+
+            for (let testDef of testDefinitions) { // Use let to allow reassignment for merging
+                if (testDef.isAsync && typeof testDef.asyncTest === 'function') {
+                    console.log(`  ⏳ Running async test: ${testDef.description}`);
+                    try {
+                        const asyncOutcome = await testDef.asyncTest();
+                        // Merge asyncOutcome with testDef. AsyncOutcome properties take precedence.
+                        testDef = {
+                            ...testDef, // Keep original description, initial input/output placeholders
+                            ...asyncOutcome, // Overwrite with what asyncTest returned (passed, message, error, potentially refined input/output)
+                        };
+                    } catch (e: any) {
+                        testDef.passed = false;
+                        testDef.message = `Async test threw an unhandled exception: ${e.message || String(e)}`;
+                        testDef.error = e;
+                        // Keep original input if available, otherwise set error message as output
+                        testDef.output = testDef.output === "Pending async test execution..." ? `Error: ${e.message || String(e)}` : testDef.output;
+                    }
                 }
-                if (result.input !== undefined) console.log(`    Input:`, typeof result.input === 'string' ? result.input : JSON.stringify(result.input, null, 2));
-                if (result.output !== undefined) console.log(`    Output:`, typeof result.output === 'string' ? result.output : JSON.stringify(result.output, null, 2));
-            });
-        } catch (error) {
-            console.error(`  💥 ERROR IN SUITE: ${suite.name}`, error);
-            allResults.push({
+
+                // Log result after sync or async execution
+                if (testDef.passed) {
+                    console.log(`  ✅ PASSED: ${testDef.description}`);
+                } else {
+                    console.error(`  ❌ FAILED: ${testDef.description} - ${testDef.message || 'No message'}`);
+                    if (testDef.error) console.error('     Error:', testDef.error);
+                }
+                if (testDef.input !== undefined) console.log(`    Input:`, typeof testDef.input === 'string' ? testDef.input : JSON.stringify(testDef.input, null, 2));
+                if (testDef.output !== undefined) console.log(`    Output:`, typeof testDef.output === 'string' || testDef.output instanceof Uint8Array || testDef.output instanceof Element ? String(testDef.output) : JSON.stringify(testDef.output, null, 2));
+                
+                processedResults.push(testDef);
+            }
+            allSuiteExecutionResults.push({ suiteName: suite.name, results: processedResults });
+
+        } catch (error: any) {
+            console.error(`  💥 ERROR IN SUITE SETUP: ${suite.name}`, error);
+            allSuiteExecutionResults.push({
                 suiteName: suite.name,
                 results: [{
-                    description: "Suite execution error",
+                    description: "Suite setup or synchronous test execution error",
                     passed: false,
-                    message: `An unexpected error occurred in the test suite.`,
+                    message: `An unexpected error occurred: ${error.message || String(error)}`,
                     error: error,
                 }]
             });
         }
     }
     console.log('\nAll tests finished.');
-    return allResults;
+    return allSuiteExecutionResults;
 }
 
 export function renderTestResults(
@@ -83,7 +107,11 @@ export function renderTestResults(
                 inputDiv.innerHTML = `<strong>Input:</strong>`;
                 const inputPre = document.createElement('pre');
                 try {
-                    inputPre.textContent = typeof result.input === 'string' ? result.input : JSON.stringify(result.input, null, 2);
+                    if (typeof result.input === 'string' && (result.input.startsWith("Mock File") || result.input.startsWith("DOCX Fixture"))) {
+                        inputPre.textContent = "File (details in test case definition)";
+                    } else {
+                        inputPre.textContent = typeof result.input === 'string' ? result.input : JSON.stringify(result.input, null, 2);
+                    }
                 } catch (e) { inputPre.textContent = String(result.input); }
                 inputDiv.appendChild(inputPre);
                 listItem.appendChild(inputDiv);
@@ -95,8 +123,10 @@ export function renderTestResults(
                 outputDiv.innerHTML = `<strong>Output:</strong>`;
                 const outputPre = document.createElement('pre');
                 try {
-                    if (result.output instanceof Element) {
-                        outputPre.textContent = result.output.outerHTML;
+                    if (result.output instanceof Uint8Array) {
+                        outputPre.textContent = `Uint8Array (length: ${result.output.byteLength})`;
+                    } else if (result.output instanceof Element) { // Check if it's an XML Element
+                        outputPre.textContent = result.output.outerHTML; // Display its XML structure
                     } else if (typeof result.output === 'string') {
                         outputPre.textContent = result.output;
                     } else {
