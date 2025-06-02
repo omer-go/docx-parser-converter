@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX Converter - Test Suite</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        h1 { text-align: center; color: #2c3e50; }
+        .test-suite { background-color: #fff; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .test-suite h2 { margin-top: 0; color: #3498db; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        li:last-child { border-bottom: none; }
+        li.passed strong { color: #2ecc71; }
+        li.failed strong { color: #e74c3c; }
+        pre { background-color: #ecf0f1; padding: 5px; border-radius: 3px; font-size: 0.9em; color: #555; }
+    </style>
+</head>
+<body>
+    <h1>DOCX Parser/Converter - Test Results</h1>
+    <button id="runTestsButton">Run All Tests</button>
+    <div id="testResultsContainer">
+        <p>Click "Run All Tests" to start.</p>
+    </div>
+
+    <script type="module">
+        // Import the core runner logic
+        import { runAllTests, renderTestResults } from '../test-runner.ts';
+
+        // Import functions that register your test suites
+        // Each test suite file should export a function that calls `describe`.
+        // Example: import { registerMyComponentTests } from './suites/myComponent.test.ts';
+        import { registerNumberingParserTests } from '../suites/numberingParser.test.ts';
+        // import { registerParagraphParserTests } from '../suites/paragraphParser.test.ts'; // Add more as you create them
+
+        // Register all your test suites here
+        registerNumberingParserTests();
+        // registerParagraphParserTests();
+        // ... and so on for all your test suites
+
+        // Get the button and container elements
+        const runButton = document.getElementById('runTestsButton');
+        const resultsContainer = document.getElementById('testResultsContainer');
+
+        runButton.addEventListener('click', () => {
+            resultsContainer.innerHTML = '<p>Running tests...</p>';
+            // Use a timeout to allow the "Running tests..." message to render
+            setTimeout(() => {
+                const allResults = runAllTests(); // This executes all registered suites
+                renderTestResults(resultsContainer, allResults);
+            }, 50);
+        });
+
+        console.log("Test runner HTML loaded. Click 'Run All Tests'.");
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "name": "docx-parser-converter-ts",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/docx-parser-converter.umd.js",
+  "module": "./dist/docx-parser-converter.es.js",
+  "types": "./dist/types/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/docx-parser-converter.es.js",
+      "require": "./dist/docx-parser-converter.umd.js",
+      "types": "./dist/types/main.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --project tsconfig.json --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "echo \"Error: no test specified yet\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.9.1"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  },
+  "keywords": [
+    "docx",
+    "converter",
+    "html",
+    "text",
+    "parser",
+    "typescript",
+    "browser",
+    "office",
+    "word"
+  ],
+  "author": "Omer Hayun <omerha86@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OmerHayun/docx-parser-converter-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OmerHayun/docx-parser-converter-ts/issues"
+  },
+  "homepage": "https://github.com/OmerHayun/docx-parser-converter-ts#readme"
+}
