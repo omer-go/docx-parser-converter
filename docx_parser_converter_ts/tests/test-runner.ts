@@ -83,8 +83,24 @@ export function renderTestResults(
         suiteDiv.className = 'test-suite';
 
         const suiteHeader = document.createElement('h2');
-        suiteHeader.textContent = `Suite: ${suiteResult.suiteName}`;
+        suiteHeader.className = 'suite-header-toggle';
+        suiteHeader.style.cursor = 'pointer';
+        suiteHeader.style.userSelect = 'none'; // Prevents text selection on click
+        
+        const suiteNameSpan = document.createElement('span');
+        suiteNameSpan.textContent = `Suite: ${suiteResult.suiteName}`;
+
+        const toggleIcon = document.createElement('span');
+        toggleIcon.textContent = ' ▸ '; // Collapsed state icon
+        toggleIcon.style.marginRight = '5px';
+        
+        suiteHeader.appendChild(toggleIcon);
+        suiteHeader.appendChild(suiteNameSpan);
         suiteDiv.appendChild(suiteHeader);
+
+        const resultsContainer = document.createElement('div');
+        resultsContainer.style.display = 'none'; // Initially collapsed
+        resultsContainer.style.marginLeft = '20px'; // Indent results
 
         const resultsList = document.createElement('ul');
         suiteResult.results.forEach(result => {
@@ -154,7 +170,14 @@ export function renderTestResults(
             }
             resultsList.appendChild(listItem);
         });
-        suiteDiv.appendChild(resultsList);
+        resultsContainer.appendChild(resultsList);
+        suiteDiv.appendChild(resultsContainer);
         containerElement.appendChild(suiteDiv);
+
+        suiteHeader.addEventListener('click', () => {
+            const isCollapsed = resultsContainer.style.display === 'none';
+            resultsContainer.style.display = isCollapsed ? 'block' : 'none';
+            toggleIcon.textContent = isCollapsed ? ' ▾ ' : ' ▸ '; // Update icon
+        });
     }
 }

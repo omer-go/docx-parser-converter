@@ -58,6 +58,17 @@
             white-space: pre-wrap;
             word-break: break-all;
         }
+        .suite-header-toggle {
+            /* Styles for the clickable suite header */
+            /*border-bottom: 1px solid #eee; Ensure h2 styling from .test-suite h2 is maintained or overridden */
+            /*padding-bottom: 10px; Ensure h2 styling from .test-suite h2 is maintained or overridden */
+            /*margin-top: 0; Ensure h2 styling from .test-suite h2 is maintained or overridden */
+        }
+        .suite-header-toggle span:first-child {
+            /* Style for the toggle icon (▸/▾) */
+            display: inline-block;
+            width: 1em; /* Ensures space for icon */
+        }
     </style>
 </head>
 <body>
@@ -98,6 +109,8 @@
         import { registerUtilsTests } from '../suites/utils.test.ts'; // Import new utils tests
         // Path from 'tests/html/' to 'tests/suites/documentNumberingParser.test.ts' is '../suites/documentNumberingParser.test.ts'
         import { registerDocumentNumberingParserTests } from '../suites/documentNumberingParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/marginsParser.test.ts' is '../suites/marginsParser.test.ts'
+        import { registerMarginsParserTests } from '../suites/marginsParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
@@ -106,6 +119,7 @@
         registerCommonHelpersTests();
         registerUtilsTests(); // Register new utils tests
         registerDocumentNumberingParserTests();
+        registerMarginsParserTests(); // Register new margins parser tests
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
