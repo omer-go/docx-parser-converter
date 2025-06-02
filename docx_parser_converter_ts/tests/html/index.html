@@ -6,53 +6,233 @@
     <title>DOCX Converter - Test Suite</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        h1 { text-align: center; color: #2c3e50; }
+        h1, h2, h3 { text-align: center; color: #2c3e50; }
+        #runTestsButton, #processDocxButton { display: block; margin: 10px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #3498db; color: white; border: none; border-radius: 4px; }
+        #runTestsButton:hover, #processDocxButton:hover { background-color: #2980b9; }
         .test-suite { background-color: #fff; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .test-suite h2 { margin-top: 0; color: #3498db; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         ul { list-style-type: none; padding-left: 0; }
-        li { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        li { padding: 10px 0; border-bottom: 1px dashed #eee; }
         li:last-child { border-bottom: none; }
         li.passed strong { color: #2ecc71; }
         li.failed strong { color: #e74c3c; }
-        pre { background-color: #ecf0f1; padding: 5px; border-radius: 3px; font-size: 0.9em; color: #555; }
+        .test-message { margin-left: 20px; margin-top: 5px; }
+        .failure-message { color: #c0392b; }
+        .test-detail {
+            margin-left: 25px;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .test-detail strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #555;
+            font-size: 0.9em;
+        }
+        .test-detail pre {
+            margin-top: 0;
+            padding: 6px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap; 
+            word-break: break-all; 
+            font-size: 0.85em;
+            color: #333;
+        }
+        .test-error strong { color: red !important; }
+        .file-upload-section { margin-top: 30px; padding: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .xml-output-container { margin-top: 15px; }
+        .xml-output-container h3 { margin-bottom: 5px; text-align: left; }
+        .xml-output-container pre {
+            background-color: #eef;
+            border: 1px solid #ccd;
+            padding: 10px;
+            max-height: 400px;
+            overflow: auto;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
-    <h1>DOCX Parser/Converter - Test Results</h1>
-    <button id="runTestsButton">Run All Tests</button>
-    <div id="testResultsContainer">
-        <p>Click "Run All Tests" to start.</p>
+    <h1>DOCX Parser/Converter - Test & Inspector</h1>
+
+    <div class="test-suite">
+        <h2>Automated Test Suites</h2>
+        <button id="runTestsButton">Run All Automated Tests</button>
+        <div id="testResultsContainer">
+            <p>Click "Run All Automated Tests" to start.</p>
+        </div>
+    </div>
+
+    <div class="file-upload-section">
+        <h2>DOCX Inspector</h2>
+        <p>Upload a .docx file to see its document.xml and styles.xml content.</p>
+        <input type="file" id="docxUploadInput" accept=".docx" />
+        <button id="processDocxButton">Process Uploaded DOCX</button>
+        <div id="docxInspectorOutput">
+            <div class="xml-output-container" id="documentXmlOutputContainer" style="display:none;">
+                <h3>document.xml:</h3>
+                <pre id="documentXmlContent">No content processed yet.</pre>
+            </div>
+            <div class="xml-output-container" id="stylesXmlOutputContainer" style="display:none;">
+                <h3>styles.xml:</h3>
+                <pre id="stylesXmlContent">No content processed yet.</pre>
+            </div>
+             <p id="docxInspectorMessage"></p>
+        </div>
     </div>
 
     <script type="module">
-        // Import the core runner logic
+        // Path from 'tests/html/' to 'tests/test-runner.ts' is '../test-runner.ts'
         import { runAllTests, renderTestResults } from '../test-runner.ts';
+        // Path from 'tests/html/' to 'tests/suites/commonHelpers.test.ts' is '../suites/commonHelpers.test.ts'
+        import { registerCommonHelpersTests } from '../suites/commonHelpers.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/utils.test.ts' is '../suites/utils.test.ts'
+        import { registerUtilsTests } from '../suites/utils.test.ts'; // Import new utils tests
 
-        // Import functions that register your test suites
-        // Each test suite file should export a function that calls `describe`.
-        // Example: import { registerMyComponentTests } from './suites/myComponent.test.ts';
-        import { registerNumberingParserTests } from '../suites/numberingParser.test.ts';
-        // import { registerParagraphParserTests } from '../suites/paragraphParser.test.ts'; // Add more as you create them
+        // Import utilities for DOCX inspection
+        // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
+        import { readFileInBrowser, extractXmlRootFromDocx } from '../../src/docx_parsers/utils.ts';
 
-        // Register all your test suites here
-        registerNumberingParserTests();
-        // registerParagraphParserTests();
-        // ... and so on for all your test suites
+        registerCommonHelpersTests();
+        registerUtilsTests(); // Register new utils tests
+        // Add imports and calls for other test suites here as you create them
 
-        // Get the button and container elements
+        function prettyPrintXml(xmlString) {
+            const PADDING = '  '; // Use 2 spaces for indentation
+            let reg = /(>)(<)(\/*)/g;
+            xmlString = xmlString.replace(reg, '$1\r\n$2$3');
+            let pad = 0;
+            let formatted = '';
+            xmlString.split(/\r\n|\n|\r/).forEach(node => {
+                let indent = 0;
+                if (node.match(/.+<\w[^>]*>$/)) { // Opening tag
+                    indent = 0;
+                } else if (node.match(/^<\w/) && !node.match(/.+<\/\w[^>]*>$/) && !node.match(/\/>$/)) { // Opening tag without attributes or self-closing
+                    indent = 1;
+                } else if (node.match(/^<\/\w/)) { // Closing tag
+                    if (pad !== 0) {
+                        pad -= 1;
+                    }
+                } else if (node.match(/\/>$/)) { // Self-closing tag
+                    indent = 0;
+                } else { // Text content
+                    indent = 1;
+                }
+
+                const padding = Array(pad + 1).join(PADDING);
+                formatted += padding + node + '\n';
+                pad += indent;
+            });
+            return formatted.trim();
+        }
+
         const runButton = document.getElementById('runTestsButton');
         const resultsContainer = document.getElementById('testResultsContainer');
 
         runButton.addEventListener('click', () => {
             resultsContainer.innerHTML = '<p>Running tests...</p>';
-            // Use a timeout to allow the "Running tests..." message to render
             setTimeout(() => {
-                const allResults = runAllTests(); // This executes all registered suites
-                renderTestResults(resultsContainer, allResults);
+                try {
+                    const allResults = runAllTests();
+                    renderTestResults(resultsContainer, allResults);
+                } catch (e) {
+                    console.error("Error during test execution:", e);
+                    resultsContainer.innerHTML = `<p style="color:red;">An error occurred while running tests. Check console.</p>`;
+                }
             }, 50);
         });
+        console.log("Test runner HTML loaded. Click 'Run All Automated Tests'.");
 
-        console.log("Test runner HTML loaded. Click 'Run All Tests'.");
+        // DOCX Inspector Logic
+        const docxUploadInput = document.getElementById('docxUploadInput');
+        const processDocxButton = document.getElementById('processDocxButton');
+        const documentXmlOutputContainer = document.getElementById('documentXmlOutputContainer');
+        const documentXmlContentPre = document.getElementById('documentXmlContent');
+        const stylesXmlOutputContainer = document.getElementById('stylesXmlOutputContainer');
+        const stylesXmlContentPre = document.getElementById('stylesXmlContent');
+        const docxInspectorMessage = document.getElementById('docxInspectorMessage');
+
+        processDocxButton.addEventListener('click', async () => {
+            if (!docxUploadInput.files || docxUploadInput.files.length === 0) {
+                docxInspectorMessage.textContent = 'Please select a .docx file first.';
+                docxInspectorMessage.style.color = 'red';
+                return;
+            }
+            const file = docxUploadInput.files[0];
+            console.log("Uploaded File object:", file);
+            if (!file.name.endsWith('.docx')) {
+                docxInspectorMessage.textContent = 'Invalid file type. Please upload a .docx file.';
+                docxInspectorMessage.style.color = 'red';
+                return;
+            }
+
+            docxInspectorMessage.textContent = 'Processing...';
+            docxInspectorMessage.style.color = 'blue';
+            documentXmlOutputContainer.style.display = 'none';
+            stylesXmlOutputContainer.style.display = 'none';
+            documentXmlContentPre.textContent = 'Loading...';
+            stylesXmlContentPre.textContent = 'Loading...';
+
+            try {
+                const fileContent = await readFileInBrowser(file);
+                console.log("File content (Uint8Array after readFileInBrowser):", fileContent);
+                console.log("File content byteLength:", fileContent.byteLength);
+
+                const serializer = new XMLSerializer();
+
+                // Process document.xml
+                try {
+                    const documentXmlRoot = await extractXmlRootFromDocx(fileContent, 'document.xml');
+                    console.log("documentXmlRoot object:", documentXmlRoot);
+                    if (documentXmlRoot && typeof documentXmlRoot.getElementsByTagName === 'function') {
+                        const rawXml = serializer.serializeToString(documentXmlRoot);
+                        documentXmlContentPre.textContent = prettyPrintXml(rawXml);
+                    } else {
+                        documentXmlContentPre.textContent = "Error: document.xml root is not a valid XML Node for serialization.";
+                        console.error("document.xml root is not a valid Node:", documentXmlRoot);
+                    }
+                    documentXmlOutputContainer.style.display = 'block';
+                } catch (e) {
+                    console.error("Error processing document.xml:", e);
+                    documentXmlContentPre.textContent = `Error processing document.xml: ${e.message}`;
+                    documentXmlOutputContainer.style.display = 'block';
+                }
+
+                // Process styles.xml
+                try {
+                    const stylesXmlRoot = await extractXmlRootFromDocx(fileContent, 'styles.xml');
+                    console.log("stylesXmlRoot object:", stylesXmlRoot);
+                    if (stylesXmlRoot && typeof stylesXmlRoot.getElementsByTagName === 'function') {
+                        const rawXml = serializer.serializeToString(stylesXmlRoot);
+                        stylesXmlContentPre.textContent = prettyPrintXml(rawXml);
+                    } else {
+                        stylesXmlContentPre.textContent = "Error: styles.xml root is not a valid XML Node for serialization.";
+                        console.error("styles.xml root is not a valid Node:", stylesXmlRoot);
+                    }
+                    stylesXmlOutputContainer.style.display = 'block';
+                } catch (e) {
+                    console.error("Error processing styles.xml:", e);
+                    stylesXmlContentPre.textContent = `Error processing styles.xml: ${e.message}`;
+                    stylesXmlOutputContainer.style.display = 'block';
+                }
+                docxInspectorMessage.textContent = 'Processing complete.';
+                 docxInspectorMessage.style.color = 'green';
+
+            } catch (e) {
+                console.error("Error reading or processing DOCX file:", e);
+                docxInspectorMessage.textContent = `Error: ${e.message}`;
+                docxInspectorMessage.style.color = 'red';
+            }
+        });
+
     </script>
 </body>
 </html>

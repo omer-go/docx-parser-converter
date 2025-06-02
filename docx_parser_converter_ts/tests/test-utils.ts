@@ -3,13 +3,17 @@
 export interface TestResult {
     description: string;
     passed: boolean;
-    message?: string; // Optional message for failures or details
-    error?: any;      // To store actual error objects
+    message?: string;
+    error?: any;
+    input?: any;  // To store input data for the test
+    output?: any; // To store the actual output from the function
+    isAsync?: boolean;
+    asyncTest?: () => Promise<{ passed: boolean; message?: string; error?: any }>;
 }
 
 // Basic assertion functions
 export function assertEquals<T>(actual: T, expected: T, description: string): TestResult {
-    const passed = JSON.stringify(actual) === JSON.stringify(expected); // Simple deep enough for basic objects/primitives
+    const passed = JSON.stringify(actual) === JSON.stringify(expected);
     return {
         description,
         passed,
@@ -51,8 +55,6 @@ export function assertFalse(condition: boolean, description: string): TestResult
     };
 }
 
-// You can add more: assertThrows, assertDeepEquals (more robust), etc.
-
 // Helper to parse XML string to an Element for tests
 export function getXmlElement(xmlString: string): Element | null {
     const parser = new DOMParser();
@@ -60,7 +62,6 @@ export function getXmlElement(xmlString: string): Element | null {
     const parserError = xmlDoc.querySelector("parsererror");
     if (parserError) {
         console.error("XML Parsing Error in test utility:", parserError.textContent);
-        // Optionally throw or return a specific error indicator
         return null;
     }
     return xmlDoc.documentElement;

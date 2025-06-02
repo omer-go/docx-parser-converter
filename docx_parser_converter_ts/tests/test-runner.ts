@@ -1,9 +1,9 @@
 // tests/test-runner.ts
-import { TestResult } from './test-utils';
+import type { TestResult } from './test-utils'; // Correct: test-utils.ts is in the same 'tests/' directory
 
 interface TestSuite {
     name: string;
-    tests: () => TestResult[]; // A function that returns an array of test results
+    tests: () => TestResult[];
 }
 
 const testSuites: TestSuite[] = [];
@@ -28,6 +28,8 @@ export function runAllTests(): { suiteName: string; results: TestResult[] }[] {
                     console.error(`  ❌ FAILED: ${result.description} - ${result.message}`);
                     if (result.error) console.error('     Error:', result.error);
                 }
+                if (result.input !== undefined) console.log(`    Input:`, typeof result.input === 'string' ? result.input : JSON.stringify(result.input, null, 2));
+                if (result.output !== undefined) console.log(`    Output:`, typeof result.output === 'string' ? result.output : JSON.stringify(result.output, null, 2));
             });
         } catch (error) {
             console.error(`  💥 ERROR IN SUITE: ${suite.name}`, error);
@@ -37,7 +39,7 @@ export function runAllTests(): { suiteName: string; results: TestResult[] }[] {
                     description: "Suite execution error",
                     passed: false,
                     message: `An unexpected error occurred in the test suite.`,
-                    error: error
+                    error: error,
                 }]
             });
         }
@@ -46,12 +48,11 @@ export function runAllTests(): { suiteName: string; results: TestResult[] }[] {
     return allResults;
 }
 
-// Function to render results to the HTML page
 export function renderTestResults(
     containerElement: HTMLElement,
     allSuiteResults: { suiteName: string; results: TestResult[] }[]
 ): void {
-    containerElement.innerHTML = ''; // Clear previous results
+    containerElement.innerHTML = '';
 
     for (const suiteResult of allSuiteResults) {
         const suiteDiv = document.createElement('div');
@@ -65,23 +66,62 @@ export function renderTestResults(
         suiteResult.results.forEach(result => {
             const listItem = document.createElement('li');
             listItem.className = result.passed ? 'passed' : 'failed';
-            let text = `<strong>${result.passed ? '✅ PASSED' : '❌ FAILED'}</strong>: ${result.description}`;
+
+            let statusHTML = `<strong>${result.passed ? '✅ PASSED' : '❌ FAILED'}</strong>: ${result.description}`;
+            listItem.innerHTML = statusHTML;
+
             if (!result.passed && result.message) {
-                text += `<br><small style="margin-left: 20px;"><em>${result.message}</em></small>`;
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'test-message failure-message';
+                messageDiv.innerHTML = `<small><em>${result.message}</em></small>`;
+                listItem.appendChild(messageDiv);
             }
+
+            if (result.input !== undefined) {
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'test-detail test-input';
+                inputDiv.innerHTML = `<strong>Input:</strong>`;
+                const inputPre = document.createElement('pre');
+                try {
+                    inputPre.textContent = typeof result.input === 'string' ? result.input : JSON.stringify(result.input, null, 2);
+                } catch (e) { inputPre.textContent = String(result.input); }
+                inputDiv.appendChild(inputPre);
+                listItem.appendChild(inputDiv);
+            }
+
+            if (result.output !== undefined) {
+                const outputDiv = document.createElement('div');
+                outputDiv.className = 'test-detail test-output';
+                outputDiv.innerHTML = `<strong>Output:</strong>`;
+                const outputPre = document.createElement('pre');
+                try {
+                    if (result.output instanceof Element) {
+                        outputPre.textContent = result.output.outerHTML;
+                    } else if (typeof result.output === 'string') {
+                        outputPre.textContent = result.output;
+                    } else {
+                        outputPre.textContent = JSON.stringify(result.output, null, 2);
+                    }
+                } catch (e) { 
+                    outputPre.textContent = String(result.output); 
+                }
+                outputDiv.appendChild(outputPre);
+                listItem.appendChild(outputDiv);
+            }
+
             if (result.error) {
-                text += `<br><small style="margin-left: 20px; color: red;">Error: ${result.error instanceof Error ? result.error.message : String(result.error)}</small>`;
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'test-detail test-error';
+                errorDiv.innerHTML = `<strong style="color: red;">Error:</strong> ${result.error instanceof Error ? result.error.message : String(result.error)}`;
                 if (result.error instanceof Error && result.error.stack) {
                     const stackPre = document.createElement('pre');
-                    stackPre.textContent = result.error.stack;
                     stackPre.style.fontSize = '0.8em';
-                    stackPre.style.marginLeft = '25px';
                     stackPre.style.whiteSpace = 'pre-wrap';
-                    listItem.appendChild(document.createElement('br'));
-                    listItem.appendChild(stackPre);
+                    stackPre.textContent = result.error.stack;
+                    errorDiv.appendChild(stackPre);
                 }
+                listItem.appendChild(errorDiv);
             }
-            listItem.innerHTML = text + listItem.innerHTML; // Prepend text, keep stack if added
             resultsList.appendChild(listItem);
         });
         suiteDiv.appendChild(resultsList);
