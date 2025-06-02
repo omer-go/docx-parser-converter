@@ -1,116 +1,118 @@
 import * as fs from 'fs';
 import * as JSZip from 'jszip';
-import { DOMParser as XmldomParser, XMLSerializer as XmldomSerializer } from 'xmldom';
+import { DOMParser as XmldomParser, XMLSerializer as XmldomSerializer } from '@xmldom/xmldom';
 
 /**
  * Extracts the root element from the specified XML file within a DOCX file.
  *
  * @param docxFileContent The binary content (Buffer or Uint8Array) of the DOCX file.
  * @param xmlFilename The name of the XML file to extract (e.g., 'document.xml').
- * @returns Promise<Element> The root element of the extracted XML file.
+ * @returns Promise<Element> The root element of the extracted XML file (global Element type).
  */
 export async function extractXmlRootFromDocx(docxFileContent: Buffer | Uint8Array, xmlFilename: string): Promise<Element> {
     const contentToLoad = docxFileContent instanceof Uint8Array ? docxFileContent.buffer : docxFileContent;
     const zip = await JSZip.loadAsync(contentToLoad);
 
-    console.log("Files found by JSZip in the archive:");
-    zip.forEach((relativePath, fileEntry) => {
-        console.log("- ", relativePath, " (is directory: ", fileEntry.dir, ")");
-    });
+    // console.log("Files found by JSZip in the archive:");
+    // zip.forEach((relativePath, fileEntry) => {
+    //     console.log("- ", relativePath, " (is directory: ", fileEntry.dir, ")");
+    // });
 
     const xmlFileInZip = zip.file(`word/${xmlFilename}`);
 
     if (!xmlFileInZip) {
-        throw new Error(`XML file 'word/${xmlFilename}' not found in DOCX archive. Check JSZip logs above for available files.`);
+        throw new Error(`XML file 'word/${xmlFilename}' not found in DOCX archive.`);
     }
 
     const xmlContent = await xmlFileInZip.async('string');
     const xmldomParser = new XmldomParser();
-    let xmlDoc = xmldomParser.parseFromString(xmlContent, 'application/xml');
+    const docParsedByXmldom = xmldomParser.parseFromString(xmlContent, 'application/xml');
     
-    if (!xmlDoc.documentElement) {
-        throw new Error(`Could not parse XML content from '${xmlFilename}'.`);
-    }
-    const parserError = xmlDoc.getElementsByTagName('parsererror');
+    const parserError = docParsedByXmldom.getElementsByTagName('parsererror');
     if (parserError.length > 0) {
         const errorMessage = parserError[0].textContent || "Unknown XML parsing error";
         throw new Error(`Error parsing XML '${xmlFilename}' with xmldom: ${errorMessage}`);
     }
+    if (!docParsedByXmldom.documentElement) {
+        throw new Error(`Could not parse XML content from '${xmlFilename}' or no document element found.`);
+    }
     
-    let rootElement = xmlDoc.documentElement;
+    const rootElementFromXmldom = docParsedByXmldom.documentElement;
 
-    // Re-parse with browser's native DOMParser if in browser for native Node compatibility
     if (typeof window !== 'undefined' && typeof window.DOMParser === 'function') {
         try {
             const serializer = new XmldomSerializer();
-            const xmlString = serializer.serializeToString(rootElement);
-            const browserParser = new window.DOMParser();
-            const browserXmlDoc = browserParser.parseFromString(xmlString, 'application/xml');
+            const xmlString = serializer.serializeToString(rootElementFromXmldom);
+            const browserDomParser = new window.DOMParser();
+            const browserXmlDoc = browserDomParser.parseFromString(xmlString, 'application/xml');
             
             const browserParserError = browserXmlDoc.getElementsByTagName('parsererror');
             if (browserParserError.length > 0) {
                 const browserErrorMessage = browserParserError[0].textContent || "Unknown XML parsing error in browser";
                 console.warn(`Error re-parsing XML '${xmlFilename}' with browser's DOMParser: ${browserErrorMessage}. Falling back to xmldom result.`);
-                // Optionally, could throw here or decide how to handle this specific error.
-                // For now, we'll let it return the xmldom version if browser re-parse fails.
+                return rootElementFromXmldom as unknown as Element;
             } else if (browserXmlDoc.documentElement) {
-                rootElement = browserXmlDoc.documentElement;
                 console.log(`Successfully re-parsed '${xmlFilename}' with browser's native DOMParser.`);
+                return browserXmlDoc.documentElement;
             } else {
                 console.warn(`Browser's DOMParser did not return a documentElement for '${xmlFilename}'. Falling back to xmldom result.`);
+                return rootElementFromXmldom as unknown as Element;
             }
         } catch (e) {
             console.warn(`Exception during XML re-parsing for '${xmlFilename}' in browser: ${(e as Error).message}. Falling back to xmldom result.`);
+            return rootElementFromXmldom as unknown as Element;
         }
     }
     
-    return rootElement;
+    return rootElementFromXmldom as unknown as Element;
 }
 
 /**
  * Extracts the root element from an XML string.
  *
  * @param xmlContent The XML content as a string.
- * @returns Element The root element of the parsed XML.
+ * @returns Element The root element of the parsed XML (global Element type).
  */
 export function extractXmlRootFromString(xmlContent: string): Element {
     const xmldomParser = new XmldomParser();
-    let xmlDoc = xmldomParser.parseFromString(xmlContent, 'application/xml');
+    const docParsedByXmldom = xmldomParser.parseFromString(xmlContent, 'application/xml');
 
-    if (!xmlDoc.documentElement) {
-        throw new Error('Could not parse XML content from string.');
-    }
-    const parserError = xmlDoc.getElementsByTagName('parsererror');
+    const parserError = docParsedByXmldom.getElementsByTagName('parsererror');
     if (parserError.length > 0) {
         const errorMessage = parserError[0].textContent || "Unknown XML parsing error";
         throw new Error(`Error parsing XML string with xmldom: ${errorMessage}`);
     }
+    if (!docParsedByXmldom.documentElement) {
+        throw new Error('Could not parse XML content from string or no document element found.');
+    }
 
-    let rootElement = xmlDoc.documentElement;
+    const rootElementFromXmldom = docParsedByXmldom.documentElement;
 
-    // Re-parse with browser's native DOMParser if in browser for native Node compatibility
     if (typeof window !== 'undefined' && typeof window.DOMParser === 'function') {
         try {
             const serializer = new XmldomSerializer();
-            const xmlString = serializer.serializeToString(rootElement);
-            const browserParser = new window.DOMParser();
-            const browserXmlDoc = browserParser.parseFromString(xmlString, 'application/xml');
+            const xmlString = serializer.serializeToString(rootElementFromXmldom);
+            const browserDomParser = new window.DOMParser();
+            const browserXmlDoc = browserDomParser.parseFromString(xmlString, 'application/xml');
 
             const browserParserError = browserXmlDoc.getElementsByTagName('parsererror');
             if (browserParserError.length > 0) {
                 const browserErrorMessage = browserParserError[0].textContent || "Unknown XML parsing error in browser";
                 console.warn(`Error re-parsing XML string with browser's DOMParser: ${browserErrorMessage}. Falling back to xmldom result.`);
+                return rootElementFromXmldom as unknown as Element;
             } else if (browserXmlDoc.documentElement) {
-                rootElement = browserXmlDoc.documentElement;
                  console.log("Successfully re-parsed XML string with browser's native DOMParser.");
+                return browserXmlDoc.documentElement;
             } else {
                 console.warn("Browser's DOMParser did not return a documentElement for XML string. Falling back to xmldom result.");
+                return rootElementFromXmldom as unknown as Element;
             }
         } catch (e) {
             console.warn(`Exception during XML string re-parsing in browser: ${(e as Error).message}. Falling back to xmldom result.`);
+            return rootElementFromXmldom as unknown as Element;
         }
     }
-    return rootElement;
+    return rootElementFromXmldom as unknown as Element;
 }
 
 /**
