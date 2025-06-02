@@ -96,6 +96,8 @@
         import { registerCommonHelpersTests } from '../suites/commonHelpers.test.ts';
         // Path from 'tests/html/' to 'tests/suites/utils.test.ts' is '../suites/utils.test.ts'
         import { registerUtilsTests } from '../suites/utils.test.ts'; // Import new utils tests
+        // Path from 'tests/html/' to 'tests/suites/documentNumberingParser.test.ts' is '../suites/documentNumberingParser.test.ts'
+        import { registerDocumentNumberingParserTests } from '../suites/documentNumberingParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
@@ -103,6 +105,7 @@
 
         registerCommonHelpersTests();
         registerUtilsTests(); // Register new utils tests
+        registerDocumentNumberingParserTests();
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
