@@ -32,7 +32,10 @@
     "vite-plugin-dts": "^3.9.1"
   },
   "dependencies": {
-    "jszip": "^3.10.1"
+    "@types/jszip": "^3.4.0",
+    "@types/xmldom": "^0.1.34",
+    "jszip": "^3.10.1",
+    "xmldom": "^0.6.0"
   },
   "keywords": [
     "docx",
