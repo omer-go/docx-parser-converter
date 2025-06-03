@@ -117,6 +117,8 @@
         import { registerRunPropertiesParserTests } from '../suites/runPropertiesParser.test.ts';
         // Path from 'tests/html/' to 'tests/suites/stylesParser.test.ts' is '../suites/stylesParser.test.ts'
         import { registerStylesParserTests } from '../suites/stylesParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/numberingParser.test.ts' is '../suites/numberingParser.test.ts'
+        import { registerNumberingParserTests } from '../suites/numberingParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
@@ -129,6 +131,7 @@
         registerParagraphPropertiesParserTests();
         registerRunPropertiesParserTests();
         registerStylesParserTests();
+        registerNumberingParserTests(); // Register the new test suite
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
