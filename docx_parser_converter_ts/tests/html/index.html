@@ -137,6 +137,8 @@
         import { registerTableRowParserTests } from '../suites/tableRowParser.test.ts';
         // Path from 'tests/html/' to 'tests/suites/tablesParser.test.ts' is '../suites/tablesParser.test.ts'
         import { registerTablesParserTests } from '../suites/tablesParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/documentParser.test.ts' is '../suites/documentParser.test.ts'
+        import { registerDocumentParserTests } from '../suites/documentParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
@@ -159,6 +161,7 @@
         registerTableRowPropertiesParserTests();
         registerTableRowParserTests();
         registerTablesParserTests();
+        registerDocumentParserTests();
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
@@ -284,6 +287,55 @@
                 console.error("Error reading or processing DOCX file:", e);
                 docxInspectorMessage.textContent = `Error: ${e.message}`;
                 docxInspectorMessage.style.color = 'red';
+            }
+        });
+
+        // Add a new section for DocumentParser browser test
+        const docxParserSection = document.createElement('div');
+        docxParserSection.className = 'file-upload-section';
+        docxParserSection.innerHTML = `
+            <h2>DocumentParser Browser Test</h2>
+            <p>Upload a .docx file to parse and view the document schema (Paragraphs, Tables, Margins, etc).</p>
+            <input type="file" id="docxParserUploadInput" accept=".docx" />
+            <button id="runDocumentParserTestButton">Parse DOCX and Show Schema</button>
+            <div id="docxParserTestOutput" class="xml-output-container" style="margin-top:15px;">
+                <h3>Parsed Document Schema (JSON):</h3>
+                <pre id="docxParserSchemaOutput" style="background-color:#eef; border:1px solid #ccd; padding:10px; max-height:400px; overflow:auto; text-align:left; white-space:pre-wrap; word-break:break-all;">No document parsed yet.</pre>
+                <p id="docxParserTestMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(docxParserSection);
+
+        const docxParserUploadInput = document.getElementById('docxParserUploadInput');
+        const runDocumentParserTestButton = document.getElementById('runDocumentParserTestButton');
+        const docxParserSchemaOutput = document.getElementById('docxParserSchemaOutput');
+        const docxParserTestMessage = document.getElementById('docxParserTestMessage');
+
+        runDocumentParserTestButton.addEventListener('click', async () => {
+            if (!docxParserUploadInput.files || docxParserUploadInput.files.length === 0) {
+                docxParserTestMessage.textContent = 'Please select a .docx file first.';
+                docxParserTestMessage.style.color = 'red';
+                return;
+            }
+            const file = docxParserUploadInput.files[0];
+            if (!file.name.endsWith('.docx')) {
+                docxParserTestMessage.textContent = 'Invalid file type. Please upload a .docx file.';
+                docxParserTestMessage.style.color = 'red';
+                return;
+            }
+            docxParserTestMessage.textContent = 'Parsing...';
+            docxParserTestMessage.style.color = 'blue';
+            docxParserSchemaOutput.textContent = 'Loading...';
+            try {
+                // Use the exposed browser test function
+                const schema = await window.runDocumentParserBrowserTest(file);
+                docxParserSchemaOutput.textContent = JSON.stringify(schema, null, 2); // Pretty print JSON
+                docxParserTestMessage.textContent = 'Parsing complete.';
+                docxParserTestMessage.style.color = 'green';
+            } catch (e) {
+                docxParserSchemaOutput.textContent = 'Error: ' + (e.message || String(e));
+                docxParserTestMessage.textContent = 'Error during parsing.';
+                docxParserTestMessage.style.color = 'red';
             }
         });
 
