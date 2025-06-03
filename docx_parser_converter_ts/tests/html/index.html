@@ -127,6 +127,8 @@
         import { registerTablePropertiesParserTests } from '../suites/tablePropertiesParser.test.ts';
         // Path from 'tests/html/' to 'tests/suites/tableCellPropertiesParser.test.ts' is '../suites/tableCellPropertiesParser.test.ts'
         import { registerTableCellPropertiesParserTests } from '../suites/tableCellPropertiesParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/tableCellParser.test.ts' is '../suites/tableCellParser.test.ts'
+        import { registerTableCellParserTests } from '../suites/tableCellParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
@@ -144,6 +146,7 @@
         registerParagraphParserTests();
         registerTablePropertiesParserTests();
         registerTableCellPropertiesParserTests();
+        registerTableCellParserTests();
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
