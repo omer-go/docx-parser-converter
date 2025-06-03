@@ -117,6 +117,8 @@
         import { registerRunPropertiesParserTests } from '../suites/runPropertiesParser.test.ts';
         // Path from 'tests/html/' to 'tests/suites/stylesParser.test.ts' is '../suites/stylesParser.test.ts'
         import { registerStylesParserTests } from '../suites/stylesParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/stylesMerger.test.ts' is '../suites/stylesMerger.test.ts'
+        import { registerStylesMergerTests } from '../suites/stylesMerger.test.ts';
         // Path from 'tests/html/' to 'tests/suites/numberingParser.test.ts' is '../suites/numberingParser.test.ts'
         import { registerNumberingParserTests } from '../suites/numberingParser.test.ts';
         // Import the new RunParser test suite
@@ -151,6 +153,7 @@
         registerParagraphPropertiesParserTests();
         registerRunPropertiesParserTests();
         registerStylesParserTests();
+        registerStylesMergerTests();
         registerNumberingParserTests();
         registerRunParserTests(); // Register the new test suite
         registerParagraphParserTests();
