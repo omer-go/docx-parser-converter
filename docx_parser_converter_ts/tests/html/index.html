@@ -106,20 +106,23 @@
         // Path from 'tests/html/' to 'tests/suites/commonHelpers.test.ts' is '../suites/commonHelpers.test.ts'
         import { registerCommonHelpersTests } from '../suites/commonHelpers.test.ts';
         // Path from 'tests/html/' to 'tests/suites/utils.test.ts' is '../suites/utils.test.ts'
-        import { registerUtilsTests } from '../suites/utils.test.ts'; // Import new utils tests
+        import { registerUtilsTests } from '../suites/utils.test.ts';
         // Path from 'tests/html/' to 'tests/suites/documentNumberingParser.test.ts' is '../suites/documentNumberingParser.test.ts'
         import { registerDocumentNumberingParserTests } from '../suites/documentNumberingParser.test.ts';
         // Path from 'tests/html/' to 'tests/suites/marginsParser.test.ts' is '../suites/marginsParser.test.ts'
         import { registerMarginsParserTests } from '../suites/marginsParser.test.ts';
+        // Path from 'tests/html/' to 'tests/suites/paragraphPropertiesParser.test.ts' is '../suites/paragraphPropertiesParser.test.ts'
+        import { registerParagraphPropertiesParserTests } from '../suites/paragraphPropertiesParser.test.ts';
 
         // Import utilities for DOCX inspection
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
         import { readFileInBrowser, extractXmlRootFromDocx } from '../../src/docx_parsers/utils.ts';
 
         registerCommonHelpersTests();
-        registerUtilsTests(); // Register new utils tests
+        registerUtilsTests();
         registerDocumentNumberingParserTests();
-        registerMarginsParserTests(); // Register new margins parser tests
+        registerMarginsParserTests();
+        registerParagraphPropertiesParserTests();
         // Add imports and calls for other test suites here as you create them
 
         function prettyPrintXml(xmlString) {
