@@ -4,6 +4,7 @@ import type { Paragraph } from '../docx_parsers/models/paragraphModels';
 import type { Table } from '../docx_parsers/models/tableModels';
 import { ParagraphConverter } from './converters/paragraphConverter';
 import { TableConverter } from './converters/tableConverter';
+import { NumberingConverter } from './converters/numberingConverter';
 
 /**
  * Generates plain text from the document schema, preserving the logic of the Python implementation.
@@ -17,6 +18,7 @@ export class TxtGenerator {
      * @returns Plain text representation of the document.
      */
     public static generateTxt(documentSchema: DocumentSchema, numberingSchema: NumberingSchema, indent: boolean): string {
+        NumberingConverter.resetCounters();
         return TxtGenerator.generateTxtBody(documentSchema.elements, numberingSchema, indent);
     }
 
