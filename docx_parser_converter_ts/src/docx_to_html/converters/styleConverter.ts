@@ -47,7 +47,11 @@ export class StyleConverter {
      * Converts color property to CSS style.
      */
     public static convertColor(color?: string): string {
-        return color ? `color:${color};` : "";
+        if (!color) return "";
+        if (color.toLowerCase() === "auto") {
+            return "color:auto;";
+        }
+        return `color:#${color};`;
     }
 
     /**
