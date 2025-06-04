@@ -57,7 +57,7 @@ export class StyleConverter {
     public static convertFont(font?: FontProperties): string {
         let style = "";
         if (font?.ascii) {
-            style += `font-family:"${font.ascii}";`; // Added quotes for font names with spaces
+            style += `font-family:${font.ascii.trim()};`;
         }
         // The Python version only considers font.ascii. If other font properties (hAnsi, eastAsia, cs)
         // should be used as fallbacks or in specific contexts, that logic would need to be added.
@@ -68,7 +68,7 @@ export class StyleConverter {
      * Converts font size property to CSS style.
      */
     public static convertSize(sizePt?: number): string {
-        return sizePt !== undefined ? `font-size:${sizePt}pt;` : "";
+        return sizePt !== undefined ? `font-size:${sizePt.toFixed(1)}pt;` : "";
     }
 
     /**
@@ -187,16 +187,16 @@ function testStyleConverter() {
 
     // Test font
     const font1: FontProperties = { ascii: "Arial" };
-    console.log(\`Font Arial: "${StyleConverter.convertFont(font1)}" (Expected: font-family:"Arial";)\`);
+    console.log(\`Font Arial: "${StyleConverter.convertFont(font1)}" (Expected: font-family:Arial;)\`);
     const font2: FontProperties = { ascii: "Times New Roman" };
-    console.log(\`Font Times New Roman: "${StyleConverter.convertFont(font2)}" (Expected: font-family:"Times New Roman";)\`);
+    console.log(\`Font Times New Roman: "${StyleConverter.convertFont(font2)}" (Expected: font-family:Times New Roman;)\`);
     const font3: FontProperties = { hAnsi: "Calibri" }; // ascii is primary
     console.log(\`Font no ascii: "${StyleConverter.convertFont(font3)}" (Expected: )\`);
     console.log(\`Font undefined: "${StyleConverter.convertFont()}" (Expected: )\`);
 
     // Test size
-    console.log(\`Size 12pt: "${StyleConverter.convertSize(12)}" (Expected: font-size:12pt;)\`);
-    console.log(\`Size 0pt: "${StyleConverter.convertSize(0)}" (Expected: font-size:0pt;)\`);
+    console.log(\`Size 12pt: "${StyleConverter.convertSize(12)}" (Expected: font-size:12.0pt;)\`);
+    console.log(\`Size 0pt: "${StyleConverter.convertSize(0)}" (Expected: font-size:0.0pt;)\`);
     console.log(\`Size undefined: "${StyleConverter.convertSize()}" (Expected: )\`);
 
     // Test spacing
