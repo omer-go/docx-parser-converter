@@ -149,6 +149,9 @@
         // Import the new DocxProcessor integration test suite
         import '../suites/docxProcessorIntegration.test.ts'; // Ensure integration test function is attached to window
 
+        // Import the new DocxToHtmlConverter integration test suite
+        import '../suites/docxToHtmlIntegration.test.ts'; // Ensure integration test function is attached to window
+
         registerCommonHelpersTests();
         registerUtilsTests();
         registerDocumentNumberingParserTests();
@@ -539,6 +542,54 @@
                 docxCompareResultPre.textContent = 'Error: ' + (e.message || String(e));
                 docxCompareResultMessage.textContent = 'Error during comparison.';
                 docxCompareResultMessage.style.color = 'red';
+            }
+        });
+
+        // Add a new section for DOCX to HTML Integration Test
+        const docxToHtmlSection = document.createElement('div');
+        docxToHtmlSection.className = 'file-upload-section';
+        docxToHtmlSection.innerHTML = `
+            <h2>DOCX to HTML Integration Test</h2>
+            <p>Upload a .docx file to convert and render the HTML output below.</p>
+            <input type="file" id="docxToHtmlUploadInput" accept=".docx" />
+            <button id="runDocxToHtmlTestButton">Convert and Render HTML</button>
+            <div id="docxToHtmlTestOutput" class="xml-output-container" style="margin-top:15px;">
+                <h3>Rendered HTML Output:</h3>
+                <div id="docxToHtmlRenderedOutput" style="background-color:#fff; border:1px solid #ccd; padding:10px; max-height:400px; overflow:auto; text-align:left; white-space:normal; word-break:break-all;"></div>
+                <p id="docxToHtmlTestMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(docxToHtmlSection);
+
+        const docxToHtmlUploadInput = document.getElementById('docxToHtmlUploadInput');
+        const runDocxToHtmlTestButton = document.getElementById('runDocxToHtmlTestButton');
+        const docxToHtmlRenderedOutput = document.getElementById('docxToHtmlRenderedOutput');
+        const docxToHtmlTestMessage = document.getElementById('docxToHtmlTestMessage');
+
+        runDocxToHtmlTestButton.addEventListener('click', async () => {
+            if (!docxToHtmlUploadInput.files || docxToHtmlUploadInput.files.length === 0) {
+                docxToHtmlTestMessage.textContent = 'Please select a .docx file first.';
+                docxToHtmlTestMessage.style.color = 'red';
+                return;
+            }
+            const file = docxToHtmlUploadInput.files[0];
+            if (!file.name.endsWith('.docx')) {
+                docxToHtmlTestMessage.textContent = 'Invalid file type. Please upload a .docx file.';
+                docxToHtmlTestMessage.style.color = 'red';
+                return;
+            }
+            docxToHtmlTestMessage.textContent = 'Converting...';
+            docxToHtmlTestMessage.style.color = 'blue';
+            docxToHtmlRenderedOutput.innerHTML = 'Loading...';
+            try {
+                const html = await window.runDocxToHtmlIntegrationTest(file);
+                docxToHtmlRenderedOutput.innerHTML = html;
+                docxToHtmlTestMessage.textContent = 'Conversion complete.';
+                docxToHtmlTestMessage.style.color = 'green';
+            } catch (e) {
+                docxToHtmlRenderedOutput.textContent = 'Error: ' + (e.message || String(e));
+                docxToHtmlTestMessage.textContent = 'Error during conversion.';
+                docxToHtmlTestMessage.style.color = 'red';
             }
         });
 
