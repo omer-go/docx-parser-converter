@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCX Parser Converter - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .file-input-area {
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-area:hover {
+            border-color: #764ba2;
+            background-color: #f8f9ff;
+        }
+
+        .file-input-area.dragover {
+            border-color: #4CAF50;
+            background-color: #e8f5e8;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            min-height: 300px;
+            padding: 20px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .output-area {
+            width: 100%;
+            min-height: 625px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: vertical;
+            background: #f8f9fa;
+        }
+
+        .metadata {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .metadata h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .metadata-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 4px solid #667eea;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .demo-card {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: auto;
+            }
+        }
+
+        /* Make metadata panel visually consistent */
+        #metadataOutput {
+            min-height: 625px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 DOCX Parser Converter</h1>
+            <p>High-performance TypeScript library for converting DOCX documents to HTML and TXT</p>
+        </div>
+
+        <div class="demo-card">
+            <div class="button-group" style="justify-content: flex-end;">
+                <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+            </div>
+
+            <div class="file-input-area" id="fileInputArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📤</div>
+                <h3>Choose or drag a DOCX file</h3>
+                <p>Select a .docx file to see the conversion in action</p>
+                <input type="file" id="fileInput" accept=".docx" />
+            </div>
+
+            <div id="statusArea"></div>
+
+            <div class="output-section" id="outputSection" style="display: none;">
+                <div class="output-tabs">
+                    <button class="tab active" data-tab="structure">Document Structure</button>
+                    <button class="tab" data-tab="html">HTML Output</button>
+                    <button class="tab" data-tab="text">Text Output</button>
+                </div>
+                <div class="output-tabs" id="xmlSubTabs" style="margin-top:-8px;">
+                    <button class="tab xml-subtab active" data-xmltab="document">document.xml</button>
+                    <button class="tab xml-subtab" data-xmltab="styles">styles.xml</button>
+                    <button class="tab xml-subtab" data-xmltab="numbering">numbering.xml</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-panel active" id="structure">
+                        <h4>Document Structure</h4>
+                        <textarea class="output-area" id="structureOutput" readonly placeholder="Document structure will appear here..."></textarea>
+                    </div>
+                    <div class="tab-panel" id="html">
+                        <h4>HTML Output</h4>
+                        <iframe class="output-area" id="htmlOutputFrame" style="width:100%; background-color: white; height: 625px;" title="Rendered HTML Output"></iframe>
+                    </div>
+                    <div class="tab-panel" id="text">
+                        <h4>Plain Text Output</h4>
+                        <textarea class="output-area" id="textOutput" readonly placeholder="Plain text output will appear here..."></textarea>
+                    </div>
+                    <div id="xmlDocumentPanel" style="display:none;"> 
+                        <h4>document.xml</h4>
+                        <div id="xmlDocumentOutput" class="output-area" style="background:#eef; font-family:monospace; white-space:pre-wrap; height:625px; overflow:auto;"></div>
+                    </div>
+                    <div id="xmlStylesPanel" style="display:none;"> 
+                        <h4>styles.xml</h4>
+                        <div id="xmlStylesOutput" class="output-area" style="background:#eef; font-family:monospace; white-space:pre-wrap; height:625px; overflow:auto;"></div>
+                    </div>
+                    <div id="xmlNumberingPanel" style="display:none;"> 
+                        <h4>numbering.xml</h4>
+                        <div id="xmlNumberingOutput" class="output-area" style="background:#eef; font-family:monospace; white-space:pre-wrap; height:625px; overflow:auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>High Performance</h3>
+                <p>Optimized for speed and efficiency in browser environments</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>TypeScript</h3>
+                <p>Built with strict TypeScript for maximum reliability</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Rich Formatting</h3>
+                <p>Preserves styles, tables, and document structure</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Browser Ready</h3>
+                <p>No server required - runs entirely in the browser</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // This would normally import the built library
+        // For demo purposes, we'll simulate the API
+        // console.log('DOCX Parser Converter Demo'); // Keep or modify this log as needed
+
+        // Import the integration test files to make their functions available on the window object
+        import '../tests/suites/docxProcessorIntegration.test.ts';
+        import '../tests/suites/docxToHtmlIntegration.test.ts';
+        import '../tests/suites/docxToTxtIntegration.test.ts';
+        
+        let currentFile = null;
+        
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const fileInputArea = document.getElementById('fileInputArea');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusArea = document.getElementById('statusArea');
+        const outputSection = document.getElementById('outputSection');
+        
+        // Tab handling
+        const mainTabButtons = document.querySelectorAll('.output-tabs:not(#xmlSubTabs) .tab[data-tab]');
+        const mainTabPanels = {
+            structure: document.getElementById('structure'),
+            html: document.getElementById('html'),
+            text: document.getElementById('text')
+        };
+
+        const xmlSubTabsContainer = document.getElementById('xmlSubTabs');
+        const xmlSubTabButtons = xmlSubTabsContainer.querySelectorAll('.xml-subtab');
+        const xmlPanelContainers = { 
+            document: document.getElementById('xmlDocumentPanel'),
+            styles: document.getElementById('xmlStylesPanel'),
+            numbering: document.getElementById('xmlNumberingPanel')
+        };
+        const xmlOutputAreas = { 
+            document: document.getElementById('xmlDocumentOutput'),
+            styles: document.getElementById('xmlStylesOutput'),
+            numbering: document.getElementById('xmlNumberingOutput')
+        };
+        let lastXmlData = { documentXml: '', stylesXml: '', numberingXml: '' }; 
+        
+        // File selection
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // Drag and drop
+        fileInputArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileInputArea.classList.add('dragover');
+        });
+        
+        fileInputArea.addEventListener('dragleave', () => {
+            fileInputArea.classList.remove('dragover');
+        });
+        
+        fileInputArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInputArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ target: { files } });
+            }
+        });
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (!file.name.toLowerCase().endsWith('.docx')) {
+                showStatus('Please select a .docx file', 'error');
+                currentFile = null;
+                return;
+            }
+            currentFile = file;
+            fileInputArea.innerHTML = `
+                <div class="upload-icon">📄</div>
+                <h3>${file.name}</h3>
+                <p>Size: ${(file.size / 1024).toFixed(2)} KB</p>
+            `;
+            showStatus(`File "${file.name}" selected successfully`, 'success');
+            // Automatically process all outputs
+            processAllOutputs(file);
+        }
+        
+        // Button handlers
+        function hideUploadShowOutput() {
+            fileInputArea.style.display = 'none';
+            outputSection.style.display = 'block';
+        }
+        function showUploadHideOutput() {
+            fileInputArea.style.display = '';
+            outputSection.style.display = 'none';
+            // Reset upload zone content
+            fileInputArea.innerHTML = `
+                <div class="upload-icon">📤</div>
+                <h3>Choose or drag a DOCX file</h3>
+                <p>Select a .docx file to see the conversion in action</p>
+                <input type="file" id="fileInput" accept=".docx" />
+            `;
+            // Re-attach file input event
+            document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+        }
+        clearBtn.addEventListener('click', () => {
+            currentFile = null;
+            fileInput.value = '';
+            showUploadHideOutput();
+            statusArea.innerHTML = '';
+            
+            document.getElementById('structureOutput').value = '';
+            const htmlOutputFrameToClear = document.getElementById('htmlOutputFrame');
+            if (htmlOutputFrameToClear) {
+                htmlOutputFrameToClear.srcdoc = '';
+            }
+            document.getElementById('textOutput').value = '';
+
+            Object.values(xmlOutputAreas).forEach(outputDiv => outputDiv.innerHTML = '');
+
+            mainTabButtons.forEach(t => t.classList.remove('active'));
+            Object.values(mainTabPanels).forEach(p => p.classList.remove('active'));
+            xmlSubTabButtons.forEach(b => b.classList.remove('active'));
+            Object.values(xmlPanelContainers).forEach(p => p.style.display = 'none');
+
+            // Reset to show structure tab as active by default on UI (even if content is empty)
+            const structureTabButton = document.querySelector('.output-tabs:not(#xmlSubTabs) .tab[data-tab="structure"]');
+            if (structureTabButton) structureTabButton.classList.add('active');
+            if (mainTabPanels.structure) mainTabPanels.structure.classList.add('active');
+        });
+        
+        function setLoading(elementId, show) {
+            const element = document.getElementById(elementId);
+            element.style.display = show ? 'inline-block' : 'none';
+        }
+        
+        function showStatus(message, type) {
+            statusArea.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        // Show library info (optional, can be removed or adapted)
+        // console.log(`${converter.getName()} v${converter.getVersion()}`); // Removed
+        console.log('Demo using integration test functions loaded successfully!');
+
+        // Tab handling
+        mainTabButtons.forEach(tabButton => {
+            tabButton.addEventListener('click', () => {
+                mainTabButtons.forEach(btn => btn.classList.remove('active'));
+                Object.values(mainTabPanels).forEach(panel => panel.classList.remove('active'));
+
+                tabButton.classList.add('active');
+                const targetPanelKey = tabButton.dataset.tab;
+                if (mainTabPanels[targetPanelKey]) {
+                    mainTabPanels[targetPanelKey].classList.add('active');
+                }
+
+                xmlSubTabButtons.forEach(b => b.classList.remove('active'));
+                Object.values(xmlPanelContainers).forEach(p => p.style.display = 'none');
+            });
+        });
+
+        xmlSubTabButtons.forEach(subTabButton => {
+            subTabButton.addEventListener('click', () => {
+                mainTabButtons.forEach(btn => btn.classList.remove('active'));
+                Object.values(mainTabPanels).forEach(panel => panel.classList.remove('active'));
+
+                activateXmlPanel(subTabButton.dataset.xmltab);
+            });
+        });
+
+        function activateXmlPanel(xmlKey) {
+            xmlSubTabButtons.forEach(b => b.classList.remove('active'));
+            Object.values(xmlPanelContainers).forEach(p => p.style.display = 'none');
+
+            const targetButton = Array.from(xmlSubTabButtons).find(b => b.dataset.xmltab === xmlKey);
+            if (targetButton) targetButton.classList.add('active');
+            if (xmlPanelContainers[xmlKey]) {
+                xmlPanelContainers[xmlKey].style.display = ''; 
+            }
+        }
+
+        async function processAllOutputs(file) {
+            hideUploadShowOutput();
+            statusArea.innerHTML = '<span class="loading"></span>Processing...';
+            try {
+                const schema = await window.runDocxProcessorIntegrationTest(file);
+                document.getElementById('structureOutput').value = JSON.stringify(schema, null, 2);
+
+                const htmlContent = await window.runDocxToHtmlIntegrationTest(file);
+                const htmlOutputFrame = document.getElementById('htmlOutputFrame');
+                if (htmlOutputFrame) htmlOutputFrame.srcdoc = htmlContent;
+
+                const txtContent = await window.runDocxToTxtIntegrationTest(file);
+                document.getElementById('textOutput').value = txtContent;
+
+                const xmls = await window.runDocxProcessorAllXmls(file);
+                lastXmlData = xmls; 
+                xmlOutputAreas.document.innerHTML = `<pre>${escapeHtml(lastXmlData.documentXml)}</pre>`;
+                xmlOutputAreas.styles.innerHTML = `<pre>${escapeHtml(lastXmlData.stylesXml)}</pre>`;
+                xmlOutputAreas.numbering.innerHTML = `<pre>${escapeHtml(lastXmlData.numberingXml)}</pre>`;
+                
+                activateXmlPanel('document'); // Set document.xml as the active XML sub-tab (panel hidden by main tab activation next)
+
+                const structureTabButton = document.querySelector('.output-tabs:not(#xmlSubTabs) .tab[data-tab="structure"]');
+                if (structureTabButton) {
+                    structureTabButton.click(); 
+                } else { 
+                    activateXmlPanel('document');
+                }
+                showStatus('All conversions completed.', 'success');
+            } catch (e) {
+                showStatus('Error during conversion: ' + (e.message || e), 'error');
+            }
+        }
+        // Helper to escape HTML for <pre>
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(tag) {
+                const charsToReplace = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;'
+                };
+                return charsToReplace[tag] || tag;
+            });
+        }
+    </script>
+</body>
+</html> 
