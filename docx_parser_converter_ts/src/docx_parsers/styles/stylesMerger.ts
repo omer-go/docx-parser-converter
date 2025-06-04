@@ -97,9 +97,9 @@ export class StylesMerger {
     if (styleId) {
       const style = this.findStyle(styleId);
       if (style) {
-        paragraph.properties = mergeProperties(paragraph.properties, style.paragraphProperties) || paragraph.properties;
+        paragraph.properties = deepMergeBasePreserves(style.paragraphProperties, paragraph.properties) || paragraph.properties;
         for (const run of paragraph.runs) {
-          const merged = mergeProperties(run.properties, style.runProperties);
+          const merged = deepMergeBasePreserves(style.runProperties, run.properties);
           if (merged && Object.keys(merged).length > 0) {
             run.properties = merged;
           } else {
