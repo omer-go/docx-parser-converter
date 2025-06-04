@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
         // Convert DOCX to TXT
         const converter = new DocxToTxtConverter(uint8);
         await converter.init();
-        const txt = converter.convertToTxt();
+        const txt = converter.convertToTxt(true);
         return txt;
     };
 } 
