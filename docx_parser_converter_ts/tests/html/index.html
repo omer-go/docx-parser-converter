@@ -152,6 +152,9 @@
         // Import the new DocxToHtmlConverter integration test suite
         import '../suites/docxToHtmlIntegration.test.ts'; // Ensure integration test function is attached to window
 
+        // Import the new DocxToTxtConverter integration test suite
+        import '../suites/docxToTxtIntegration.test.ts'; // Ensure integration test function is attached to window
+
         registerCommonHelpersTests();
         registerUtilsTests();
         registerDocumentNumberingParserTests();
@@ -590,6 +593,54 @@
                 docxToHtmlRenderedOutput.textContent = 'Error: ' + (e.message || String(e));
                 docxToHtmlTestMessage.textContent = 'Error during conversion.';
                 docxToHtmlTestMessage.style.color = 'red';
+            }
+        });
+
+        // Add a new section for DOCX to TXT Integration Test
+        const docxToTxtSection = document.createElement('div');
+        docxToTxtSection.className = 'file-upload-section';
+        docxToTxtSection.innerHTML = `
+            <h2>DOCX to TXT Integration Test</h2>
+            <p>Upload a .docx file to convert and view the TXT output below.</p>
+            <input type="file" id="docxToTxtUploadInput" accept=".docx" />
+            <button id="runDocxToTxtTestButton">Convert and Show TXT</button>
+            <div id="docxToTxtTestOutput" class="xml-output-container" style="margin-top:15px;">
+                <h3>TXT Output:</h3>
+                <pre id="docxToTxtRenderedOutput" style="background-color:#fff; border:1px solid #ccd; padding:10px; max-height:400px; overflow:auto; text-align:left; white-space:pre-wrap; word-break:break-all;"></pre>
+                <p id="docxToTxtTestMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(docxToTxtSection);
+
+        const docxToTxtUploadInput = document.getElementById('docxToTxtUploadInput');
+        const runDocxToTxtTestButton = document.getElementById('runDocxToTxtTestButton');
+        const docxToTxtRenderedOutput = document.getElementById('docxToTxtRenderedOutput');
+        const docxToTxtTestMessage = document.getElementById('docxToTxtTestMessage');
+
+        runDocxToTxtTestButton.addEventListener('click', async () => {
+            if (!docxToTxtUploadInput.files || docxToTxtUploadInput.files.length === 0) {
+                docxToTxtTestMessage.textContent = 'Please select a .docx file first.';
+                docxToTxtTestMessage.style.color = 'red';
+                return;
+            }
+            const file = docxToTxtUploadInput.files[0];
+            if (!file.name.endsWith('.docx')) {
+                docxToTxtTestMessage.textContent = 'Invalid file type. Please upload a .docx file.';
+                docxToTxtTestMessage.style.color = 'red';
+                return;
+            }
+            docxToTxtTestMessage.textContent = 'Converting...';
+            docxToTxtTestMessage.style.color = 'blue';
+            docxToTxtRenderedOutput.textContent = 'Loading...';
+            try {
+                const txt = await window.runDocxToTxtIntegrationTest(file);
+                docxToTxtRenderedOutput.textContent = txt;
+                docxToTxtTestMessage.textContent = 'Conversion complete.';
+                docxToTxtTestMessage.style.color = 'green';
+            } catch (e) {
+                docxToTxtRenderedOutput.textContent = 'Error: ' + (e.message || String(e));
+                docxToTxtTestMessage.textContent = 'Error during conversion.';
+                docxToTxtTestMessage.style.color = 'red';
             }
         });
 
