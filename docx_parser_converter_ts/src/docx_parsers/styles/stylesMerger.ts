@@ -3,12 +3,11 @@ import type { StylesSchema, Style } from '../models/stylesModels';
 import type { NumberingSchema } from '../models/numberingModels';
 import type { Paragraph } from '../models/paragraphModels';
 import type { Table } from '../models/tableModels';
-import { mergeProperties } from '../utils';
+import { mergeProperties, readBinaryFromFilePath, deepMergeBasePreserves } from '../utils';
 // Example usage dependencies (for Node.js CLI/testing only)
 import { StylesParser } from './stylesParser';
 import { DocumentParser } from '../document/documentParser';
 import { NumberingParser } from '../numbering/numberingParser';
-import { readBinaryFromFilePath } from '../utils';
 import * as path from 'path';
 
 /**
@@ -37,8 +36,8 @@ export class StylesMerger {
       while (baseStyleId) {
         const baseStyle = this.findStyle(baseStyleId);
         if (!baseStyle) break;
-        style.paragraphProperties = mergeProperties(style.paragraphProperties, baseStyle.paragraphProperties) || {};
-        style.runProperties = mergeProperties(style.runProperties, baseStyle.runProperties) || {};
+        style.paragraphProperties = deepMergeBasePreserves(baseStyle.paragraphProperties, style.paragraphProperties) || {};
+        style.runProperties = deepMergeBasePreserves(baseStyle.runProperties, style.runProperties) || {};
         baseStyleId = baseStyle.basedOn;
       }
     }
@@ -127,26 +126,32 @@ export class StylesMerger {
     if (!paragraph.properties.styleId && this.stylesSchema.styleTypeDefaults.paragraph) {
       const defaultParagraphStyle = this.findStyle(this.stylesSchema.styleTypeDefaults.paragraph);
       if (defaultParagraphStyle) {
-        paragraph.properties = mergeProperties(paragraph.properties, defaultParagraphStyle.paragraphProperties) || paragraph.properties;
+        paragraph.properties = deepMergeBasePreserves(defaultParagraphStyle.paragraphProperties, paragraph.properties) || paragraph.properties;
         for (const run of paragraph.runs) {
-          const merged = mergeProperties(run.properties, defaultParagraphStyle.runProperties);
+          const merged = deepMergeBasePreserves(defaultParagraphStyle.runProperties, run.properties);
           if (merged && Object.keys(merged).length > 0) {
             run.properties = merged;
+          } else if (Object.keys(merged).length === 0 && run.properties && Object.keys(run.properties).length > 0) {
+            // If merged is empty but run.properties was not, keep original run.properties
           } else {
             delete run.properties;
           }
         }
       }
     }
-    // Always apply docDefaults
+    // Always apply docDefaultsPpr to paragraph properties
     if (this.stylesSchema.docDefaultsPpr) {
-      paragraph.properties = mergeProperties(paragraph.properties, this.stylesSchema.docDefaultsPpr) || paragraph.properties;
+      paragraph.properties = deepMergeBasePreserves(this.stylesSchema.docDefaultsPpr, paragraph.properties) || paragraph.properties;
     }
+    
+    // Restore the application of docDefaultsRpr for runs
     if (this.stylesSchema.docDefaultsRpr) {
       for (const run of paragraph.runs) {
-        const merged = mergeProperties(run.properties, this.stylesSchema.docDefaultsRpr);
+        const merged = deepMergeBasePreserves(this.stylesSchema.docDefaultsRpr, run.properties);
         if (merged && Object.keys(merged).length > 0) {
           run.properties = merged;
+        } else if (Object.keys(merged).length === 0 && run.properties && Object.keys(run.properties).length > 0) {
+          // If merged is empty but run.properties was not, keep original run.properties
         } else {
           delete run.properties;
         }

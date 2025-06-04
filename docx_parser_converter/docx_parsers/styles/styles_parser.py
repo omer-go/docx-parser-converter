@@ -235,11 +235,15 @@ class StylesParser:
 
 if __name__ == "__main__":
     # docx_path = "C:/Users/omerh/Desktop/Postmoney Safe - MFN Only - FINAL.docx"
-    docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    # docx_path = "C:/Users/omerh/Desktop/file-sample_1MB.docx"
+    docx_path = "C:/Projects/Docx-html-txt-converter/docx_html_txt/docx_parser_converter_ts/tests/fixtures/minimal_for_test.docx"
     docx_file = read_binary_from_file_path(docx_path)
 
     styles_parser = StylesParser(docx_file)
     styles_schema = styles_parser.get_styles_schema()
 
     filtered_schema_dict = styles_schema.model_dump(exclude_none=True)
-    print(json.dumps(filtered_schema_dict, indent=2))
+    output_path = "C:/Projects/Docx-html-txt-converter/docx_html_txt/docx_parser_converter_ts/tests/python_outputs/minimal_for_test_styles_schema.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(filtered_schema_dict, f, indent=2)
+    print(f"JSON output saved to: {output_path}")

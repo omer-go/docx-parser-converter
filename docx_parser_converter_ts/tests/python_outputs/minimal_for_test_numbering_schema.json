@@ -1,0 +1,322 @@
+{
+  "instances": [
+    {
+      "numId": 1,
+      "levels": [
+        {
+          "numId": 1,
+          "ilvl": 0,
+          "start": 1,
+          "numFmt": "upperRoman",
+          "lvlText": "%1.",
+          "lvlJc": "right",
+          "counter": null,
+          "indent": {
+            "left_pt": 36.0,
+            "right_pt": null,
+            "firstline_pt": -8.7
+          },
+          "tab_pt": 36.0,
+          "fonts": null
+        },
+        {
+          "numId": 1,
+          "ilvl": 1,
+          "start": 1,
+          "numFmt": "upperLetter",
+          "lvlText": "%2.",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 54.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 54.0,
+          "fonts": null
+        },
+        {
+          "numId": 1,
+          "ilvl": 2,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%3.",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 72.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 72.0,
+          "fonts": null
+        },
+        {
+          "numId": 1,
+          "ilvl": 3,
+          "start": 1,
+          "numFmt": "lowerLetter",
+          "lvlText": "%4.",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 90.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 90.0,
+          "fonts": null
+        },
+        {
+          "numId": 1,
+          "ilvl": 4,
+          "start": 1,
+          "numFmt": "lowerRoman",
+          "lvlText": "%5.",
+          "lvlJc": "right",
+          "counter": null,
+          "indent": {
+            "left_pt": 108.0,
+            "right_pt": null,
+            "firstline_pt": -8.7
+          },
+          "tab_pt": 108.0,
+          "fonts": null
+        },
+        {
+          "numId": 1,
+          "ilvl": 5,
+          "start": 1,
+          "numFmt": "bullet",
+          "lvlText": "",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 126.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 126.0,
+          "fonts": {
+            "ascii": "Symbol",
+            "hAnsi": "Symbol",
+            "eastAsia": null,
+            "cs": "Symbol"
+          }
+        },
+        {
+          "numId": 1,
+          "ilvl": 6,
+          "start": 1,
+          "numFmt": "bullet",
+          "lvlText": "",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 144.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 144.0,
+          "fonts": {
+            "ascii": "Symbol",
+            "hAnsi": "Symbol",
+            "eastAsia": null,
+            "cs": "Symbol"
+          }
+        },
+        {
+          "numId": 1,
+          "ilvl": 7,
+          "start": 1,
+          "numFmt": "bullet",
+          "lvlText": "",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 162.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 162.0,
+          "fonts": {
+            "ascii": "Symbol",
+            "hAnsi": "Symbol",
+            "eastAsia": null,
+            "cs": "Symbol"
+          }
+        },
+        {
+          "numId": 1,
+          "ilvl": 8,
+          "start": 1,
+          "numFmt": "bullet",
+          "lvlText": "",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 180.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 180.0,
+          "fonts": {
+            "ascii": "Symbol",
+            "hAnsi": "Symbol",
+            "eastAsia": null,
+            "cs": "Symbol"
+          }
+        }
+      ]
+    },
+    {
+      "numId": 2,
+      "levels": [
+        {
+          "numId": 0,
+          "ilvl": 0,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 36.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 36.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 1,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 54.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 54.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 2,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 72.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 72.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 3,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 90.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 90.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 4,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4.%5",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 108.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 108.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 5,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4.%5.%6",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 126.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 126.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 6,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4.%5.%6.%7",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 144.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 144.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 7,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4.%5.%6.%7.%8",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 162.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 162.0,
+          "fonts": null
+        },
+        {
+          "numId": 0,
+          "ilvl": 8,
+          "start": 1,
+          "numFmt": "decimal",
+          "lvlText": "%1.%2.%3.%4.%5.%6.%7.%8.%9",
+          "lvlJc": "left",
+          "counter": null,
+          "indent": {
+            "left_pt": 180.0,
+            "right_pt": null,
+            "firstline_pt": -18.0
+          },
+          "tab_pt": 180.0,
+          "fonts": null
+        }
+      ]
+    }
+  ]
+}

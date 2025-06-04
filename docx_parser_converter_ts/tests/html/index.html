@@ -146,6 +146,9 @@
         // Path from 'tests/html/' to 'src/docx_parsers/utils.ts' is '../../src/docx_parsers/utils.ts'
         import { readFileInBrowser, extractXmlRootFromDocx } from '../../src/docx_parsers/utils.ts';
 
+        // Import the new DocxProcessor integration test suite
+        import '../suites/docxProcessorIntegration.test.ts'; // Ensure integration test function is attached to window
+
         registerCommonHelpersTests();
         registerUtilsTests();
         registerDocumentNumberingParserTests();
@@ -339,6 +342,203 @@
                 docxParserSchemaOutput.textContent = 'Error: ' + (e.message || String(e));
                 docxParserTestMessage.textContent = 'Error during parsing.';
                 docxParserTestMessage.style.color = 'red';
+            }
+        });
+
+        // Add a new section for DocxProcessor integration test
+        const docxProcessorSection = document.createElement('div');
+        docxProcessorSection.className = 'file-upload-section';
+        docxProcessorSection.innerHTML = `
+            <h2>DocxProcessor Integration Test</h2>
+            <p>Upload a .docx file to run the full pipeline and view the merged document schema (Paragraphs, Tables, Margins, Styles, Numbering, etc).</p>
+            <input type="file" id="docxProcessorUploadInput" accept=".docx" />
+            <button id="runDocxProcessorTestButton">Run DocxProcessor Pipeline</button>
+            <div id="docxProcessorTestOutput" class="xml-output-container" style="margin-top:15px;">
+                <h3>Merged Document Schema (JSON):</h3>
+                <pre id="docxProcessorSchemaOutput" style="background-color:#eef; border:1px solid #ccd; padding:10px; max-height:400px; overflow:auto; text-align:left; white-space:pre-wrap; word-break:break-all;">No document processed yet.</pre>
+                <div style="margin-top:10px;">
+                  <button id="downloadDocumentSchemaBtn" disabled>Download Document Schema</button>
+                  <button id="downloadStylesSchemaBtn" disabled>Download Styles Schema</button>
+                  <button id="downloadNumberingSchemaBtn" disabled>Download Numbering Schema</button>
+                  <button id="downloadMergedSchemaBtn" disabled>Download Merged Schema</button>
+                  <button id="downloadDocumentXmlBtn" disabled>Download document.xml (pretty)</button>
+                  <button id="downloadStylesXmlBtn" disabled>Download styles.xml (pretty)</button>
+                  <button id="downloadNumberingXmlBtn" disabled>Download numbering.xml (pretty)</button>
+                </div>
+                <p id="docxProcessorTestMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(docxProcessorSection);
+
+        const docxProcessorUploadInput = document.getElementById('docxProcessorUploadInput');
+        const runDocxProcessorTestButton = document.getElementById('runDocxProcessorTestButton');
+        const docxProcessorSchemaOutput = document.getElementById('docxProcessorSchemaOutput');
+        const docxProcessorTestMessage = document.getElementById('docxProcessorTestMessage');
+        const downloadDocumentSchemaBtn = document.getElementById('downloadDocumentSchemaBtn');
+        const downloadStylesSchemaBtn = document.getElementById('downloadStylesSchemaBtn');
+        const downloadNumberingSchemaBtn = document.getElementById('downloadNumberingSchemaBtn');
+        const downloadMergedSchemaBtn = document.getElementById('downloadMergedSchemaBtn');
+        const downloadDocumentXmlBtn = document.getElementById('downloadDocumentXmlBtn');
+        const downloadStylesXmlBtn = document.getElementById('downloadStylesXmlBtn');
+        const downloadNumberingXmlBtn = document.getElementById('downloadNumberingXmlBtn');
+        let lastSchemas = null;
+        let lastXmls = null;
+
+        function downloadJson(obj, filename) {
+          const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 0);
+        }
+
+        function downloadText(text, filename) {
+          const blob = new Blob([text], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 0);
+        }
+
+        downloadDocumentSchemaBtn.addEventListener('click', () => {
+          if (lastSchemas) downloadJson(lastSchemas.documentSchema, 'documentSchema.json');
+        });
+        downloadStylesSchemaBtn.addEventListener('click', () => {
+          if (lastSchemas) downloadJson(lastSchemas.stylesSchema, 'stylesSchema.json');
+        });
+        downloadNumberingSchemaBtn.addEventListener('click', () => {
+          if (lastSchemas) downloadJson(lastSchemas.numberingSchema, 'numberingSchema.json');
+        });
+        downloadMergedSchemaBtn.addEventListener('click', () => {
+          if (lastSchemas) downloadJson(lastSchemas.mergedSchema, 'mergedSchema.json');
+        });
+        downloadDocumentXmlBtn.addEventListener('click', () => {
+          if (lastXmls) downloadText(lastXmls.documentXml, 'document.xml.txt');
+        });
+        downloadStylesXmlBtn.addEventListener('click', () => {
+          if (lastXmls) downloadText(lastXmls.stylesXml, 'styles.xml.txt');
+        });
+        downloadNumberingXmlBtn.addEventListener('click', () => {
+          if (lastXmls) downloadText(lastXmls.numberingXml, 'numbering.xml.txt');
+        });
+
+        runDocxProcessorTestButton.addEventListener('click', async () => {
+            if (!docxProcessorUploadInput.files || docxProcessorUploadInput.files.length === 0) {
+                docxProcessorTestMessage.textContent = 'Please select a .docx file first.';
+                docxProcessorTestMessage.style.color = 'red';
+                return;
+            }
+            const file = docxProcessorUploadInput.files[0];
+            if (!file.name.endsWith('.docx')) {
+                docxProcessorTestMessage.textContent = 'Invalid file type. Please upload a .docx file.';
+                docxProcessorTestMessage.style.color = 'red';
+                return;
+            }
+            docxProcessorTestMessage.textContent = 'Processing...';
+            docxProcessorTestMessage.style.color = 'blue';
+            docxProcessorSchemaOutput.textContent = 'Loading...';
+            downloadDocumentSchemaBtn.disabled = true;
+            downloadStylesSchemaBtn.disabled = true;
+            downloadNumberingSchemaBtn.disabled = true;
+            downloadMergedSchemaBtn.disabled = true;
+            downloadDocumentXmlBtn.disabled = true;
+            downloadStylesXmlBtn.disabled = true;
+            downloadNumberingXmlBtn.disabled = true;
+            lastSchemas = null;
+            lastXmls = null;
+            try {
+                // Use the exposed browser test function for all schemas
+                const schemas = await window.runDocxProcessorAllSchemas(file);
+                lastSchemas = schemas;
+                // Also get the pretty-printed XMLs
+                lastXmls = await window.runDocxProcessorAllXmls(file);
+                docxProcessorSchemaOutput.textContent = JSON.stringify(schemas.mergedSchema, null, 2); // Pretty print merged JSON
+                docxProcessorTestMessage.textContent = 'Processing complete.';
+                docxProcessorTestMessage.style.color = 'green';
+                downloadDocumentSchemaBtn.disabled = false;
+                downloadStylesSchemaBtn.disabled = false;
+                downloadNumberingSchemaBtn.disabled = false;
+                downloadMergedSchemaBtn.disabled = false;
+                downloadDocumentXmlBtn.disabled = false;
+                downloadStylesXmlBtn.disabled = false;
+                downloadNumberingXmlBtn.disabled = false;
+            } catch (e) {
+                docxProcessorSchemaOutput.textContent = 'Error: ' + (e.message || String(e));
+                docxProcessorTestMessage.textContent = 'Error during processing.';
+                docxProcessorTestMessage.style.color = 'red';
+            }
+        });
+
+        // Add a new section for DocxProcessor output vs reference JSON comparison
+        const docxCompareSection = document.createElement('div');
+        docxCompareSection.className = 'file-upload-section';
+        docxCompareSection.innerHTML = `
+            <h2>Compare DOCX Output to Reference JSON</h2>
+            <p>Upload a .docx file and a reference .json file to check if the output matches the reference.</p>
+            <input type="file" id="docxCompareDocxInput" accept=".docx" />
+            <input type="file" id="docxCompareJsonInput" accept=".json" />
+            <button id="runDocxCompareButton">Compare Output to Reference</button>
+            <div id="docxCompareResultOutput" class="xml-output-container" style="margin-top:15px;">
+                <h3>Comparison Result:</h3>
+                <pre id="docxCompareResultPre" style="background-color:#eef; border:1px solid #ccd; padding:10px; max-height:400px; overflow:auto; text-align:left; white-space:pre-wrap; word-break:break-all;">No comparison run yet.</pre>
+                <p id="docxCompareResultMessage"></p>
+            </div>
+        `;
+        document.body.appendChild(docxCompareSection);
+
+        const docxCompareDocxInput = document.getElementById('docxCompareDocxInput');
+        const docxCompareJsonInput = document.getElementById('docxCompareJsonInput');
+        const runDocxCompareButton = document.getElementById('runDocxCompareButton');
+        const docxCompareResultPre = document.getElementById('docxCompareResultPre');
+        const docxCompareResultMessage = document.getElementById('docxCompareResultMessage');
+
+        runDocxCompareButton.addEventListener('click', async () => {
+            if (!docxCompareDocxInput.files || docxCompareDocxInput.files.length === 0) {
+                docxCompareResultMessage.textContent = 'Please select a .docx file.';
+                docxCompareResultMessage.style.color = 'red';
+                return;
+            }
+            if (!docxCompareJsonInput.files || docxCompareJsonInput.files.length === 0) {
+                docxCompareResultMessage.textContent = 'Please select a reference .json file.';
+                docxCompareResultMessage.style.color = 'red';
+                return;
+            }
+            const docxFile = docxCompareDocxInput.files[0];
+            const jsonFile = docxCompareJsonInput.files[0];
+            docxCompareResultMessage.textContent = 'Comparing...';
+            docxCompareResultMessage.style.color = 'blue';
+            docxCompareResultPre.textContent = 'Running comparison...';
+            try {
+                const result = await window.runDocxProcessorAndCompareToReference(docxFile, jsonFile);
+                if (result.passed) {
+                    docxCompareResultPre.textContent = '✅ PASSED: Output matches reference JSON.';
+                    docxCompareResultMessage.textContent = 'Comparison passed.';
+                    docxCompareResultMessage.style.color = 'green';
+                } else {
+                    let diffText = '';
+                    if (result.diff) {
+                        diffText = '\n--- Output ---\n' + JSON.stringify(result.diff.output, null, 2) + '\n--- Reference ---\n' + JSON.stringify(result.diff.reference, null, 2);
+                    }
+                    docxCompareResultPre.textContent = `❌ FAILED: Output does not match reference.\n${result.message || ''}${diffText}`;
+                    docxCompareResultMessage.textContent = 'Comparison failed.';
+                    docxCompareResultMessage.style.color = 'red';
+                }
+            } catch (e) {
+                docxCompareResultPre.textContent = 'Error: ' + (e.message || String(e));
+                docxCompareResultMessage.textContent = 'Error during comparison.';
+                docxCompareResultMessage.style.color = 'red';
             }
         });
 

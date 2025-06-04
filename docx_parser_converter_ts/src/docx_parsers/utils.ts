@@ -242,6 +242,68 @@ export async function readFileInBrowser(file: File): Promise<Uint8Array> {
     }
 }
 
+/**
+ * Extracts all required XML parts from a DOCX file in one go.
+ * @param docxFileContent The binary content (Buffer, Uint8Array, or ArrayBuffer) of the DOCX file.
+ * @returns Promise<{ documentXml: string, stylesXml: string, numberingXml: string }>
+ */
+export async function extractAllXmlPartsFromDocx(docxFileContent: Buffer | Uint8Array | ArrayBuffer): Promise<{ documentXml: string, stylesXml: string, numberingXml: string }> {
+    const contentToLoad = docxFileContent instanceof Uint8Array || docxFileContent instanceof Buffer
+        ? docxFileContent
+        : new Uint8Array(docxFileContent);
+    const zip = await JSZip.loadAsync(contentToLoad);
+
+    async function getXml(filename: string): Promise<string> {
+        const file = zip.file(`word/${filename}`);
+        if (!file) throw new Error(`XML file 'word/${filename}' not found in DOCX archive.`);
+        return await file.async('string');
+    }
+
+    const [documentXml, stylesXml, numberingXml] = await Promise.all([
+        getXml('document.xml'),
+        getXml('styles.xml'),
+        getXml('numbering.xml'),
+    ]);
+
+    return { documentXml, stylesXml, numberingXml };
+}
+
+/**
+ * Deeply merges two objects, but only fills in missing or undefined/null values from the base (parent) into the derived (child).
+ * Child (derived) properties always take precedence. This is used for style inheritance, so that more specific styles override less specific ones (e.g., docDefaults only fill in missing values).
+ */
+export function deepMergeBasePreserves<T extends Record<string, any>, U extends Record<string, any>>(
+  base: T | undefined | null,
+  derived: U | undefined | null
+): T & U {
+  if (!base) {
+    const result = (derived ? { ...derived } : {}) as T & U;
+    return result;
+  }
+  if (!derived) {
+    const result = { ...base } as T & U;
+    return result;
+  }
+  const output: any = { ...derived };
+
+  for (const key in base) {
+    if (Object.prototype.hasOwnProperty.call(base, key)) {
+      const baseValue = base[key];
+      const derivedValue = derived[key];
+      // Only use baseValue if the property is truly missing (undefined) in derived.
+      // An explicit null in derived is considered an intentional value and should be preserved.
+      if (derivedValue === undefined) {
+        output[key] = baseValue;
+      } else if (isPlainObject(baseValue) && isPlainObject(derivedValue)) {
+        // If both are objects, and derivedValue is not undefined (it could be null or an object here),
+        // recurse. The recursive call will correctly handle nulls in derived sub-objects.
+        output[key] = deepMergeBasePreserves(baseValue, derivedValue);
+      } // else, derivedValue exists (and is not undefined) and is not an object for deep merge, so it's kept.
+    }
+  }
+  return output as T & U;
+}
+
 // --- Example Usage Block (similar to if __name__ == "__main__") ---
 async function runExamples() {
     console.log("--- Running utils.ts examples ---");

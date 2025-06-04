@@ -9,6 +9,7 @@ export interface TestResult {
     output?: any; // To store the actual output from the function
     isAsync?: boolean;
     asyncTest?: () => Promise<Partial<TestResult>>; // Can return a full or partial TestResult
+    diff?: any; // Optional: attach a diff object for failed comparisons
 }
 
 // Basic assertion functions

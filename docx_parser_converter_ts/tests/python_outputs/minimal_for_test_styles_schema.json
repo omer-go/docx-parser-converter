@@ -1,0 +1,183 @@
+{
+  "styles": [
+    {
+      "style_id": "1",
+      "name": "Normal",
+      "paragraph_properties": {
+        "widow_control": true,
+        "suppress_auto_hyphens": true,
+        "bidi": false
+      },
+      "run_properties": {
+        "font": {
+          "ascii": "Liberation Serif",
+          "hAnsi": "Liberation Serif",
+          "eastAsia": "NSimSun",
+          "cs": "Lucida Sans"
+        },
+        "size_pt": 12.0,
+        "color": "auto",
+        "lang": {
+          "val": "en-US",
+          "eastAsia": "zh-CN",
+          "bidi": "hi-IN"
+        },
+        "kerning": 2
+      }
+    },
+    {
+      "style_id": "2",
+      "name": "Default Paragraph Font",
+      "paragraph_properties": {},
+      "run_properties": {}
+    },
+    {
+      "style_id": "3",
+      "name": "Normal Table",
+      "paragraph_properties": {},
+      "run_properties": {}
+    },
+    {
+      "style_id": "4",
+      "name": "Body Text",
+      "based_on": "1",
+      "paragraph_properties": {
+        "spacing": {
+          "before_pt": 0.0,
+          "after_pt": 7.0,
+          "line_pt": 13.8
+        }
+      },
+      "run_properties": {}
+    },
+    {
+      "style_id": "5",
+      "name": "caption",
+      "based_on": "1",
+      "paragraph_properties": {
+        "spacing": {
+          "before_pt": 6.0,
+          "after_pt": 6.0
+        },
+        "suppress_line_numbers": true
+      },
+      "run_properties": {
+        "font": {
+          "cs": "Lucida Sans"
+        },
+        "size_pt": 12.0,
+        "italic": true
+      }
+    },
+    {
+      "style_id": "6",
+      "name": "List",
+      "based_on": "4",
+      "paragraph_properties": {},
+      "run_properties": {
+        "font": {
+          "cs": "Lucida Sans"
+        }
+      }
+    },
+    {
+      "style_id": "7",
+      "name": "Table Grid",
+      "based_on": "3",
+      "paragraph_properties": {
+        "widow_control": false,
+        "justification": "justify"
+      },
+      "run_properties": {}
+    },
+    {
+      "style_id": "8",
+      "name": "Title",
+      "based_on": "9",
+      "paragraph_properties": {
+        "justification": "center"
+      },
+      "run_properties": {
+        "size_pt": 28.0,
+        "bold": true
+      }
+    },
+    {
+      "style_id": "9",
+      "name": "Heading",
+      "based_on": "1",
+      "paragraph_properties": {
+        "spacing": {
+          "before_pt": 12.0,
+          "after_pt": 6.0
+        },
+        "keep_next": true
+      },
+      "run_properties": {
+        "font": {
+          "ascii": "Liberation Sans",
+          "hAnsi": "Liberation Sans",
+          "eastAsia": "Microsoft YaHei",
+          "cs": "Lucida Sans"
+        },
+        "size_pt": 14.0
+      }
+    },
+    {
+      "style_id": "10",
+      "name": "Numbering Symbols",
+      "paragraph_properties": {},
+      "run_properties": {}
+    },
+    {
+      "style_id": "11",
+      "name": "Bullets",
+      "paragraph_properties": {},
+      "run_properties": {
+        "font": {
+          "ascii": "OpenSymbol",
+          "hAnsi": "OpenSymbol",
+          "eastAsia": "OpenSymbol",
+          "cs": "OpenSymbol"
+        }
+      }
+    },
+    {
+      "style_id": "12",
+      "name": "Index",
+      "based_on": "1",
+      "paragraph_properties": {
+        "suppress_line_numbers": true
+      },
+      "run_properties": {
+        "font": {
+          "cs": "Lucida Sans"
+        }
+      }
+    },
+    {
+      "style_id": "13",
+      "name": "Table Contents",
+      "based_on": "1",
+      "paragraph_properties": {
+        "widow_control": false,
+        "suppress_line_numbers": true
+      },
+      "run_properties": {}
+    }
+  ],
+  "style_type_defaults": {
+    "paragraph": "1",
+    "character": "2",
+    "table": "3"
+  },
+  "doc_defaults_rpr": {
+    "font": {
+      "ascii": "Liberation Serif",
+      "hAnsi": "Liberation Serif",
+      "eastAsia": "NSimSun",
+      "cs": "Lucida Sans"
+    }
+  },
+  "doc_defaults_ppr": {}
+}
