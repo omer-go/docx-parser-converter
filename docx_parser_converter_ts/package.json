@@ -1,7 +1,7 @@
 {
   "name": "@omer-go/docx-parser-converter-ts",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A TypeScript library to convert DOCX files to WYSIWYG HTML or plain text formats while preserving styles.",
   "type": "module",
   "main": "./dist/docx-parser-converter.umd.js",
