@@ -1,6 +1,6 @@
 import type { DocMargins } from '../models/documentModels';
 import { extractElement, extractAttribute, safeInt } from '../helpers/commonHelpers';
-import { convertTwipsToPoints, extractXmlRootFromString } from '../utils';
+import { convertTwipsToPoints } from '../utils';
 
 /**
  * Parses the margin properties of a section in a docx document.
@@ -71,68 +71,3 @@ export class MarginsParser {
         return null;
     }
 }
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-async function runMarginParserExamples() {
-    console.log("--- Running MarginsParser examples ---");
-
-    const sampleSectPrXml = `
-        <w:sectPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pgMar w:top="1134" w:right="1135" w:bottom="1136" w:left="1137"
-                     w:header="720" w:footer="721" w:gutter="50"/>
-        </w:sectPr>
-    `;
-
-    const sampleSectPrXmlNoMargins = `
-        <w:sectPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:otherProperty />
-        </w:sectPr>
-    `;
-    
-    const sampleSectPrXmlWithEndStart = `
-        <w:sectPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pgMar w:top="1000" w:end="1200" w:bottom="1000" w:start="1200"
-                     w:header="700" w:footer="700" w:gutter="0"/>
-        </w:sectPr>
-    `;
-
-    try {
-        const sectPrElement = extractXmlRootFromString(sampleSectPrXml);
-        const margins = MarginsParser.parse(sectPrElement);
-        console.log("Parsed Margins (Example 1):", margins);
-        // Expected: { topPt: 56.7, rightPt: 56.75, bottomPt: 56.8, leftPt: 56.85, headerPt: 36, footerPt: 36.05, gutterPt: 2.5 }
-
-        const sectPrElementNoMargins = extractXmlRootFromString(sampleSectPrXmlNoMargins);
-        const marginsNo = MarginsParser.parse(sectPrElementNoMargins);
-        console.log("Parsed Margins (No pgMar):", marginsNo); // Expected: null
-        
-        const marginsNullInput = MarginsParser.parse(null);
-        console.log("Parsed Margins (Null sectPr):", marginsNullInput); // Expected: null
-
-        const sectPrElementWithEndStart = extractXmlRootFromString(sampleSectPrXmlWithEndStart);
-        const marginsWithEndStart = MarginsParser.parse(sectPrElementWithEndStart);
-        console.log("Parsed Margins (With End/Start):", marginsWithEndStart);
-        // Expected: { topPt: 50, rightPt: 60, bottomPt: 50, leftPt: 60, headerPt: 35, footerPt: 35, gutterPt: 0 }
-
-
-    } catch (error) {
-        console.error("Error during MarginsParser example:", error);
-    }
-
-    console.log("--- Finished MarginsParser examples ---");
-}
-
-// To run examples if this script is executed directly (e.g., for testing)
-// This specific check might vary depending on the execution environment (Node.js, bundler, etc.)
-// For simple Node.js execution:
-declare var require: any;
-declare var module: any;
-declare var process: any;
-
-if (typeof require !== 'undefined' && require.main === module) {
-    runMarginParserExamples().catch(error => {
-        console.error("Error during example execution:", error);
-        // process is defined globally in Node.js, no need to check typeof process here
-        process.exit(1);
-    });
-} 

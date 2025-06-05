@@ -33,13 +33,3 @@ export class TableRowParser {
     return { properties, cells };
   }
 }
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-if (typeof require !== 'undefined' && require.main === module) {
-  // Example: parse a sample tr XML string
-  const { extractXmlRootFromString } = require('../utils');
-  const sampleTrXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:tr xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">\n  <w:trPr>\n    <w:trHeight w:val=\"300\"/>\n    <w:tblHeader/>\n  </w:trPr>\n  <w:tc>\n    <w:tcPr>\n      <w:tcW w:w=\"5000\" w:type=\"dxa\"/>\n    </w:tcPr>\n    <w:p>\n      <w:r>\n        <w:t>Cell 1</w:t>\n      </w:r>\n    </w:p>\n  </w:tc>\n  <w:tc>\n    <w:tcPr>\n      <w:tcW w:w=\"5000\" w:type=\"dxa\"/>\n    </w:tcPr>\n    <w:p>\n      <w:r>\n        <w:t>Cell 2</w:t>\n      </w:r>\n    </w:p>\n  </w:tc>\n</w:tr>`;
-  const trElement = extractXmlRootFromString(sampleTrXml);
-  const parsed = TableRowParser.parse(trElement);
-  console.log('Parsed TableRow:', JSON.stringify(parsed, null, 2));
-} 

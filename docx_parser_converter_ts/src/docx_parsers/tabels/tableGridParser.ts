@@ -62,22 +62,3 @@ export class TableGridParser {
   }
 }
 
-// --- Sample usage block ---
-if (typeof require !== 'undefined' && require.main === module) {
-  // Node.js example using xmldom
-  const { DOMParser } = require('@xmldom/xmldom');
-  const sampleXml = `<?xml version="1.0" encoding="UTF-8"?>
-    <w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-      <w:tblGrid>
-        <w:gridCol w:w="5000"/>
-        <w:gridCol w:w="3000"/>
-      </w:tblGrid>
-    </w:tbl>`;
-  const doc = new DOMParser().parseFromString(sampleXml, 'application/xml');
-  const tblElement = doc.getElementsByTagName('w:tbl')[0];
-  if (tblElement) {
-    const grid = TableGridParser.parse(tblElement);
-    // eslint-disable-next-line no-console
-    console.log('Parsed TableGrid:', grid);
-  }
-} 

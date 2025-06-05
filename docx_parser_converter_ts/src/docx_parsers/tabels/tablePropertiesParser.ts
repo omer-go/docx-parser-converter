@@ -140,13 +140,3 @@ export class TablePropertiesParser {
     return undefined;
   }
 }
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-if (typeof require !== 'undefined' && require.main === module) {
-  // Example: parse a sample tblPr XML string
-  const { extractXmlRootFromString } = require('../utils');
-  const sampleTblPrXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:tblPr xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">\n    <w:tblStyle w:val=\"TableGrid\"/>\n    <w:tblW w:w=\"5000\" w:type=\"dxa\"/>\n    <w:tblInd w:w=\"200\" w:type=\"dxa\"/>\n    <w:tblBorders>\n        <w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n    </w:tblBorders>\n    <w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"FFFF00\"/>\n    <w:tblCellMar>\n        <w:top w:w=\"100\" w:type=\"dxa\"/>\n        <w:left w:w=\"100\" w:type=\"dxa\"/>\n        <w:bottom w:w=\"100\" w:type=\"dxa\"/>\n        <w:right w:w=\"100\" w:type=\"dxa\"/>\n    </w:tblCellMar>\n    <w:tblLook w:firstRow=\"1\" w:lastRow=\"0\" w:firstColumn=\"1\" w:lastColumn=\"0\" w:noHBand=\"0\" w:noVBand=\"0\"/>\n</w:tblPr>`;
-  const tblPrElement = extractXmlRootFromString(sampleTblPrXml);
-  const parsed = TablePropertiesParser.parse(tblPrElement);
-  console.log('Parsed TableProperties:', JSON.stringify(parsed, null, 2));
-} 

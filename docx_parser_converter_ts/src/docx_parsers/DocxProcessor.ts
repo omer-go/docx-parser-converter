@@ -122,14 +122,3 @@ export class DocxProcessor {
   }
 }
 
-// Example usage for Node.js (commented out)
-// if (require.main === module) {
-//   (async () => {
-//     const fs = await import('fs');
-//     const path = require('path');
-//     const docxPath = path.resolve('C:/Users/omerh/Desktop/file-sample_1MB.docx');
-//     const docxFile = fs.readFileSync(docxPath);
-//     const result = await DocxProcessor.processDocx(docxFile);
-//     console.log(JSON.stringify(result.documentSchema, null, 2));
-//   })();
-// } 

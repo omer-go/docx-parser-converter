@@ -72,13 +72,3 @@ export class TableRowPropertiesParser {
     return extractAttribute(jcElement, 'val') || undefined;
   }
 }
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-if (typeof require !== 'undefined' && require.main === module) {
-  // Example: parse a sample trPr XML string
-  const { extractXmlRootFromString } = require('../utils');
-  const sampleTrPrXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:trPr xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">\n    <w:trHeight w:val=\"300\"/>\n    <w:tblHeader/>\n    <w:jc w:val=\"center\"/>\n    <w:tblBorders>\n        <w:top w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:left w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:bottom w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:right w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:insideH w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n        <w:insideV w:val=\"single\" w:sz=\"4\" w:space=\"0\" w:color=\"000000\"/>\n    </w:tblBorders>\n    <w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"FFFF00\"/>\n</w:trPr>`;
-  const trPrElement = extractXmlRootFromString(sampleTrPrXml);
-  const parsed = TableRowPropertiesParser.parse(trPrElement);
-  console.log('Parsed TableRowProperties:', JSON.stringify(parsed, null, 2));
-} 
