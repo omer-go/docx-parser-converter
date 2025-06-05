@@ -3,12 +3,8 @@ import type { StylesSchema, Style } from '../models/stylesModels';
 import type { NumberingSchema } from '../models/numberingModels';
 import type { Paragraph } from '../models/paragraphModels';
 import type { Table } from '../models/tableModels';
-import { mergeProperties, readBinaryFromFilePath, deepMergeBasePreserves } from '../utils';
-// Example usage dependencies (for Node.js CLI/testing only)
-import { StylesParser } from './stylesParser';
-import { DocumentParser } from '../document/documentParser';
-import { NumberingParser } from '../numbering/numberingParser';
-import * as path from 'path';
+import { mergeProperties, deepMergeBasePreserves } from '../utils';
+
 
 /**
  * A class to merge styles from styles.xml and numbering.xml into the document schema from document.xml.
@@ -167,42 +163,3 @@ export class StylesMerger {
     return 'rows' in element && Array.isArray(element.rows);
   }
 }
-
-// --- Example Usage Block (full parity with Python __main__) ---
-if (typeof require !== 'undefined' && require.main === module) {
-  (async () => {
-    const docxPath = path.resolve('C:/Users/omerh/Desktop/file-sample_1MB.docx');
-    const docxFile = readBinaryFromFilePath(docxPath);
-
-    const stylesParser = new StylesParser(docxFile);
-    const stylesSchema = stylesParser.getStylesSchema();
-
-    const documentParser = await DocumentParser.initFromDocx(docxFile);
-    const documentSchema = documentParser.getDocumentSchema();
-
-    const numberingParser = await NumberingParser.create(docxFile);
-    const numberingSchema = numberingParser.getNumberingSchema();
-
-    if (!stylesSchema || !documentSchema || !numberingSchema) {
-      console.error('Failed to parse one or more schemas.');
-      return;
-    }
-
-    const stylesMerger = new StylesMerger(documentSchema, stylesSchema, numberingSchema);
-
-    // Print the properties of all table cells
-    for (const element of documentSchema.elements) {
-      if (stylesMerger.isTable(element)) {
-        for (const row of element.rows) {
-          for (const cell of row.cells) {
-            // Print the cell as JSON, excluding undefined/null
-            console.log('TableCell properties:');
-            console.log(JSON.stringify(cell, (_, value) => (value === undefined ? undefined : value), 2));
-          }
-        }
-      }
-    }
-    // Optionally, print the full filtered schema
-    // console.log(JSON.stringify(documentSchema, (key, value) => (value === undefined ? undefined : value), 2));
-  })();
-} 

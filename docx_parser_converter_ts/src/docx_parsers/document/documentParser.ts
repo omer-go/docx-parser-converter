@@ -1,5 +1,5 @@
 import { NAMESPACE } from '../helpers/commonHelpers';
-import { extractXmlRootFromDocx, extractXmlRootFromString, readBinaryFromFilePath } from '../utils';
+import { extractXmlRootFromDocx, extractXmlRootFromString } from '../utils';
 import type { Paragraph } from '../models/paragraphModels';
 import type { Table } from '../models/tableModels';
 import type { DocumentSchema, DocMargins } from '../models/documentModels';
@@ -22,12 +22,12 @@ export class DocumentParser {
    *
    * @param source Either the binary content of the DOCX file or the document.xml content as a string.
    */
-  constructor(source?: Buffer | Uint8Array | string) {
+  constructor(source?: Uint8Array | ArrayBuffer | string) {
     if (source) {
       if (typeof source === 'string') {
         this.root = extractXmlRootFromString(source);
       } else {
-        // Buffer or Uint8Array
+        // Uint8Array or ArrayBuffer
         // Note: extractXmlRootFromDocx is async, so this must be handled outside constructor if needed
         throw new Error('Use DocumentParser.initFromDocx for async DOCX parsing.');
       }
@@ -41,7 +41,7 @@ export class DocumentParser {
   /**
    * Async factory for DOCX binary input.
    */
-  static async initFromDocx(docxContent: Buffer | Uint8Array): Promise<DocumentParser> {
+  static async initFromDocx(docxContent: Uint8Array | ArrayBuffer): Promise<DocumentParser> {
     const parser = new DocumentParser();
     parser.root = await extractXmlRootFromDocx(docxContent, 'document.xml');
     parser.documentSchema = parser.parse();
@@ -103,21 +103,4 @@ export class DocumentParser {
   getDocumentSchema(): DocumentSchema | null {
     return this.documentSchema;
   }
-}
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-if (typeof require !== 'undefined' && require.main === module) {
-  (async () => {
-    const docxPath = 'C:/Users/omerh/Desktop/Docx Test Files/file-sample_1MB.docx';
-    const docxFile = readBinaryFromFilePath(docxPath);
-    const documentParser = await DocumentParser.initFromDocx(docxFile);
-    const documentSchema = documentParser.getDocumentSchema();
-    if (documentSchema) {
-      // Print the filtered schema as JSON
-      // (no model_dump, just plain object)
-      console.log(JSON.stringify(documentSchema, null, 2));
-    } else {
-      console.log('No document schema parsed.');
-    }
-  })();
 } 

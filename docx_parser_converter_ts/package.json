@@ -1,7 +1,8 @@
 {
-  "name": "docx-parser-converter-ts",
+  "name": "@omer-go/docx-parser-converter-ts",
   "private": false,
   "version": "0.0.1",
+  "description": "A TypeScript library to convert DOCX files to WYSIWYG HTML or plain text formats while preserving styles.",
   "type": "module",
   "main": "./dist/docx-parser-converter.umd.js",
   "module": "./dist/docx-parser-converter.es.js",
@@ -20,19 +21,22 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc --project tsconfig.json --noEmit && vite build",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc --project tsconfig.json --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "test": "echo \"Error: no test specified yet\" && exit 0"
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "test": "echo \"Warning: no test specified yet\" && exit 0",
+    "prepublishOnly": "npm run lint && npm run build"
   },
   "devDependencies": {
+    "@types/jszip": "^3.4.0",
     "@types/node": "^22.15.29",
+    "rimraf": "^6.0.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
     "vite-plugin-dts": "^3.9.1"
   },
   "dependencies": {
-    "@types/jszip": "^3.4.0",
     "@xmldom/xmldom": "^0.9.8",
     "jszip": "^3.10.1"
   },
@@ -45,16 +49,18 @@
     "typescript",
     "browser",
     "office",
-    "word"
+    "word",
+    "wysiwyg",
+    "styles"
   ],
   "author": "Omer Hayun <omerha86@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OmerHayun/docx-parser-converter-ts.git"
+    "url": "git+https://github.com/omer-go/docx-parser-converter.git"
   },
   "bugs": {
-    "url": "https://github.com/OmerHayun/docx-parser-converter-ts/issues"
+    "url": "https://github.com/omer-go/docx-parser-converter/issues"
   },
-  "homepage": "https://github.com/OmerHayun/docx-parser-converter-ts#readme"
+  "homepage": "https://github.com/omer-go/docx-parser-converter"
 }

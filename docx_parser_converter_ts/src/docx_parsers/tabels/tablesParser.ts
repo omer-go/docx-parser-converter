@@ -1,5 +1,4 @@
-import type { Table } from '../models/tableModels';
-import { readBinaryFromFilePath, extractXmlRootFromDocx } from '../utils';
+import type { Table } from '../models/tableModels'
 import { NAMESPACE } from '../helpers/commonHelpers';
 import { TablePropertiesParser } from './tablePropertiesParser';
 import { TableGridParser } from './tableGridParser';
@@ -37,24 +36,3 @@ export class TablesParser {
     return { properties, grid, rows };
   }
 }
-
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-if (typeof require !== 'undefined' && require.main === module) {
-  (async () => {
-    const docxPath = 'C:/Users/omerh/Desktop/file-sample_1MB.docx';
-    // Read the binary content of the DOCX file
-    const docxFile = readBinaryFromFilePath(docxPath);
-    // Extract the XML root from the DOCX file for 'document.xml'
-    const root = await extractXmlRootFromDocx(docxFile, 'document.xml');
-    // Iterate over each table element found in the document
-    const tblElements = root.getElementsByTagNameNS(NAMESPACE.w, 'tbl');
-    for (let i = 0; i < tblElements.length; i++) {
-      // Initialize the TablesParser with the table element
-      const tablesParser = new TablesParser(tblElements[i]);
-      // Parse the table element into a Table object
-      const table = tablesParser.parse();
-      // Print the resulting object as a formatted JSON string
-      console.log(JSON.stringify(table, null, 2));
-    }
-  })();
-} 

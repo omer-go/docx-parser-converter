@@ -1,7 +1,7 @@
 import type { NumberingLevel, NumberingInstance, NumberingSchema } from '../models/numberingModels';
 import type { FontProperties, IndentationProperties } from '../models/stylesModels';
 import { extractElement, extractAttribute, NAMESPACE } from '../helpers/commonHelpers';
-import { extractXmlRootFromDocx, readBinaryFromFilePath, convertTwipsToPoints, extractXmlRootFromString } from '../utils';
+import { extractXmlRootFromDocx, convertTwipsToPoints, extractXmlRootFromString } from '../utils';
 import { ParagraphPropertiesParser } from '../styles/paragraphPropertiesParser';
 
 /**
@@ -22,7 +22,7 @@ export class NumberingParser {
      *                 or the numbering.xml content as a string.
      * @returns A Promise that resolves to a new NumberingParser instance.
      */
-    public static async create(source: Buffer | Uint8Array | string | Element): Promise<NumberingParser> {
+    public static async create(source: Uint8Array | ArrayBuffer | string | Element): Promise<NumberingParser> {
         const parser = new NumberingParser();
         await parser.initialize(source);
         return parser;
@@ -41,20 +41,17 @@ export class NumberingParser {
      *                 the numbering.xml content as a string,
      *                 or a pre-parsed XML Element.
      */
-    private async initialize(source: Buffer | Uint8Array | string | Element): Promise<void> {
+    private async initialize(source: Uint8Array | ArrayBuffer | string | Element): Promise<void> {
         if (source instanceof Element) {
             this.root = source;
         } else if (typeof source === 'string') {
             this.root = extractXmlRootFromString(source);
-        } else if (source instanceof Uint8Array) {
+        } else if (source instanceof Uint8Array || source instanceof ArrayBuffer) {
             this.root = await extractXmlRootFromDocx(source, 'numbering.xml');
         } else {
-            // At this point, source must be a Buffer (if we're in Node.js) or invalid
-            try {
-                this.root = await extractXmlRootFromDocx(source, 'numbering.xml');
-            } catch (e) {
-                throw new Error('Invalid source type provided to NumberingParser');
-            }
+            // This case should ideally not be reached if type hints are respected.
+            // If it is, it means 'source' is not an Element, string, Uint8Array, or ArrayBuffer.
+            throw new Error('Invalid source type provided to NumberingParser. Expected Element, string, Uint8Array, or ArrayBuffer.');
         }
         this.numberingSchema = this.parse();
     }
@@ -223,13 +220,3 @@ export class NumberingParser {
     }
 }
 
-// Example usage
-if (typeof process !== 'undefined' && process.argv.includes(__filename)) {
-    (async () => {
-        const docxPath = 'C:/Users/omerh/Desktop/new_docx.docx';
-        const docxFile = readBinaryFromFilePath(docxPath);
-
-        const numberingParser = await NumberingParser.create(docxFile);
-        console.log(JSON.stringify(numberingParser.getNumberingSchema(), null, 2));
-    })().catch(console.error);
-} 

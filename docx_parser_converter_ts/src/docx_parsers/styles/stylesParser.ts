@@ -262,33 +262,3 @@ export class StylesParser {
         return this.stylesSchema;
     }
 }
-
-// Example usage
-if (typeof process !== 'undefined' && process.argv.includes(__filename)) {
-    async function runExample() {
-        try {
-            // Example XML string
-            const sampleXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-                    <w:style w:styleId="Heading1" w:type="paragraph">
-                        <w:name w:val="heading 1"/>
-                        <w:basedOn w:val="Normal"/>
-                        <w:pPr>
-                            <w:spacing w:before="240" w:after="240" w:line="360"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
-                        </w:rPr>
-                    </w:style>
-                </w:styles>`;
-
-            const parser = new StylesParser(sampleXml);
-            const stylesSchema = parser.getStylesSchema();
-            console.log(JSON.stringify(stylesSchema, null, 2));
-        } catch (error) {
-            console.error("Error running example:", error);
-        }
-    }
-
-    runExample().catch(console.error);
-} 

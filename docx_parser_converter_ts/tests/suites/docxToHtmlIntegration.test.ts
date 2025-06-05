@@ -1,4 +1,4 @@
-import { DocxToHtmlConverter } from '../../src/docx_to_html/docxToHtmlConverter';
+import { DocxToHtmlConverter } from '../../src/docx_to_html/DocxToHtmlConverter';
 import { readFileInBrowser } from '../../src/docx_parsers/utils';
 
 // Registration function for CLI/test-runner integration (no-op for now)
@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
         // Read file as Uint8Array
         const uint8 = await readFileInBrowser(file);
         // Convert DOCX to HTML
-        const converter = await DocxToHtmlConverter.create(uint8, true);
+        const converter = await DocxToHtmlConverter.create(uint8, { useDefaultValues: true });
         const html = converter.convertToHtml();
         return html;
     };

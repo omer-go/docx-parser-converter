@@ -1,18 +1,25 @@
-import * as fs from 'fs';
+// src/docx_to_html/DocxToHtmlConverter.ts
 import { DocxProcessor } from '../docx_parsers/DocxProcessor';
 import { HtmlGenerator } from './htmlGenerator';
-import { readBinaryFromFilePath } from '../docx_parsers/utils';
 import type { DocumentSchema } from '../docx_parsers/models/documentModels';
 import type { StylesSchema } from '../docx_parsers/models/stylesModels';
 import type { NumberingSchema } from '../docx_parsers/models/numberingModels';
 
 /**
+ * Options for DOCX to HTML conversion.
+ */
+export interface DocxToHtmlOptions {
+    useDefaultValues?: boolean;
+}
+
+/**
  * A converter class for converting DOCX files to HTML.
+ * This class is designed to work in both Node.js and browser environments.
  */
 export class DocxToHtmlConverter {
-    public documentSchema: DocumentSchema;
-    public stylesSchema: StylesSchema;
-    public numberingSchema: NumberingSchema;
+    public readonly documentSchema: DocumentSchema;
+    public readonly stylesSchema: StylesSchema;
+    public readonly numberingSchema: NumberingSchema;
 
     private constructor(
         documentSchema: DocumentSchema,
@@ -25,63 +32,37 @@ export class DocxToHtmlConverter {
     }
 
     /**
-     * Async factory to create a DocxToHtmlConverter instance.
-     * @param docxFile The binary content of the DOCX file.
-     * @param useDefaultValues Whether to use default values for missing styles and numbering. Defaults to true.
+     * Asynchronously creates and initializes a DocxToHtmlConverter instance.
+     * @param docxFile The binary content of the DOCX file (e.g., ArrayBuffer, Uint8Array, Buffer).
+     * @param options Optional conversion parameters.
+     * @returns A Promise that resolves to a DocxToHtmlConverter instance.
      */
-    public static async create(docxFile: Buffer | Uint8Array, useDefaultValues: boolean = true): Promise<DocxToHtmlConverter> {
-        const { documentSchema, stylesSchema, numberingSchema } = await DocxProcessor.processDocx(docxFile, useDefaultValues ? undefined : {});
+    public static async create(
+        docxFile: ArrayBuffer | Uint8Array | Buffer,
+        options?: DocxToHtmlOptions
+    ): Promise<DocxToHtmlConverter> {
+        const useDefaultValues = options?.useDefaultValues !== false; // Default to true
+        const processorOptions = useDefaultValues ? undefined : {};
+        const { documentSchema, stylesSchema, numberingSchema } = await DocxProcessor.processDocx(
+            docxFile,
+            processorOptions
+        );
         return new DocxToHtmlConverter(documentSchema, stylesSchema, numberingSchema);
     }
 
     /**
-     * Converts the DOCX file to HTML.
+     * Converts the processed DOCX content to an HTML string.
      * @returns The generated HTML content as a string.
      */
     public convertToHtml(): string {
-        return HtmlGenerator.generateHtml(this.documentSchema, this.numberingSchema);
-    }
-
-    /**
-     * Saves the generated HTML content to a file.
-     * @param htmlContent The HTML content to save.
-     * @param outputPath The path to save the HTML file.
-     */
-    public saveHtmlToFile(htmlContent: string, outputPath: string): void {
-        try {
-            fs.writeFileSync(outputPath, htmlContent, { encoding: 'utf-8' });
-        } catch (e) {
-            console.error(`Error: Failed to save HTML file. Error: ${e}`);
+        if (!this.documentSchema || !this.stylesSchema || !this.numberingSchema) {
+            throw new Error(
+                'DocxToHtmlConverter: Instance not properly initialized. Ensure create() was awaited.'
+            );
         }
+        return HtmlGenerator.generateHtml(this.documentSchema, this.numberingSchema);
     }
 }
 
-// Only run this block in Node.js, not in the browser
-if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
-    // Sample file paths for testing
-    // const docxPath = 'C:/Users/omerh/Desktop/docx_test.docx';
-    const docxPath = 'C:/Users/omerh/Desktop/SAFEs for analysis/SAFE 1 - Cap Only.docx';
-    const htmlOutputPath = 'C:/Users/omerh/Desktop/new_newnewdocx1.html';
-
-    if (!fs.existsSync(docxPath)) {
-        console.error(`File not found: ${docxPath}`);
-    } else {
-        (async () => {
-            let docxFileContent: Buffer;
-            try {
-                docxFileContent = readBinaryFromFilePath(docxPath);
-            } catch (e) {
-                console.error(`Error: Failed to read DOCX file. Error: ${e}`);
-                return;
-            }
-            try {
-                const converter = await DocxToHtmlConverter.create(docxFileContent, true);
-                const htmlOutput = converter.convertToHtml();
-                converter.saveHtmlToFile(htmlOutput, htmlOutputPath);
-                console.log(`HTML file saved to: ${htmlOutputPath}`);
-            } catch (e) {
-                console.error(`Error: Failed to convert DOCX to HTML. Error: ${e}`);
-            }
-        })();
-    }
-} 
+// Removed Node.js specific file operations and main execution block.
+// Users of the library will handle file input/output themselves.

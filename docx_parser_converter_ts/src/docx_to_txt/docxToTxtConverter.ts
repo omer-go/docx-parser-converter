@@ -1,81 +1,64 @@
+// src/docx_to_txt/docxToTxtConverter.ts
 import type { DocumentSchema } from '../docx_parsers/models/documentModels';
 import type { NumberingSchema } from '../docx_parsers/models/numberingModels';
 import { DocxProcessor } from '../docx_parsers/DocxProcessor';
 import { TxtGenerator } from './txtGenerator';
 
 /**
+ * Options for DOCX to TXT conversion.
+ */
+export interface DocxToTxtOptions {
+    useDefaultValues?: boolean;
+    indent?: boolean;
+}
+
+/**
  * Class to convert DOCX files to plain text format.
- * Works in both Node.js and browser environments.
+ * This class is designed to work in both Node.js and browser environments.
  */
 export class DocxToTxtConverter {
-    private docxFile: ArrayBuffer | Uint8Array | Buffer;
-    private documentSchema!: DocumentSchema;
-    private numberingSchema!: NumberingSchema;
+    private readonly documentSchema: DocumentSchema;
+    private readonly numberingSchema: NumberingSchema;
 
-    /**
-     * Initializes the DocxToTxtConverter with the given DOCX file.
-     * @param docxFile The DOCX file content (ArrayBuffer, Uint8Array, or Buffer).
-     */
-    constructor(docxFile: ArrayBuffer | Uint8Array | Buffer) {
-        this.docxFile = docxFile;
-        // Actual processing is async, so use the async init method after construction
-    }
-
-    /**
-     * Asynchronously processes the DOCX file and initializes schemas.
-     * Must be called before converting to TXT.
-     * @param options Optional: pass useDefaultValues (default true)
-     */
-    public async init(options?: { useDefaultValues?: boolean }): Promise<void> {
-        const { documentSchema, numberingSchema } = await DocxProcessor.processDocx(
-            this.docxFile,
-            options && options.useDefaultValues === false ? undefined : {}
-        );
+    private constructor(documentSchema: DocumentSchema, numberingSchema: NumberingSchema) {
         this.documentSchema = documentSchema;
         this.numberingSchema = numberingSchema;
     }
 
     /**
-     * Convert the DOCX document to plain text.
-     * @param indent Whether to apply indentation. Default is false.
+     * Asynchronously creates and initializes a DocxToTxtConverter instance.
+     * @param docxFile The DOCX file content (e.g., ArrayBuffer, Uint8Array, or Buffer).
+     * @param options Optional conversion parameters.
+     * @returns A Promise that resolves to a DocxToTxtConverter instance.
+     */
+    public static async create(
+        docxFile: ArrayBuffer | Uint8Array | Buffer,
+        options?: Pick<DocxToTxtOptions, 'useDefaultValues'> // Only useDefaultValues for creation
+    ): Promise<DocxToTxtConverter> {
+        const useDefaultValues = options?.useDefaultValues !== false; // Default to true
+        const processorOptions = useDefaultValues ? undefined : {};
+        const { documentSchema, numberingSchema } = await DocxProcessor.processDocx(
+            docxFile,
+            processorOptions
+        );
+        return new DocxToTxtConverter(documentSchema, numberingSchema);
+    }
+
+    /**
+     * Converts the processed DOCX document to plain text.
+     * @param options Optional conversion parameters, e.g., for indentation.
      * @returns Plain text representation of the document.
      */
-    public convertToTxt(indent: boolean = false): string {
+    public convertToTxt(options?: Pick<DocxToTxtOptions, 'indent'>): string {
         if (!this.documentSchema || !this.numberingSchema) {
-            throw new Error('DocxToTxtConverter: Not initialized. Call init() and await it before converting.');
+            throw new Error(
+                'DocxToTxtConverter: Instance not properly initialized. Ensure create() was awaited.'
+            );
         }
+        const indent = options?.indent === true; // Default to false
         return TxtGenerator.generateTxt(this.documentSchema, this.numberingSchema, indent);
     }
+}
 
-    /**
-     * Save the generated plain text to a file (Node.js only).
-     * @param txtContent The plain text content.
-     * @param outputPath The output file path.
-     */
-    public async saveTxtToFile(txtContent: string, outputPath: string): Promise<void> {
-        if (typeof window !== 'undefined') {
-            throw new Error('saveTxtToFile is only available in Node.js environments.');
-        }
-        // Dynamically import fs only if in Node.js
-        const fs = await import('fs');
-        return new Promise((resolve, reject) => {
-            fs.writeFile(outputPath, txtContent, { encoding: 'utf-8' }, (err: NodeJS.ErrnoException | null) => {
-                if (err) reject(err);
-                else resolve();
-            });
-        });
-    }
-
-    /**
-     * Static helper to read a file as binary (Node.js only).
-     * @param filePath The path to the file to read.
-     * @returns Buffer The binary content of the file.
-     */
-    public static async readBinaryFromFilePath(filePath: string): Promise<Buffer> {
-        if (typeof window !== 'undefined') {
-            throw new Error('readBinaryFromFilePath is only available in Node.js environments.');
-        }
-        const fs = await import('fs');
-        return fs.readFileSync(filePath);
-    }
-} 
+// Removed Node.js specific file operations (saveTxtToFile, readBinaryFromFilePath).
+// Users of the library will handle file input/output themselves.

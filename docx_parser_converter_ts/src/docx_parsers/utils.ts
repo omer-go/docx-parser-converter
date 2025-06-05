@@ -1,16 +1,15 @@
-import * as fs from 'fs';
 import * as JSZip from 'jszip';
 import { DOMParser as XmldomParser, XMLSerializer as XmldomSerializer } from '@xmldom/xmldom';
 
 /**
  * Extracts the root element from the specified XML file within a DOCX file.
  *
- * @param docxFileContent The binary content (Buffer or Uint8Array) of the DOCX file.
+ * @param docxFileContent The binary content (Uint8Array or ArrayBuffer) of the DOCX file.
  * @param xmlFilename The name of the XML file to extract (e.g., 'document.xml').
  * @returns Promise<Element> The root element of the extracted XML file (global Element type).
  */
-export async function extractXmlRootFromDocx(docxFileContent: Buffer | Uint8Array, xmlFilename: string): Promise<Element> {
-    const contentToLoad = docxFileContent instanceof Uint8Array ? docxFileContent.buffer : docxFileContent;
+export async function extractXmlRootFromDocx(docxFileContent: Uint8Array | ArrayBuffer, xmlFilename: string): Promise<Element> {
+    const contentToLoad = docxFileContent; // JSZip can handle Uint8Array and ArrayBuffer directly
     const zip = await JSZip.loadAsync(contentToLoad);
 
     // console.log("Files found by JSZip in the archive:");
@@ -113,16 +112,6 @@ export function extractXmlRootFromString(xmlContent: string): Element {
         }
     }
     return rootElementFromXmldom as unknown as Element;
-}
-
-/**
- * Reads the binary content from the specified file path.
- *
- * @param filePath The path to the file to read.
- * @returns Buffer The binary content of the file.
- */
-export function readBinaryFromFilePath(filePath: string): Buffer {
-    return fs.readFileSync(filePath);
 }
 
 /**
@@ -244,13 +233,11 @@ export async function readFileInBrowser(file: File): Promise<Uint8Array> {
 
 /**
  * Extracts all required XML parts from a DOCX file in one go.
- * @param docxFileContent The binary content (Buffer, Uint8Array, or ArrayBuffer) of the DOCX file.
+ * @param docxFileContent The binary content (Uint8Array or ArrayBuffer) of the DOCX file.
  * @returns Promise<{ documentXml: string, stylesXml: string, numberingXml: string }>
  */
-export async function extractAllXmlPartsFromDocx(docxFileContent: Buffer | Uint8Array | ArrayBuffer): Promise<{ documentXml: string, stylesXml: string, numberingXml: string }> {
-    const contentToLoad = docxFileContent instanceof Uint8Array || docxFileContent instanceof Buffer
-        ? docxFileContent
-        : new Uint8Array(docxFileContent);
+export async function extractAllXmlPartsFromDocx(docxFileContent: Uint8Array | ArrayBuffer): Promise<{ documentXml: string, stylesXml: string, numberingXml: string }> {
+    const contentToLoad = docxFileContent; // JSZip can handle Uint8Array and ArrayBuffer directly
     const zip = await JSZip.loadAsync(contentToLoad);
 
     async function getXml(filename: string): Promise<string> {
@@ -304,126 +291,3 @@ export function deepMergeBasePreserves<T extends Record<string, any>, U extends 
   return output as T & U;
 }
 
-// --- Example Usage Block (similar to if __name__ == "__main__") ---
-async function runExamples() {
-    console.log("--- Running utils.ts examples ---");
-
-    // Example: convertTwipsToPoints
-    const twips = 240;
-    const pointsFromTwips = convertTwipsToPoints(twips);
-    console.log(`${twips} twips is ${pointsFromTwips} points`);
-
-    // Example: convertHalfPointsToPoints
-    const halfPoints = 24;
-    const pointsFromHalf = convertHalfPointsToPoints(halfPoints);
-    console.log(`${halfPoints} half-points is ${pointsFromHalf} points`);
-
-    // Example: mergeProperties (simplified)
-    interface TestStyle {
-        font?: string;
-        size?: number;
-        color?: string;
-        details?: {
-            bold?: boolean;
-            italic?: boolean;
-            more?: {
-                underline?: boolean;
-            }
-        };
-        tags?: string[];
-    }
-
-    const baseStyle: TestStyle = {
-        font: "Arial",
-        size: 12,
-        color: "black",
-        details: {
-            bold: true,
-            more: {
-                underline: false
-            }
-        },
-        tags: ["base"]
-    };
-
-    const derivedStyle: Partial<TestStyle> = {
-        size: 14, // Overwrites base
-        color: "blue", // Overwrites base
-        details: { // Deep merge
-            italic: true, // Adds to details
-            more: { // Deep merge
-                underline: true // Overwrites details.more.underline
-            }
-        },
-        tags: ["derived"] // Overwrites base tags array
-    };
-    
-    const mergedStyle = mergeProperties(baseStyle, derivedStyle);
-    console.log("Merged Style (derived takes precedence):", JSON.stringify(mergedStyle, null, 2));
-    /* Expected mergedStyle:
-    {
-      "font": "Arial",         // From base
-      "size": 14,             // From derived (overwritten)
-      "color": "blue",          // From derived (overwritten)
-      "details": {
-        "bold": true,         // From base
-        "italic": true,       // From derived (added)
-        "more": {
-          "underline": true   // From derived (overwritten)
-        }
-      },
-      "tags": ["derived"]      // From derived (array overwritten)
-    }
-    */
-
-    // Test with null/undefined inputs
-    console.log("Merge (null, obj):", mergeProperties(null, { a: 1 }));
-    console.log("Merge (obj, null):", mergeProperties({ b: 2 }, null));
-    console.log("Merge (undefined, obj):", mergeProperties(undefined, { a: 1 }));
-    console.log("Merge (obj, undefined):", mergeProperties({ b: 2 }, undefined));
-    console.log("Merge (null, null):", mergeProperties(null, null));
-
-    // Example: XML parsing (illustrative, needs actual XML string)
-    try {
-        const sampleXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:body><w:p><w:r><w:t>Hello World</w:t></w:r></w:p></w:body>
-        </w:document>`;
-        const rootEl = extractXmlRootFromString(sampleXml);
-        console.log(`Extracted XML root tag: ${rootEl.tagName}`);
-    } catch (error) {
-        console.error("XML parsing example failed:", error);
-    }
-
-    // Example: readBinaryFromFilePath (requires a file)
-    // Create a dummy file for testing
-    const testFilePath = 'test_dummy_file.txt';
-    try {
-        fs.writeFileSync(testFilePath, 'Hello binary world!');
-        const binaryContent = readBinaryFromFilePath(testFilePath);
-        console.log(`Read binary content: "${binaryContent.toString()}"`);
-        fs.unlinkSync(testFilePath); // Clean up dummy file
-    } catch (error) {
-        console.error("File reading example failed:", error);
-        if (fs.existsSync(testFilePath)) fs.unlinkSync(testFilePath);
-    }
-
-    // Example: extractXmlRootFromDocx (requires a dummy DOCX)
-    // This is harder to quickly test without a valid mini DOCX buffer.
-    // console.log("Skipping extractXmlRootFromDocx example in this simple test block.");
-
-    console.log("--- Finished utils.ts examples ---");
-}
-
-//This structure is for modules that might be run directly.
-//Using `process.argv.includes(__filename)` or similar for ES modules,
-//or `if (require.main === module)` for CommonJS.
-//For simplicity, we'll just invoke it if not imported, which is tricky to check universally.
-//A common pattern is just to run it or export it for test runners.
-//If this file is executed directly with Node.js:
-if (typeof require !== 'undefined' && require.main === module) {
-    runExamples().catch(error => {
-        console.error("Error during example execution:", error);
-        process.exit(1);
-    });
-} 

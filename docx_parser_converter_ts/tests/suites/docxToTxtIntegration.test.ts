@@ -1,5 +1,6 @@
-import { DocxToTxtConverter } from '../../src/docx_to_txt/docxToTxtConverter';
-import { readFileInBrowser } from '../../src/docx_parsers/utils';
+// tests/suites/docxToTxtIntegration.test.ts
+import { DocxToTxtConverter, type DocxToTxtOptions } from '../../src/main'; // Import from main.ts
+import { readFileInBrowser } from '../../src/docx_parsers/utils'; // Assuming this utility is still needed and browser-safe
 
 // Registration function for CLI/test-runner integration (no-op for now)
 export function registerDocxToTxtIntegrationTest() {
@@ -16,10 +17,14 @@ if (typeof window !== 'undefined') {
         }
         // Read file as Uint8Array
         const uint8 = await readFileInBrowser(file);
-        // Convert DOCX to TXT
-        const converter = new DocxToTxtConverter(uint8);
-        await converter.init();
-        const txt = converter.convertToTxt(true);
+
+        // Convert DOCX to TXT - UPDATED WAY
+        // Define options if needed, e.g., for useDefaultValues
+        const options: DocxToTxtOptions = { useDefaultValues: true }; // Or just pass {} or undefined if defaults are fine
+        const converter = await DocxToTxtConverter.create(uint8, options);
+
+        // Convert to text with indentation
+        const txt = converter.convertToTxt({ indent: true });
         return txt;
     };
-} 
+}
