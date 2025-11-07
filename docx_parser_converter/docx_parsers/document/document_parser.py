@@ -59,8 +59,8 @@ class DocumentParser:
         margins = self.extract_margins()
         document_schema = DocumentSchema(elements=elements, doc_margins=margins)
         
-        # Process images if we have the docx file
-        if self.docx_file and self.relationships:
+        # Process images if we have the docx file (relationships may be empty but that's ok)
+        if self.docx_file:
             self.process_images(document_schema)
         
         return document_schema

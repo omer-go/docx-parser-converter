@@ -137,7 +137,7 @@ class RunConverter:
             style_parts.append(f"height:{height_pt}pt")
         
         if style_parts:
-            img_html += f' style="{";".join(style_parts)}"'
+            img_html += f' style="{";".join(style_parts)};"'
         
         # Add alt text if available (properly escape HTML special characters)
         if image.alt_text:

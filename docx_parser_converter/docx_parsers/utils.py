@@ -135,7 +135,7 @@ def merge_properties(base_props: Union[BaseModel, None], derived_props: Union[Ba
     merged_dict = deep_merge(base_dict, derived_dict)
     return type(base_props)(**merged_dict)
 
-def convert_emu_to_pixels(emu: int, dpi: int = 96) -> float:
+def convert_emu_to_pixels(emu: float, dpi: int = 96) -> float:
     """
     Converts EMU (English Metric Units) to pixels.
     
@@ -143,7 +143,7 @@ def convert_emu_to_pixels(emu: int, dpi: int = 96) -> float:
     1 inch = 914400 EMU
     
     Args:
-        emu (int): The value in EMU.
+        emu (float): The value in EMU.
         dpi (int): Dots per inch for the conversion (default is 96).
     
     Returns:
@@ -160,7 +160,7 @@ def convert_emu_to_pixels(emu: int, dpi: int = 96) -> float:
     inches = emu / 914400.0
     return inches * dpi
 
-def convert_emu_to_points(emu: int) -> float:
+def convert_emu_to_points(emu: float) -> float:
     """
     Converts EMU (English Metric Units) to points.
     
@@ -168,7 +168,7 @@ def convert_emu_to_points(emu: int) -> float:
     1 inch = 72 points
     
     Args:
-        emu (int): The value in EMU.
+        emu (float): The value in EMU.
     
     Returns:
         float: The value in points.
