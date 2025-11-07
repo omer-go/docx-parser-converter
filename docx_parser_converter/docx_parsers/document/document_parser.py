@@ -1,21 +1,14 @@
 import json
-from typing import Optional, List, Union, Dict
+from typing import Optional, List, Union
 from docx_parser_converter.docx_parsers.helpers.common_helpers import NAMESPACE
-from docx_parser_converter.docx_parsers.utils import (
-    extract_xml_root_from_docx, 
-    read_binary_from_file_path, 
-    extract_xml_root_from_string,
-    extract_relationships_from_docx,
-    extract_image_from_docx,
-    encode_image_to_base64,
-    get_image_mime_type
-)
-from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph, ImageContent
+from docx_parser_converter.docx_parsers.utils import extract_xml_root_from_docx, read_binary_from_file_path, extract_xml_root_from_string
+from docx_parser_converter.docx_parsers.models.paragraph_models import Paragraph
 from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema, DocMargins
 from docx_parser_converter.docx_parsers.models.table_models import Table
 from docx_parser_converter.docx_parsers.document.margins_parser import MarginsParser
 from docx_parser_converter.docx_parsers.document.paragraph_parser import ParagraphParser
 from docx_parser_converter.docx_parsers.tables.tables_parser import TablesParser
+from docx_parser_converter.docx_parsers.document.image_parser import ImageParser
 
 class DocumentParser:
     """
@@ -34,13 +27,14 @@ class DocumentParser:
                                                  or the document.xml content as a string.
         """
         self.docx_file = None
-        self.relationships = {}
+        self.image_parser = None
         
         if source:
             if isinstance(source, bytes):
                 self.docx_file = source
                 self.root = extract_xml_root_from_docx(source, 'document.xml')
-                self.relationships = extract_relationships_from_docx(source)
+                # Initialize ImageParser with the docx file for image processing
+                self.image_parser = ImageParser(docx_file=source)
             else:  # string
                 self.root = extract_xml_root_from_string(source)
             self.document_schema = self.parse()
@@ -59,9 +53,9 @@ class DocumentParser:
         margins = self.extract_margins()
         document_schema = DocumentSchema(elements=elements, doc_margins=margins)
         
-        # Process images if we have the docx file (relationships may be empty but that's ok)
-        if self.docx_file:
-            self.process_images(document_schema)
+        # Process images using ImageParser if available
+        if self.image_parser:
+            self.image_parser.process_images_in_document(document_schema)
         
         return document_schema
 
@@ -116,60 +110,6 @@ class DocumentParser:
         if sectPr is not None:
             return MarginsParser().parse(sectPr)
         return None
-
-    def process_images(self, document_schema: DocumentSchema) -> None:
-        """
-        Processes images in the document by extracting their binary data and encoding as base64.
-        
-        Args:
-            document_schema (DocumentSchema): The document schema to process.
-        
-        This method iterates through all paragraphs and their runs to find ImageContent,
-        then extracts the actual image data from the DOCX file and encodes it as base64.
-        """
-        for element in document_schema.elements:
-            if isinstance(element, Paragraph):
-                self._process_paragraph_images(element)
-            elif isinstance(element, Table):
-                # Process images in table cells
-                for row in element.rows:
-                    for cell in row.cells:
-                        for cell_element in cell.elements:
-                            if isinstance(cell_element, Paragraph):
-                                self._process_paragraph_images(cell_element)
-    
-    def _process_paragraph_images(self, paragraph: Paragraph) -> None:
-        """
-        Processes images in a single paragraph.
-        
-        Args:
-            paragraph (Paragraph): The paragraph to process.
-        """
-        for run in paragraph.runs:
-            for content in run.contents:
-                if isinstance(content.run, ImageContent):
-                    self._load_image_data(content.run)
-    
-    def _load_image_data(self, image_content: ImageContent) -> None:
-        """
-        Loads the binary image data and encodes it as base64.
-        
-        Args:
-            image_content (ImageContent): The image content to load data for.
-        """
-        # Get the image path from the relationship
-        image_path = self.relationships.get(image_content.rId)
-        if not image_path:
-            return
-        
-        # Extract the image binary data
-        image_data = extract_image_from_docx(self.docx_file, image_path)
-        if not image_data:
-            return
-        
-        # Encode as base64
-        mime_type = get_image_mime_type(image_path)
-        image_content.image_data = encode_image_to_base64(image_data, mime_type)
 
     def get_document_schema(self) -> DocumentSchema:
         """
