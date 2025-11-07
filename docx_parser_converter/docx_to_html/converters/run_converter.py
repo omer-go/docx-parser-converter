@@ -1,6 +1,7 @@
-from docx_parser_converter.docx_parsers.models.paragraph_models import Run, Paragraph, TextContent, TabContent
+from docx_parser_converter.docx_parsers.models.paragraph_models import Run, Paragraph, TextContent, TabContent, ImageContent
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
+from docx_parser_converter.docx_parsers.utils import convert_emu_to_points
 
 
 class RunConverter:
@@ -35,6 +36,8 @@ class RunConverter:
                 run_html += f'<span style="display:inline-block; width:{tab_width}pt;"></span>'
             elif isinstance(content.run, TextContent):
                 run_html += content.run.text
+            elif isinstance(content.run, ImageContent):
+                run_html += RunConverter.convert_image(content.run)
         run_html += "</span>"
         return run_html
 
@@ -94,3 +97,60 @@ class RunConverter:
         if properties.size_pt:
             style += StyleConverter.convert_size(properties.size_pt)
         return f' style="{style}"' if style else ""
+
+    @staticmethod
+    def convert_image(image: ImageContent) -> str:
+        """
+        Converts an ImageContent to an HTML <img> tag.
+
+        Args:
+            image (ImageContent): The image content to convert.
+
+        Returns:
+            str: The HTML representation of the image.
+
+        Example:
+            The output HTML might look like:
+
+            .. code-block:: html
+
+                <img src="data:image/png;base64,iVBORw0KG..." 
+                     style="width:100pt;height:100pt;" 
+                     alt="Image description" 
+                     title="Image title"/>
+        """
+        # If no image data, return empty string
+        if not image.image_data:
+            return ""
+        
+        # Build the img tag
+        img_html = f'<img src="{image.image_data}"'
+        
+        # Add style for dimensions if available
+        style_parts = []
+        if image.width_emu:
+            width_pt = convert_emu_to_points(image.width_emu)
+            style_parts.append(f"width:{width_pt}pt")
+        if image.height_emu:
+            height_pt = convert_emu_to_points(image.height_emu)
+            style_parts.append(f"height:{height_pt}pt")
+        
+        if style_parts:
+            img_html += f' style="{";".join(style_parts)}"'
+        
+        # Add alt text if available
+        if image.alt_text:
+            # Escape quotes in alt text
+            alt_text = image.alt_text.replace('"', '&quot;')
+            img_html += f' alt="{alt_text}"'
+        else:
+            img_html += ' alt="Image"'
+        
+        # Add title if available
+        if image.title:
+            # Escape quotes in title
+            title = image.title.replace('"', '&quot;')
+            img_html += f' title="{title}"'
+        
+        img_html += '/>'
+        return img_html

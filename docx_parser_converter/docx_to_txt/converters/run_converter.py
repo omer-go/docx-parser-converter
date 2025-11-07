@@ -1,4 +1,4 @@
-from docx_parser_converter.docx_parsers.models.paragraph_models import Run, TextContent, TabContent
+from docx_parser_converter.docx_parsers.models.paragraph_models import Run, TextContent, TabContent, ImageContent
 
 class RunConverter:
     """
@@ -36,4 +36,32 @@ class RunConverter:
                 run_text += "\t"
             elif isinstance(content.run, TextContent):
                 run_text += content.run.text
+            elif isinstance(content.run, ImageContent):
+                run_text += RunConverter.convert_image(content.run)
         return run_text
+
+    @staticmethod
+    def convert_image(image: ImageContent) -> str:
+        """
+        Converts an ImageContent to a plain text placeholder.
+
+        Args:
+            image (ImageContent): The image content to convert.
+
+        Returns:
+            str: A plain text placeholder for the image.
+
+        Example:
+            The output might look like:
+
+            .. code-block:: text
+
+                [Image: Picture 1]
+                [Image]
+        """
+        if image.title:
+            return f"[Image: {image.title}]"
+        elif image.alt_text:
+            return f"[Image: {image.alt_text}]"
+        else:
+            return "[Image]"
