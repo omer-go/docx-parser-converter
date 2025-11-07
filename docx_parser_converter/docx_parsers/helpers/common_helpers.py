@@ -2,7 +2,18 @@ from typing import Optional
 from xml.etree.ElementTree import Element
 
 NAMESPACE_URI = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-NAMESPACE = {'w': NAMESPACE_URI}
+NAMESPACE_URI_DRAWINGML = "http://schemas.openxmlformats.org/drawingml/2006/main"
+NAMESPACE_URI_DRAWINGML_WP = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+NAMESPACE_URI_PICTURE = "http://schemas.openxmlformats.org/drawingml/2006/picture"
+NAMESPACE_URI_RELATIONSHIPS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
+NAMESPACE = {
+    'w': NAMESPACE_URI,
+    'a': NAMESPACE_URI_DRAWINGML,
+    'wp': NAMESPACE_URI_DRAWINGML_WP,
+    'pic': NAMESPACE_URI_PICTURE,
+    'r': NAMESPACE_URI_RELATIONSHIPS
+}
 
 def extract_element(parent: Optional[Element], path: str) -> Optional[Element]:
     """

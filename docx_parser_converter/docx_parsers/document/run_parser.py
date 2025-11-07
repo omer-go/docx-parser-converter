@@ -4,6 +4,7 @@ from docx_parser_converter.docx_parsers.helpers.common_helpers import extract_el
 from docx_parser_converter.docx_parsers.models.paragraph_models import Run, RunContent, TextContent, TabContent
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_parsers.styles.run_properties_parser import RunPropertiesParser
+from docx_parser_converter.docx_parsers.document.image_parser import ImageParser
 
 class RunParser:
     """
@@ -13,6 +14,16 @@ class RunParser:
     run element, converting them into a structured Run object for further 
     processing or conversion to other formats like HTML.
     """
+    
+    def __init__(self):
+        """
+        Initializes the RunParser with an ImageParser for handling image content.
+        
+        Note: The ImageParser is initialized without a docx_file, as it's only used
+        to extract image metadata from XML elements. Binary data loading and base64
+        encoding is handled later by DocumentParser's ImageParser instance.
+        """
+        self.image_parser = ImageParser()
 
     def parse(self, r: etree.Element) -> Run:
         """
@@ -60,6 +71,9 @@ class RunParser:
                 <w:r>
                     <w:tab/>
                     <w:t>Example text</w:t>
+                    <w:drawing>
+                        <!-- Image content -->
+                    </w:drawing>
                 </w:r>
         """
         contents = []
@@ -68,4 +82,10 @@ class RunParser:
                 contents.append(RunContent(run=TabContent()))
             elif elem.tag == f"{{{NAMESPACE_URI}}}t":
                 contents.append(RunContent(run=TextContent(text=elem.text)))
+            elif elem.tag == f"{{{NAMESPACE_URI}}}drawing":
+                # Use the ImageParser to extract image content
+                image_content = self.image_parser.extract_image_from_drawing(elem)
+                if image_content:
+                    contents.append(RunContent(run=image_content))
         return contents
+

@@ -8,6 +8,7 @@ from docx_parser_converter.docx_parsers.models.table_models import Table
 from docx_parser_converter.docx_parsers.document.margins_parser import MarginsParser
 from docx_parser_converter.docx_parsers.document.paragraph_parser import ParagraphParser
 from docx_parser_converter.docx_parsers.tables.tables_parser import TablesParser
+from docx_parser_converter.docx_parsers.document.image_parser import ImageParser
 
 class DocumentParser:
     """
@@ -25,9 +26,15 @@ class DocumentParser:
             source (Optional[Union[bytes, str]]): Either the binary content of the DOCX file
                                                  or the document.xml content as a string.
         """
+        self.docx_file = None
+        self.image_parser = None
+        
         if source:
             if isinstance(source, bytes):
+                self.docx_file = source
                 self.root = extract_xml_root_from_docx(source, 'document.xml')
+                # Initialize ImageParser with the docx file for image processing
+                self.image_parser = ImageParser(docx_file=source)
             else:  # string
                 self.root = extract_xml_root_from_string(source)
             self.document_schema = self.parse()
@@ -44,7 +51,13 @@ class DocumentParser:
         """
         elements = self.extract_elements()
         margins = self.extract_margins()
-        return DocumentSchema(elements=elements, doc_margins=margins)
+        document_schema = DocumentSchema(elements=elements, doc_margins=margins)
+        
+        # Process images using ImageParser if available
+        if self.image_parser:
+            self.image_parser.process_images_in_document(document_schema)
+        
+        return document_schema
 
     def extract_elements(self) -> List[Union[Paragraph, Table]]:
         """

@@ -1,0 +1,5 @@
+Text before image
+
+[Image: Test Image]
+
+Text after image

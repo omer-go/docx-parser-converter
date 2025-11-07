@@ -49,9 +49,43 @@ class TabContent(BaseModel):
     """
     type: str = Field("tab", description="The type of content, default is 'tab'.")
 
+class ImageContent(BaseModel):
+    """
+    Represents an image embedded in a run.
+
+    Example:
+        The following is an example of an image (drawing) element in a run:
+
+        .. code-block:: xml
+
+            <w:r>
+                <w:drawing>
+                    <wp:inline>
+                        <wp:extent cx="914400" cy="914400"/>
+                        <a:graphic>
+                            <a:graphicData>
+                                <pic:pic>
+                                    <pic:blipFill>
+                                        <a:blip r:embed="rId4"/>
+                                    </pic:blipFill>
+                                </pic:pic>
+                            </a:graphicData>
+                        </a:graphic>
+                    </wp:inline>
+                </w:drawing>
+            </w:r>
+    """
+    type: str = Field("image", description="The type of content, default is 'image'.")
+    rId: str = Field(..., description="The relationship ID referencing the image file.")
+    width_emu: Optional[int] = Field(None, description="The width of the image in EMU (English Metric Units).")
+    height_emu: Optional[int] = Field(None, description="The height of the image in EMU (English Metric Units).")
+    alt_text: Optional[str] = Field(None, description="Alternative text description for the image.")
+    title: Optional[str] = Field(None, description="Title of the image.")
+    image_data: Optional[str] = Field(None, description="Base64-encoded image data for HTML output.")
+
 class RunContent(BaseModel):
     """
-    Represents the content of a run, which can be either text or a tab.
+    Represents the content of a run, which can be text, a tab, or an image.
 
     Example:
         The following is an example of run contents in a run element:
@@ -61,9 +95,12 @@ class RunContent(BaseModel):
             <w:r>
                 <w:t>Example text</w:t>
                 <w:tab/>
+                <w:drawing>
+                    <!-- Image content -->
+                </w:drawing>
             </w:r>
     """
-    run: Union[TextContent, TabContent] = Field(..., description="The content of the run.")
+    run: Union[TextContent, TabContent, ImageContent] = Field(..., description="The content of the run.")
 
 class Run(BaseModel):
     """
