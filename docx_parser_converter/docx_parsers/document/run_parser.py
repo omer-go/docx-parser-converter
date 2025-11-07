@@ -132,9 +132,15 @@ class RunParser:
             cx = extent.get('cx')
             cy = extent.get('cy')
             if cx:
-                width_emu = int(cx)
+                try:
+                    width_emu = int(cx)
+                except (ValueError, TypeError):
+                    width_emu = None
             if cy:
-                height_emu = int(cy)
+                try:
+                    height_emu = int(cy)
+                except (ValueError, TypeError):
+                    height_emu = None
         
         # Extract alt text and title from wp:docPr
         alt_text = None

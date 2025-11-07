@@ -2,6 +2,7 @@ from docx_parser_converter.docx_parsers.models.paragraph_models import Run, Para
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
 from docx_parser_converter.docx_parsers.utils import convert_emu_to_points
+import html
 
 
 class RunConverter:
@@ -138,18 +139,16 @@ class RunConverter:
         if style_parts:
             img_html += f' style="{";".join(style_parts)}"'
         
-        # Add alt text if available
+        # Add alt text if available (properly escape HTML special characters)
         if image.alt_text:
-            # Escape quotes in alt text
-            alt_text = image.alt_text.replace('"', '&quot;')
+            alt_text = html.escape(image.alt_text, quote=True)
             img_html += f' alt="{alt_text}"'
         else:
             img_html += ' alt="Image"'
         
-        # Add title if available
+        # Add title if available (properly escape HTML special characters)
         if image.title:
-            # Escape quotes in title
-            title = image.title.replace('"', '&quot;')
+            title = html.escape(image.title, quote=True)
             img_html += f' title="{title}"'
         
         img_html += '/>'

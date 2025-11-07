@@ -301,7 +301,14 @@ def get_image_mime_type(filename: str) -> str:
         
             mime = get_image_mime_type('image.jpg')
             print(mime)  # Output: 'image/jpeg'
+    
+    Note:
+        This function extracts the extension after the last dot in the filename.
+        For files without extensions or with unusual naming patterns, it defaults to 'image/png'.
     """
+    if '.' not in filename:
+        return 'image/png'
+    
     extension = filename.lower().split('.')[-1]
     mime_types = {
         'png': 'image/png',

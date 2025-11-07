@@ -80,17 +80,25 @@ def main():
     # Show snippet
     if '<img' in html_output:
         img_start = html_output.find('<img')
-        img_end = html_output.find('/>', img_start) + 2
-        print(f"\n  Image tag preview:")
-        img_tag = html_output[img_start:img_end]
-        # Truncate base64 data for display
-        if 'base64,' in img_tag:
-            parts = img_tag.split('base64,')
-            if len(parts) > 1:
-                data_part = parts[1].split('"')[0]
-                truncated = data_part[:30] + '...' + data_part[-30:]
-                img_tag = parts[0] + 'base64,' + truncated + '"' + img_tag.split('"', img_tag.count('"'))[1]
-        print(f"  {img_tag}")
+        img_end = html_output.find('/>', img_start)
+        if img_end != -1:
+            img_end += 2
+            print(f"\n  Image tag preview:")
+            img_tag = html_output[img_start:img_end]
+            # Truncate base64 data for display
+            if 'base64,' in img_tag:
+                try:
+                    base64_start = img_tag.find('base64,') + 7
+                    quote_end = img_tag.find('"', base64_start)
+                    if quote_end != -1:
+                        data_part = img_tag[base64_start:quote_end]
+                        if len(data_part) > 60:
+                            truncated = data_part[:30] + '...' + data_part[-30:]
+                            img_tag = img_tag[:base64_start] + truncated + img_tag[quote_end:]
+                except Exception:
+                    # If truncation fails, just show the tag as-is
+                    pass
+            print(f"  {img_tag}")
     
     print()
     
