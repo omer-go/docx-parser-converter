@@ -38,6 +38,15 @@ class ImageParser:
     - Extracting image metadata (dimensions, alt text, title)
     - Resolving relationship IDs to actual image files
     - Loading and encoding image binary data
+    
+    Usage:
+        The ImageParser can be used in two modes:
+        
+        1. Metadata extraction only (no docx_file):
+           Used by RunParser to extract image metadata from XML elements.
+           
+        2. Full processing (with docx_file):
+           Used by DocumentParser to extract metadata AND load binary data.
     """
     
     def __init__(self, docx_file: Optional[bytes] = None):
@@ -46,7 +55,9 @@ class ImageParser:
         
         Args:
             docx_file (Optional[bytes]): The binary content of the DOCX file.
-                                        If provided, relationships will be extracted.
+                                        If provided, relationships will be extracted
+                                        and binary image data can be loaded.
+                                        If None, only metadata extraction is available.
         """
         self.docx_file = docx_file
         self.relationships = {}

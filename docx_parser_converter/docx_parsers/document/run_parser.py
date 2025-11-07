@@ -18,6 +18,10 @@ class RunParser:
     def __init__(self):
         """
         Initializes the RunParser with an ImageParser for handling image content.
+        
+        Note: The ImageParser is initialized without a docx_file, as it's only used
+        to extract image metadata from XML elements. Binary data loading and base64
+        encoding is handled later by DocumentParser's ImageParser instance.
         """
         self.image_parser = ImageParser()
 
