@@ -89,6 +89,7 @@ The Docx Parser and Converter library supports parsing various XML components wi
    - **Table Rows**: Extracts rows within tables.
    - **Table Cells**: Extracts cells within rows.
    - **List Items**: Handles both bulleted and numbered lists through paragraph properties.
+   - **Images**: Parsing and extraction of images embedded within the document, for a list of supported image formats.
 
 2. **numbering.xml**:
    - **Numbering Definitions**: Parses numbering definitions and properties for lists.
@@ -102,7 +103,6 @@ The Docx Parser and Converter library supports parsing various XML components wi
 
 ### Unsupported Components
 
-- **Images**: Parsing and extraction of images embedded within the document.
 - **Headers and Footers**: Parsing of headers and footers content.
 - **Footnotes and Endnotes**: Handling footnotes and endnotes within the document.
 - **Comments**: Extraction and handling of comments.

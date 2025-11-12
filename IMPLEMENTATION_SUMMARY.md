@@ -222,6 +222,7 @@ for element in document.elements:
 
 Possible future improvements that were not implemented:
 - Option to save images as separate files instead of base64
+- Option to convert unsupported image formats (emf, wmf...) to png before conversion to base64.
 - Support for image cropping/effects from DOCX
 - Support for shapes and SmartArt (different from simple images)
 - Preservation of image positioning (wrap text, etc.) in HTML
