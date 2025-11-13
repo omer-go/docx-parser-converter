@@ -304,10 +304,11 @@ def get_image_mime_type(filename: str) -> str:
     
     Note:
         This function extracts the extension after the last dot in the filename.
-        For files without extensions or with unusual naming patterns, it defaults to 'image/png'.
+        For files without extensions or with extension not listed, it defaults to 
+        the generic'application/octet-stream'.
     """
     if '.' not in filename:
-        return 'image/png'
+        return 'application/octet-stream'
     
     extension = filename.lower().split('.')[-1]
     mime_types = {
@@ -321,4 +322,4 @@ def get_image_mime_type(filename: str) -> str:
         'tiff': 'image/tiff',
         'tif': 'image/tiff'
     }
-    return mime_types.get(extension, 'image/png')
+    return mime_types.get(extension, 'application/octet-stream')
