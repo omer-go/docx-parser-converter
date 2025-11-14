@@ -83,7 +83,7 @@ class StyleConverter:
     @staticmethod
     def convert_color(color: str) -> str:
         """
-        Converts color property to CSS style.
+        Converts color property to CSS style, ensuring hex codes include a '#'.
 
         Args:
             color (str): The color property.
@@ -98,7 +98,32 @@ class StyleConverter:
 
                 color:#FF0000;
         """
-        return f"color:{color};" if color else ""
+        formatted_color = StyleConverter._format_css_color(color)
+        return f"color:{formatted_color};" if formatted_color else ""
+
+    @staticmethod
+    def _format_css_color(color: str) -> str:
+        """Normalizes DOCX color values to valid CSS color tokens."""
+        if not color:
+            return ""
+
+        color = color.strip()
+        if not color:
+            return ""
+
+        lowered = color.lower()
+        if lowered == "auto":
+            return ""
+
+        if color.startswith("#") or lowered.startswith("rgb"):
+            return color
+
+        hex_lengths = {3, 4, 6, 8}
+        hex_digits = set("0123456789abcdefABCDEF")
+        if len(color) in hex_lengths and all(ch in hex_digits for ch in color):
+            return f"#{color}"
+
+        return color
 
     @staticmethod
     def convert_font(font: FontProperties) -> str:
