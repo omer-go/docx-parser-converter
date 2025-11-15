@@ -99,6 +99,7 @@ class ParagraphStyleProperties(BaseModel):
     suppress_auto_hyphens: Optional[bool] = Field(None, description="The suppress auto hyphens setting.")
     bidi: Optional[bool] = Field(None, description="The bidirectional setting.")
     justification: Optional[str] = Field(None, description="The justification setting.")
+    highlight: Optional[str] = Field(None, description="The paragraph highlight color.")
     keep_next: Optional[bool] = Field(None, description="The keep next setting.")
     suppress_line_numbers: Optional[bool] = Field(None, description="The suppress line numbers setting.")
     tabs: Optional[List[TabStop]] = Field(None, description="The list of tab stops.")
@@ -133,6 +134,9 @@ class RunStyleProperties(BaseModel):
     highlight: Optional[str] = Field(None, description="The highlight color.")
     shading: Optional[str] = Field(None, description="The shading color.")
     text_position_pt: Optional[float] = Field(None, description="The text position in points.")
+    vertical_align: Optional[str] = Field(
+        None, description="The vertical alignment of the text (e.g., superscript or subscript)."
+    )
     kerning: Optional[int] = Field(None, description="The kerning value.")
     character_spacing_pt: Optional[float] = Field(None, description="The character spacing in points.")
     emboss: Optional[bool] = Field(None, description="The emboss setting.")

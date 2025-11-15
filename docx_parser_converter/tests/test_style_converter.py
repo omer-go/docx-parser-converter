@@ -37,6 +37,17 @@ def test_convert_underline_color_auto_returns_empty():
     assert StyleConverter.convert_underline_color("auto") == ""
 
 
+def test_convert_highlight_accepts_named_color():
+    assert StyleConverter.convert_highlight("yellow") == "background-color:yellow;"
+
+
+def test_convert_highlight_formats_hex():
+    assert (
+        StyleConverter.convert_highlight("FFEEAA")
+        == "background-color:#FFEEAA;"
+    )
+
+
 def test_convert_underline_single():
     assert (
         StyleConverter.convert_underline("single")
@@ -124,3 +135,31 @@ def test_convert_all_caps():
 
 def test_convert_small_caps():
     assert StyleConverter.convert_small_caps(True) == "font-variant:small-caps;"
+
+
+def test_convert_vertical_align_superscript():
+    assert (
+        StyleConverter.convert_vertical_align("superscript")
+        == "vertical-align:super;font-size:smaller;"
+    )
+
+
+def test_convert_vertical_align_subscript():
+    assert (
+        StyleConverter.convert_vertical_align("subscript")
+        == "vertical-align:sub;font-size:smaller;"
+    )
+
+
+def test_convert_text_position_positive_shifts_up():
+    assert (
+        StyleConverter.convert_text_position(2.0)
+        == "position:relative;top:-2pt;"
+    )
+
+
+def test_convert_text_position_negative_shifts_down():
+    assert (
+        StyleConverter.convert_text_position(-1.5)
+        == "position:relative;top:1.5pt;"
+    )

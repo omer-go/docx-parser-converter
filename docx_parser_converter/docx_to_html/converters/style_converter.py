@@ -184,6 +184,22 @@ class StyleConverter:
         return f"text-decoration-color:{formatted_color};"
 
     @staticmethod
+    def convert_highlight(color: str) -> str:
+        """
+        Converts highlight color to CSS background color.
+
+        Args:
+            color (str): The DOCX highlight value (named color or hex string).
+
+        Returns:
+            str: The CSS background-color style.
+        """
+        formatted_color = StyleConverter._format_css_color(color)
+        if not formatted_color:
+            return ""
+        return f"background-color:{formatted_color};"
+
+    @staticmethod
     def convert_all_caps(all_caps: bool) -> str:
         """
         Converts the all caps property to CSS style.
@@ -196,6 +212,33 @@ class StyleConverter:
         Converts the small caps property to CSS style.
         """
         return "font-variant:small-caps;" if small_caps else ""
+
+    @staticmethod
+    def convert_vertical_align(vertical_align: str) -> str:
+        """
+        Converts DOCX vertical alignment values (superscript/subscript) to CSS.
+        """
+        if not vertical_align:
+            return ""
+        normalized = vertical_align.lower()
+        mapping = {
+            "superscript": "vertical-align:super;font-size:smaller;",
+            "subscript": "vertical-align:sub;font-size:smaller;",
+        }
+        return mapping.get(normalized, "")
+
+    @staticmethod
+    def convert_text_position(offset_pt: float) -> str:
+        """
+        Converts DOCX text position (baseline shift) to CSS relative positioning.
+        """
+        if not offset_pt:
+            return ""
+        shift = -offset_pt  # Positive DOCX values raise the text, so move up.
+        formatted_shift = StyleConverter._format_point_value(shift)
+        if formatted_shift == "0":
+            return ""
+        return f"position:relative;top:{formatted_shift}pt;"
 
     @staticmethod
     def _format_css_color(color: str) -> str:
@@ -220,6 +263,18 @@ class StyleConverter:
             return f"#{color}"
 
         return color
+
+    @staticmethod
+    def _format_point_value(value: float) -> str:
+        """
+        Formats a float value into a compact point string suitable for CSS.
+        """
+        if value is None:
+            return ""
+        if abs(value) < 1e-9:
+            return "0"
+        formatted = f"{value:.4f}".rstrip("0").rstrip(".")
+        return formatted or "0"
 
     @staticmethod
     def convert_font(font: FontProperties) -> str:

@@ -65,6 +65,7 @@ class RunPropertiesParser:
             properties.highlight = self.extract_highlight(rPr_element)
             properties.shading = self.extract_shading(rPr_element)
             properties.text_position_pt = self.extract_text_position(rPr_element)
+            properties.vertical_align = self.extract_vertical_align(rPr_element)
             properties.kerning = self.extract_kerning(rPr_element)
             properties.character_spacing_pt = self.extract_character_spacing(rPr_element)
             properties.emboss = self.extract_emboss(rPr_element)
@@ -371,6 +372,21 @@ class RunPropertiesParser:
             text_position = extract_attribute(text_position_element, 'val')
             if text_position:
                 return convert_half_points_to_points(int(text_position))
+        return None
+
+    def extract_vertical_align(self, rPr_element: ET.Element) -> Optional[str]:
+        """
+        Extracts vertical alignment (subscript/superscript) from the run properties.
+
+        Args:
+            rPr_element (ET.Element): The run properties element.
+
+        Returns:
+            Optional[str]: The extracted vertical alignment value.
+        """
+        vertical_align_element = extract_element(rPr_element, "w:vertAlign")
+        if vertical_align_element is not None:
+            return extract_attribute(vertical_align_element, 'val')
         return None
 
     def extract_kerning(self, rPr_element: ET.Element) -> Optional[int]:

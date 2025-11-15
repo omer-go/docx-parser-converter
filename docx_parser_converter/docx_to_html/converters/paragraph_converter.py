@@ -65,4 +65,6 @@ class ParagraphConverter:
             style += StyleConverter.convert_indent(properties.indent)
         if properties.justification:
             style += StyleConverter.convert_justification(properties.justification)
+        if getattr(properties, "highlight", None):
+            style += StyleConverter.convert_highlight(properties.highlight)
         return f' style="{style}"' if style else ""

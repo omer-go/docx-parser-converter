@@ -50,3 +50,17 @@ def test_run_properties_parser_extracts_caps_settings():
 
     assert properties.all_caps is True
     assert properties.small_caps is True
+
+
+def test_run_properties_parser_extracts_vertical_align():
+    xml = """
+    <w:rPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:vertAlign w:val="superscript" />
+    </w:rPr>
+    """
+    element = ET.fromstring(xml)
+
+    parser = RunPropertiesParser()
+    properties = parser.parse(element)
+
+    assert properties.vertical_align == "superscript"

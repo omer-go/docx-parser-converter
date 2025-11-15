@@ -40,7 +40,7 @@ class ParagraphPropertiesParser:
                     <w:suppressLineNumbers/>
                 </w:pPr>
         """
-        properties = ParagraphStyleProperties()
+        properties = ParagraphStyleProperties.model_validate({})
         
         if pPr_element is not None:
             properties.spacing = self.extract_spacing(pPr_element)
@@ -50,6 +50,7 @@ class ParagraphPropertiesParser:
             properties.suppress_auto_hyphens = self.extract_suppress_auto_hyphens(pPr_element)
             properties.bidi = self.extract_bidi(pPr_element)
             properties.justification = self.extract_justification(pPr_element)
+            properties.highlight = self.extract_highlight(pPr_element)
             properties.keep_next = self.extract_keep_next(pPr_element)
             properties.suppress_line_numbers = self.extract_suppress_line_numbers(pPr_element)
 
@@ -74,7 +75,7 @@ class ParagraphPropertiesParser:
         """
         spacing_element = extract_element(pPr_element, "w:spacing")
         if spacing_element is not None:
-            spacing_properties = SpacingProperties()
+            spacing_properties = SpacingProperties.model_validate({})
             before = extract_attribute(spacing_element, 'before')
             after = extract_attribute(spacing_element, 'after')
             line = extract_attribute(spacing_element, 'line')
@@ -301,3 +302,27 @@ class ParagraphPropertiesParser:
         """
         suppress_line_numbers_element = extract_element(pPr_element, "w:suppressLineNumbers")
         return extract_boolean_attribute(suppress_line_numbers_element)
+
+    def extract_highlight(self, pPr_element: ET.Element) -> Optional[str]:
+        """
+        Extracts paragraph highlight/shading color from the properties element.
+
+        Prefers an explicit <w:highlight w:val="..."> if present, otherwise falls back
+        to the fill color defined on <w:shd>.
+        """
+        highlight_element = extract_element(pPr_element, "w:highlight")
+        if highlight_element is not None:
+            highlight = extract_attribute(highlight_element, "val")
+            if highlight:
+                return highlight
+
+        shading_element = extract_element(pPr_element, "w:shd")
+        if shading_element is not None:
+            fill = extract_attribute(shading_element, "fill")
+            if fill and fill.lower() != "auto":
+                return fill
+            color = extract_attribute(shading_element, "color")
+            if color and color.lower() != "auto":
+                return color
+
+        return None
