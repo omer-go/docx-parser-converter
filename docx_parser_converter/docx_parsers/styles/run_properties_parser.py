@@ -48,7 +48,7 @@ class RunPropertiesParser:
                     <w:smallCaps/>
                 </w:rPr>
         """
-        properties = RunStyleProperties()
+        properties = RunStyleProperties.model_validate({})
 
         if rPr_element is not None:
             properties.font = self.extract_fonts(rPr_element)
@@ -57,6 +57,7 @@ class RunPropertiesParser:
             properties.bold = self.extract_bold(rPr_element)
             properties.italic = self.extract_italic(rPr_element)
             properties.underline = self.extract_underline(rPr_element)
+            properties.underline_color = self.extract_underline_color(rPr_element)
             properties.strikethrough = self.extract_strikethrough(rPr_element)
             properties.hidden = self.extract_hidden(rPr_element)
             properties.lang = self.extract_language_settings(rPr_element)
@@ -92,7 +93,7 @@ class RunPropertiesParser:
         """
         font_element = extract_element(rPr_element, "w:rFonts")
         if font_element is not None:
-            font_properties = FontProperties()
+            font_properties = FontProperties.model_validate({})
             font_properties.ascii = extract_attribute(font_element, 'ascii')
             font_properties.hAnsi = extract_attribute(font_element, 'hAnsi')
             font_properties.eastAsia = extract_attribute(font_element, 'eastAsia')
@@ -208,6 +209,15 @@ class RunPropertiesParser:
             return extract_attribute(underline_element, 'val')
         return None
 
+    def extract_underline_color(self, rPr_element: ET.Element) -> Optional[str]:
+        """Extracts underline color from the underline element if present."""
+        underline_element = extract_element(rPr_element, "w:u")
+        if underline_element is not None:
+            color = extract_attribute(underline_element, 'color')
+            if color:
+                return color
+        return None
+
     def extract_strikethrough(self, rPr_element: ET.Element) -> Optional[bool]:
         """
         Extracts strikethrough property from the given run properties element.
@@ -267,7 +277,7 @@ class RunPropertiesParser:
         """
         lang_element = extract_element(rPr_element, "w:lang")
         if lang_element is not None:
-            lang_properties = LanguageProperties()
+            lang_properties = LanguageProperties.model_validate({})
             lang_properties.val = extract_attribute(lang_element, 'val')
             lang_properties.eastAsia = extract_attribute(lang_element, 'eastAsia')
             lang_properties.bidi = extract_attribute(lang_element, 'bidi')

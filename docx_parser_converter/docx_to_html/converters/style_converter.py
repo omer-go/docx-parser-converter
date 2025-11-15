@@ -1,6 +1,41 @@
 from docx_parser_converter.docx_parsers.models.styles_models import FontProperties, SpacingProperties, IndentationProperties
 from docx_parser_converter.docx_parsers.models.document_models import DocMargins
 
+HEAVY_UNDERLINE_THICKNESS = "0.15em"
+
+UNDERLINE_CSS_MAP = {
+    "single": {"line": "underline", "style": "solid"},
+    "words": {"line": "underline", "style": "solid"},
+    "double": {"line": "underline", "style": "double"},
+    "thick": {"line": "underline", "style": "solid", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "dotted": {"line": "underline", "style": "dotted"},
+    "dottedheavy": {"line": "underline", "style": "dotted", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "dash": {"line": "underline", "style": "dashed"},
+    "dashedheavy": {"line": "underline", "style": "dashed", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "dashlong": {"line": "underline", "style": "dashed"},
+    "dashlongheavy": {"line": "underline", "style": "dashed", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "dotdash": {"line": "underline", "style": "dashed"},
+    "dashdotheavy": {"line": "underline", "style": "dashed", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "dashdotdotheavy": {"line": "underline", "style": "dashed", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "wave": {"line": "underline", "style": "wavy"},
+    # "wavy": {"line": "underline", "style": "wavy"},
+    "wavyheavy": {"line": "underline", "style": "wavy", "thickness": HEAVY_UNDERLINE_THICKNESS},
+    "none": {"line": "none"},
+}
+
+# Aliases & fallbacks specified by the ST_Underline mapping rules
+for alias, target in {
+    "dotdotdash": "dotdash",
+    "dashdot": "dotdash",
+    "dashdotdot": "dotdotdash",
+    "dotdashheavy": "dashdotheavy",
+    "dashheavy": "dashedheavy",
+    "thickdash": "dashedheavy",
+    "wavy": "wave",
+    "wavydouble": "wave",
+}.items():
+    UNDERLINE_CSS_MAP[alias] = UNDERLINE_CSS_MAP[target]
+
 class StyleConverter:
     """
     A converter class for converting DOCX style properties to CSS style attributes.
@@ -49,41 +84,47 @@ class StyleConverter:
     @staticmethod
     def convert_underline(underline: str) -> str:
         """
-        Converts underline property to CSS style.
+        Converts underline property to CSS style, mapping ST_Underline values to CSS equivalents.
 
         Args:
             underline (str): The underline property.
 
         Returns:
             str: The CSS style string for underline.
-
-        Example:
-            The output style might look like:
-
-            .. code-block:: css
-
-                text-decoration:underline;
-                text-decoration:line-through;
-                text-decoration:none;
         """
-        underline_mapping = {
-            "single": "text-decoration:underline;",
-            "double": "text-decoration:underline double;",
-            "words": "text-decoration:underline words;",
-            "dotted": "text-decoration:underline dotted;",
-            "dashed": "text-decoration:underline dashed;",
-            "dot-dash": "text-decoration:underline dot-dash;",
-            "dot-dot-dash": "text-decoration:underline dot-dot-dash;",
-            "wavy": "text-decoration:underline wavy;",
-            "none": "text-decoration:none;"
-        }
+        normalized = StyleConverter._normalize_underline_value(underline)
+        if not normalized:
+            return ""
+        mapping = UNDERLINE_CSS_MAP.get(normalized)
+        if not mapping:
+            return ""
 
-        return underline_mapping.get(underline, "")
+        if mapping.get("line") == "none":
+            return "text-decoration-line:none;"
+
+        styles = [f"text-decoration-line:{mapping.get('line', 'underline')};"]
+
+        decoration_style = mapping.get("style")
+        if decoration_style:
+            styles.append(f"text-decoration-style:{decoration_style};")
+
+        thickness = mapping.get("thickness")
+        if thickness:
+            styles.append(f"text-decoration-thickness:{thickness};")
+
+        return "".join(styles)
+
+    @staticmethod
+    def _normalize_underline_value(value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            return ""
+        return "".join(ch for ch in cleaned.lower() if ch.isalpha())
 
     @staticmethod
     def convert_color(color: str) -> str:
         """
-        Converts color property to CSS style, ensuring hex codes include a '#'.
+        Converts color property to CSS style, ensuring hex codes include a '#' and mirroring underline color.
 
         Args:
             color (str): The color property.
@@ -99,7 +140,20 @@ class StyleConverter:
                 color:#FF0000;
         """
         formatted_color = StyleConverter._format_css_color(color)
-        return f"color:{formatted_color};" if formatted_color else ""
+        if not formatted_color:
+            return ""
+        return (
+            f"color:{formatted_color};"
+            f"text-decoration-color:{formatted_color};"
+        )
+
+    @staticmethod
+    def convert_underline_color(color: str) -> str:
+        """Converts an explicit underline color to CSS style."""
+        formatted_color = StyleConverter._format_css_color(color)
+        if not formatted_color:
+            return ""
+        return f"text-decoration-color:{formatted_color};"
 
     @staticmethod
     def _format_css_color(color: str) -> str:

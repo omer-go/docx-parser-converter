@@ -1,3 +1,5 @@
+from typing import Optional
+
 from docx_parser_converter.docx_parsers.models.paragraph_models import Run, Paragraph, TextContent, TabContent
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
@@ -63,7 +65,7 @@ class RunConverter:
         return 36.0
 
     @staticmethod
-    def convert_run_properties(properties: RunStyleProperties) -> str:
+    def convert_run_properties(properties: Optional[RunStyleProperties]) -> str:
         """
         Converts run properties to an HTML style attribute.
 
@@ -80,6 +82,9 @@ class RunConverter:
 
                 ' style="font-weight:bold;font-style:italic;color:#FF0000;font-family:Arial;font-size:12pt;"'
         """
+        if not properties:
+            return ""
+
         style = ""
         if properties.bold:
             style += StyleConverter.convert_bold(properties.bold)
@@ -89,6 +94,8 @@ class RunConverter:
             style += StyleConverter.convert_underline(properties.underline)
         if properties.color:
             style += StyleConverter.convert_color(properties.color)
+        if properties.underline_color:
+            style += StyleConverter.convert_underline_color(properties.underline_color)
         if properties.font:
             style += StyleConverter.convert_font(properties.font)
         if properties.size_pt:

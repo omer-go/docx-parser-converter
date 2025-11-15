@@ -17,7 +17,9 @@ if not DOCX_INPUT_DIR.exists():
         f"DOCX fixtures directory not found: {DOCX_INPUT_DIR}", allow_module_level=True
     )
 
-DOCX_FILES = sorted(DOCX_INPUT_DIR.glob("*.docx"))
+DOCX_FILES = sorted(
+    path for path in DOCX_INPUT_DIR.glob("*.docx") if not path.name.startswith("~$")
+)
 if not DOCX_FILES:
     pytest.skip(
         f"No DOCX files found in {DOCX_INPUT_DIR}", allow_module_level=True
