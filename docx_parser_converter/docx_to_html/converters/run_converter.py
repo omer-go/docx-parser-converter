@@ -107,10 +107,11 @@ class RunConverter:
             style += StyleConverter.convert_font(properties.font)
         if properties.size_pt:
             style += StyleConverter.convert_size(properties.size_pt)
-        if properties.vertical_align:
-            style += StyleConverter.convert_vertical_align(properties.vertical_align)
-        elif properties.text_position_pt:
-            style += StyleConverter.convert_text_position(properties.text_position_pt)
+        if properties.vertical_align or properties.text_position_pt is not None:
+            style += StyleConverter.convert_vertical_align(
+                properties.vertical_align,
+                properties.text_position_pt,
+            )
         if properties.all_caps:
             style += StyleConverter.convert_all_caps(properties.all_caps)
         elif properties.small_caps:

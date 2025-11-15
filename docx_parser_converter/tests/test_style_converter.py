@@ -151,6 +151,27 @@ def test_convert_vertical_align_subscript():
     )
 
 
+def test_convert_vertical_align_prefers_css_over_text_position():
+    assert (
+        StyleConverter.convert_vertical_align("superscript", 2.0)
+        == "vertical-align:super;font-size:smaller;"
+    )
+
+
+def test_convert_vertical_align_falls_back_to_text_position():
+    assert (
+        StyleConverter.convert_vertical_align("baseline", 2.0)
+        == "position:relative;top:-2pt;"
+    )
+
+
+def test_convert_vertical_align_uses_text_position_when_no_align():
+    assert (
+        StyleConverter.convert_vertical_align(None, -1.5)
+        == "position:relative;top:1.5pt;"
+    )
+
+
 def test_convert_text_position_positive_shifts_up():
     assert (
         StyleConverter.convert_text_position(2.0)

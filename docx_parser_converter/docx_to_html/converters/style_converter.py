@@ -214,18 +214,29 @@ class StyleConverter:
         return "font-variant:small-caps;" if small_caps else ""
 
     @staticmethod
-    def convert_vertical_align(vertical_align: str) -> str:
+    def convert_vertical_align(
+        vertical_align: Optional[str], text_position_pt: Optional[float] = None
+    ) -> str:
         """
         Converts DOCX vertical alignment values (superscript/subscript) to CSS.
+        Falls back to the legacy text-position baseline shift when no vertical-align CSS is produced.
         """
-        if not vertical_align:
-            return ""
-        normalized = vertical_align.lower()
-        mapping = {
-            "superscript": "vertical-align:super;font-size:smaller;",
-            "subscript": "vertical-align:sub;font-size:smaller;",
-        }
-        return mapping.get(normalized, "")
+        vertical_align_style = ""
+        if vertical_align:
+            normalized = vertical_align.lower()
+            mapping = {
+                "superscript": "vertical-align:super;font-size:smaller;",
+                "subscript": "vertical-align:sub;font-size:smaller;",
+            }
+            vertical_align_style = mapping.get(normalized, "")
+
+        if vertical_align_style:
+            return vertical_align_style
+
+        if text_position_pt is not None:
+            return StyleConverter.convert_text_position(text_position_pt)
+
+        return ""
 
     @staticmethod
     def convert_text_position(offset_pt: float) -> str:
