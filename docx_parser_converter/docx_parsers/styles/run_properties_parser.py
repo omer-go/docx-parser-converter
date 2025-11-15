@@ -59,6 +59,7 @@ class RunPropertiesParser:
             properties.underline = self.extract_underline(rPr_element)
             properties.underline_color = self.extract_underline_color(rPr_element)
             properties.strikethrough = self.extract_strikethrough(rPr_element)
+            properties.double_strikethrough = self.extract_double_strikethrough(rPr_element)
             properties.hidden = self.extract_hidden(rPr_element)
             properties.lang = self.extract_language_settings(rPr_element)
             properties.highlight = self.extract_highlight(rPr_element)
@@ -237,6 +238,26 @@ class RunPropertiesParser:
         """
         strikethrough_element = extract_element(rPr_element, "w:strike")
         return extract_boolean_attribute(strikethrough_element)
+
+    def extract_double_strikethrough(self, rPr_element: ET.Element) -> Optional[bool]:
+        """
+        Extracts double strikethrough property from the given run properties element.
+
+        Args:
+            rPr_element (ET.Element): The run properties element.
+
+        Returns:
+            Optional[bool]: The extracted double strikethrough property.
+
+        Example:
+            The following is an example of a double strikethrough setting in a run properties element:
+
+            .. code-block:: xml
+
+                <w:dstrike/>
+        """
+        double_strike_element = extract_element(rPr_element, "w:dstrike")
+        return extract_boolean_attribute(double_strike_element)
 
     def extract_hidden(self, rPr_element: ET.Element) -> Optional[bool]:
         """

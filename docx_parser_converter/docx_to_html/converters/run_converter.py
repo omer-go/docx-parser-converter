@@ -90,8 +90,13 @@ class RunConverter:
             style += StyleConverter.convert_bold(properties.bold)
         if properties.italic:
             style += StyleConverter.convert_italic(properties.italic)
-        if properties.underline:
-            style += StyleConverter.convert_underline(properties.underline)
+        decoration = StyleConverter.convert_underline(
+            properties.underline,
+            bool(properties.strikethrough),
+            bool(properties.double_strikethrough),
+        )
+        if decoration:
+            style += decoration
         if properties.color:
             style += StyleConverter.convert_color(properties.color)
         if properties.underline_color:
@@ -100,4 +105,8 @@ class RunConverter:
             style += StyleConverter.convert_font(properties.font)
         if properties.size_pt:
             style += StyleConverter.convert_size(properties.size_pt)
+        if properties.all_caps:
+            style += StyleConverter.convert_all_caps(properties.all_caps)
+        elif properties.small_caps:
+            style += StyleConverter.convert_small_caps(properties.small_caps)
         return f' style="{style}"' if style else ""

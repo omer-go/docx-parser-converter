@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from docx_parser_converter.docx_parsers.models.styles_models import FontProperties, SpacingProperties, IndentationProperties
 from docx_parser_converter.docx_parsers.models.document_models import DocMargins
 
@@ -82,36 +84,62 @@ class StyleConverter:
         return "font-style:italic;" if italic else ""
 
     @staticmethod
-    def convert_underline(underline: str) -> str:
+    def convert_underline(
+        underline: Optional[str],
+        strikethrough: bool = False,
+        double_strikethrough: bool = False,
+    ) -> str:
         """
-        Converts underline property to CSS style, mapping ST_Underline values to CSS equivalents.
+        Converts underline and strikethrough properties to CSS style, mapping ST_Underline values to CSS equivalents and optionally combining strikethrough settings.
 
         Args:
-            underline (str): The underline property.
+            underline (Optional[str]): The underline property.
+            strikethrough (bool): Whether strikethrough should be applied.
+            double_strikethrough (bool): Whether double strikethrough should be applied.
 
         Returns:
-            str: The CSS style string for underline.
+            str: The CSS style string for text decoration.
         """
-        normalized = StyleConverter._normalize_underline_value(underline)
-        if not normalized:
+        normalized = (
+            StyleConverter._normalize_underline_value(underline) if underline else ""
+        )
+        mapping = UNDERLINE_CSS_MAP.get(normalized) if normalized else None
+
+        lines: List[str] = []
+        decoration_style: Optional[str] = None
+        thickness: Optional[str] = None
+
+        if mapping:
+            line_type = mapping.get("line")
+            if line_type == "none" and not (strikethrough or double_strikethrough):
+                return "text-decoration-line:none;"
+            if line_type and line_type != "none":
+                lines.append(line_type)
+            decoration_style = mapping.get("style")
+            thickness = mapping.get("thickness")
+        elif normalized and not (strikethrough or double_strikethrough):
+            # Unknown underline without strikethrough
             return ""
-        mapping = UNDERLINE_CSS_MAP.get(normalized)
-        if not mapping:
+
+        if strikethrough or double_strikethrough:
+            lines.append("line-through")
+            if double_strikethrough:
+                decoration_style = "double"
+                thickness = None
+
+        if not lines:
             return ""
 
-        if mapping.get("line") == "none":
-            return "text-decoration-line:none;"
+        unique_lines = []
+        for value in lines:
+            if value not in unique_lines:
+                unique_lines.append(value)
 
-        styles = [f"text-decoration-line:{mapping.get('line', 'underline')};"]
-
-        decoration_style = mapping.get("style")
+        styles = [f"text-decoration-line:{' '.join(unique_lines)};"]
         if decoration_style:
             styles.append(f"text-decoration-style:{decoration_style};")
-
-        thickness = mapping.get("thickness")
         if thickness:
             styles.append(f"text-decoration-thickness:{thickness};")
-
         return "".join(styles)
 
     @staticmethod
@@ -154,6 +182,20 @@ class StyleConverter:
         if not formatted_color:
             return ""
         return f"text-decoration-color:{formatted_color};"
+
+    @staticmethod
+    def convert_all_caps(all_caps: bool) -> str:
+        """
+        Converts the all caps property to CSS style.
+        """
+        return "text-transform:uppercase;" if all_caps else ""
+
+    @staticmethod
+    def convert_small_caps(small_caps: bool) -> str:
+        """
+        Converts the small caps property to CSS style.
+        """
+        return "font-variant:small-caps;" if small_caps else ""
 
     @staticmethod
     def _format_css_color(color: str) -> str:

@@ -127,6 +127,7 @@ class RunStyleProperties(BaseModel):
     underline: Optional[str] = Field(None, description="The underline setting.")
     underline_color: Optional[str] = Field(None, description="The explicit underline color.")
     strikethrough: Optional[bool] = Field(None, description="The strikethrough setting.")
+    double_strikethrough: Optional[bool] = Field(None, description="The double strikethrough setting.")
     hidden: Optional[bool] = Field(None, description="The hidden setting.")
     lang: Optional[LanguageProperties] = Field(None, description="The language properties.")
     highlight: Optional[str] = Field(None, description="The highlight color.")

@@ -95,3 +95,32 @@ def test_convert_underline_none():
 
 def test_convert_underline_unknown_returns_empty():
     assert StyleConverter.convert_underline("mystery") == ""
+
+
+def test_convert_underline_with_strikethrough_combines_lines():
+    assert (
+        StyleConverter.convert_underline("single", strikethrough=True)
+        == "text-decoration-line:underline line-through;text-decoration-style:solid;"
+    )
+
+
+def test_convert_underline_with_only_strikethrough():
+    assert (
+        StyleConverter.convert_underline(None, strikethrough=True)
+        == "text-decoration-line:line-through;"
+    )
+
+
+def test_convert_underline_with_double_strikethrough():
+    assert (
+        StyleConverter.convert_underline(None, double_strikethrough=True)
+        == "text-decoration-line:line-through;text-decoration-style:double;"
+    )
+
+
+def test_convert_all_caps():
+    assert StyleConverter.convert_all_caps(True) == "text-transform:uppercase;"
+
+
+def test_convert_small_caps():
+    assert StyleConverter.convert_small_caps(True) == "font-variant:small-caps;"
