@@ -233,13 +233,13 @@ class ParagraphPropertiesParser:
 
     def extract_justification(self, pPr_element: ET.Element) -> Optional[str]:
         """
-        Extracts and maps the justification value from the given element.
+        Extracts the justification value from the given element.
 
         Args:
             pPr_element (ET.Element): The element containing the justification.
 
         Returns:
-            Optional[str]: The mapped justification value ('left', 'right', 'justify') or None if not found.
+            Optional[str]: The raw DOCX justification value (e.g., 'left', 'start', 'both') or None.
 
         Example:
             The following is an example of a justification setting in a paragraph properties element:
@@ -250,17 +250,7 @@ class ParagraphPropertiesParser:
         """
         justification_element = extract_element(pPr_element, "w:jc")
         if justification_element is not None:
-            justification_val = extract_attribute(justification_element, 'val')
-            if justification_val is not None:
-                mapping = {
-                    "left": "left",
-                    "start": "left",
-                    "right": "right",
-                    "end": "right",
-                    "center": "center",
-                    "both": "justify"
-                }
-                return mapping.get(justification_val, "left")  # Default to left if the value is unknown
+            return extract_attribute(justification_element, 'val')
         return None
 
     def extract_keep_next(self, pPr_element: ET.Element) -> Optional[bool]:

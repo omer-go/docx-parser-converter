@@ -1,4 +1,28 @@
+import pytest
+
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("left", "text-align:left;"),
+        ("start", "text-align:left;"),
+        ("right", "text-align:right;"),
+        ("end", "text-align:right;"),
+        ("center", "text-align:center;"),
+        ("both", "text-align:justify;"),
+        ("justify", "text-align:justify;"),
+        ("distribute", "text-align:justify;"),
+    ],
+)
+def test_convert_justification_normalizes_values(value, expected):
+    assert StyleConverter.convert_justification(value) == expected
+
+
+def test_convert_justification_handles_empty_and_unknown_values():
+    assert StyleConverter.convert_justification("") == ""
+    assert StyleConverter.convert_justification("unknown") == "text-align:left;"
 
 
 def test_convert_color_adds_hash_for_hex():

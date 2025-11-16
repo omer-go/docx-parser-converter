@@ -31,3 +31,17 @@ def test_paragraph_properties_parser_prefers_shading_fill_color():
     properties = parser.parse(element)
 
     assert properties.highlight == "FFEEAA"
+
+
+def test_paragraph_properties_parser_keeps_raw_justification_value():
+    xml = """
+    <w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+        <w:jc w:val="both" />
+    </w:pPr>
+    """
+    element = ET.fromstring(xml)
+
+    parser = ParagraphPropertiesParser()
+    properties = parser.parse(element)
+
+    assert properties.justification == "both"

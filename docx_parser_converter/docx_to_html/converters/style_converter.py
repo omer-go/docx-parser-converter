@@ -402,14 +402,22 @@ class StyleConverter:
 
                 text-align:left;
         """
+        if not justification:
+            return ""
+
+        normalized_value = justification.lower()
         justification_map = {
             "left": "left",
-            "center": "center",
+            "start": "left",
             "right": "right",
+            "end": "right",
+            "center": "center",
             "both": "justify",
+            "justify": "justify",
             "distribute": "justify"
         }
-        return f"text-align:{justification_map.get(justification, 'left')};" if justification else ""
+        css_value = justification_map.get(normalized_value, "left")
+        return f"text-align:{css_value};"
 
     @staticmethod
     def convert_doc_margins(margins: DocMargins) -> str:

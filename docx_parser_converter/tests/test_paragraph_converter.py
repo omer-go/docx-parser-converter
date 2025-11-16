@@ -22,6 +22,17 @@ def _paragraph_with_highlight(highlight: str) -> Paragraph:
     return Paragraph(properties=properties, runs=[run], numbering=None)
 
 
+def _paragraph_with_justification(justification: str) -> Paragraph:
+    properties = ParagraphStyleProperties.model_validate(
+        {"justification": justification}
+    )
+    run = Run(
+        contents=[RunContent(run=TextContent(text="Aligned"))],
+        properties=RunStyleProperties.model_validate({}),
+    )
+    return Paragraph(properties=properties, runs=[run], numbering=None)
+
+
 def test_paragraph_converter_includes_highlight_style():
     paragraph = _paragraph_with_highlight("yellow")
 
@@ -29,3 +40,12 @@ def test_paragraph_converter_includes_highlight_style():
 
     assert 'style="background-color:yellow;' in html
     assert "Example" in html
+
+
+def test_paragraph_converter_emits_justification_style():
+    paragraph = _paragraph_with_justification("both")
+
+    html = ParagraphConverter.convert_paragraph(paragraph, numbering_schema=None)
+
+    assert 'text-align:justify;' in html
+    assert "Aligned" in html

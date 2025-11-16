@@ -1,5 +1,5 @@
-from lxml import etree
 from typing import List
+from lxml import etree  # type: ignore
 from docx_parser_converter.docx_parsers.helpers.common_helpers import extract_element, NAMESPACE_URI
 from docx_parser_converter.docx_parsers.models.paragraph_models import Run, RunContent, TextContent, TabContent
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
@@ -38,7 +38,11 @@ class RunParser:
                 </w:r>
         """
         rPr = extract_element(r, ".//w:rPr")
-        run_properties = RunPropertiesParser().parse(rPr) if rPr else RunStyleProperties()
+        run_properties = (
+            RunPropertiesParser().parse(rPr)
+            if rPr is not None
+            else RunStyleProperties.model_validate({})
+        )
         contents = self.extract_run_contents(r)
         return Run(contents=contents, properties=run_properties)
 
@@ -62,10 +66,12 @@ class RunParser:
                     <w:t>Example text</w:t>
                 </w:r>
         """
-        contents = []
+        contents: List[RunContent] = []
         for elem in r:
             if elem.tag == f"{{{NAMESPACE_URI}}}tab":
-                contents.append(RunContent(run=TabContent()))
+                tab_content = TabContent.model_validate({})
+                contents.append(RunContent(run=tab_content))
             elif elem.tag == f"{{{NAMESPACE_URI}}}t":
-                contents.append(RunContent(run=TextContent(text=elem.text)))
+                text_value = elem.text or ""
+                contents.append(RunContent(run=TextContent(text=text_value)))
         return contents

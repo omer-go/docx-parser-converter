@@ -1,5 +1,10 @@
 from docx_parser_converter.docx_parsers.models.document_models import DocumentSchema
-from docx_parser_converter.docx_parsers.models.styles_models import StylesSchema
+from docx_parser_converter.docx_parsers.models.styles_models import (
+    StylesSchema,
+    StyleDefaults,
+    ParagraphStyleProperties,
+    RunStyleProperties,
+)
 from docx_parser_converter.docx_parsers.models.numbering_models import NumberingSchema
 from docx_parser_converter.docx_parsers.styles.styles_parser import StylesParser
 from docx_parser_converter.docx_parsers.document.document_parser import DocumentParser
@@ -74,8 +79,15 @@ class DocxProcessor:
         Returns:
             StylesSchema: The default styles schema.
         """
-        # Implementation for default styles schema
-        pass
+        style_defaults = StyleDefaults.model_validate({})
+        return StylesSchema.model_validate(
+            {
+                "styles": [],
+                "style_type_defaults": style_defaults.model_dump(),
+                "doc_defaults_rpr": RunStyleProperties.model_validate({}).model_dump(),
+                "doc_defaults_ppr": ParagraphStyleProperties.model_validate({}).model_dump(),
+            }
+        )
 
     @staticmethod
     def get_default_numbering_schema() -> NumberingSchema:
@@ -85,8 +97,7 @@ class DocxProcessor:
         Returns:
             NumberingSchema: The default numbering schema.
         """
-        # Implementation for default numbering schema
-        pass
+        return NumberingSchema.model_validate({"instances": []})
 
 if __name__ == "__main__":
     # Input and output paths

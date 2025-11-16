@@ -1,6 +1,20 @@
-from lxml import etree, html
-from docx_parser_converter.docx_parsers.models.table_models import Table
-from docx_parser_converter.docx_to_html.converters.paragraph_converter import ParagraphConverter
+from typing import List, Optional, Sequence, cast
+from lxml import etree, html  # type: ignore
+from docx_parser_converter.docx_parsers.models.table_models import (
+    MarginProperties,
+    Table,
+    TableCell,
+    TableCellProperties,
+    TableProperties,
+    TableRow,
+    TableRowProperties,
+)
+from docx_parser_converter.docx_to_html.converters.paragraph_converter import (
+    ParagraphConverter,
+)
+from docx_parser_converter.docx_to_html.converters.style_converter import (
+    StyleConverter,
+)
 
 class TableConverter:
     """
@@ -37,19 +51,23 @@ class TableConverter:
                 </table>
         """
         table_html = etree.Element("table")
-        table_properties_html = TableConverter.convert_table_properties(table.properties)
+        properties = table.properties or TableProperties.model_validate({})
+        table_properties_html = TableConverter.convert_table_properties(properties)
         table_html.set("style", table_properties_html)
-        
-        table_grid_html = TableConverter.convert_grid(table.grid.columns)
-        table_html.append(html.fragment_fromstring(table_grid_html))
-        
-        rows_html = TableConverter.convert_rows(table.rows, table.properties.tblCellMar)
+
+        if table.grid and table.grid.columns:
+            table_grid_html = TableConverter.convert_grid(table.grid.columns)
+            table_html.append(html.fragment_fromstring(table_grid_html))
+
+        rows_html = TableConverter.convert_rows(table.rows, properties.tblCellMar)
         table_html.append(rows_html)
-        
-        return html.tostring(table_html, pretty_print=True, encoding="unicode")
+
+        return cast(
+            str, html.tostring(table_html, pretty_print=True, encoding="unicode")
+        )
 
     @staticmethod
-    def convert_table_properties(properties) -> str:
+    def convert_table_properties(properties: Optional[TableProperties]) -> str:
         """
         Converts table properties to an HTML style attribute.
 
@@ -66,21 +84,29 @@ class TableConverter:
 
                 'border-collapse: collapse; width:500pt; text-align:center; margin-left:20pt; padding: 5pt 5pt 5pt 5pt;'
         """
+        props = properties or TableProperties.model_validate({})
         styles = ["border-collapse: collapse;"]  # Ensure borders collapse
-        if properties.tblW:
-            styles.append(f"width:{properties.tblW.width}pt;")
-        if properties.justification:
-            styles.append(f"text-align:{properties.justification};")
-        if properties.tblInd:
-            styles.append(f"margin-left:{properties.tblInd.width}pt;")
-        if properties.tblCellMar:
-            styles.append(f"padding: {properties.tblCellMar.top}pt {properties.tblCellMar.right}pt {properties.tblCellMar.bottom}pt {properties.tblCellMar.left}pt;")
-        if properties.tblLayout:
-            styles.append(f"table-layout:{properties.tblLayout};")
+        if props.tblW and props.tblW.width is not None:
+            styles.append(f"width:{props.tblW.width}pt;")
+        if props.justification:
+            justification_style = StyleConverter.convert_justification(
+                props.justification
+            )
+            if justification_style:
+                styles.append(justification_style)
+        if props.tblInd and props.tblInd.width is not None:
+            styles.append(f"margin-left:{props.tblInd.width}pt;")
+        if props.tblCellMar:
+            styles.append(
+                f"padding: {props.tblCellMar.top}pt {props.tblCellMar.right}pt "
+                f"{props.tblCellMar.bottom}pt {props.tblCellMar.left}pt;"
+            )
+        if props.tblLayout:
+            styles.append(f"table-layout:{props.tblLayout};")
         return " ".join(styles)
 
     @staticmethod
-    def convert_grid(columns) -> str:
+    def convert_grid(columns: Sequence[float]) -> str:
         """
         Converts table grid columns to HTML.
 
@@ -102,11 +128,15 @@ class TableConverter:
         """
         colgroup = etree.Element("colgroup")
         for width in columns:
-            col = etree.SubElement(colgroup, "col", style=f"width:{width}pt;")
-        return html.tostring(colgroup, pretty_print=True, encoding="unicode")
+            etree.SubElement(colgroup, "col", style=f"width:{width}pt;")
+        return cast(
+            str, html.tostring(colgroup, pretty_print=True, encoding="unicode")
+        )
 
     @staticmethod
-    def convert_rows(rows, tblCellMar) -> etree.Element:
+    def convert_rows(
+        rows: Sequence[TableRow], tblCellMar: Optional[MarginProperties]
+    ) -> etree.Element:
         """
         Converts table rows to HTML.
 
@@ -136,7 +166,7 @@ class TableConverter:
         return tbody
 
     @staticmethod
-    def convert_row(row, tblCellMar) -> etree.Element:
+    def convert_row(row: TableRow, tblCellMar: Optional[MarginProperties]) -> etree.Element:
         """
         Converts a table row to HTML.
 
@@ -159,8 +189,9 @@ class TableConverter:
         """
         tr = etree.Element("tr")
         row_properties_html = TableConverter.convert_row_properties(row.properties)
-        tr.set("style", row_properties_html)
-        
+        if row_properties_html:
+            tr.set("style", row_properties_html)
+
         cells_html = TableConverter.convert_cells(row.cells, tblCellMar)
         for cell_html in cells_html:
             tr.append(cell_html)
@@ -168,7 +199,9 @@ class TableConverter:
         return tr
 
     @staticmethod
-    def convert_row_properties(properties) -> str:
+    def convert_row_properties(
+        properties: Optional[TableRowProperties],
+    ) -> str:
         """
         Converts row properties to an HTML style attribute.
 
@@ -185,16 +218,24 @@ class TableConverter:
 
                 'height:20pt; font-weight:bold;'
         """
-        styles = []
-        if properties.trHeight:
-            tr_height = float(properties.trHeight) if isinstance(properties.trHeight, str) else properties.trHeight
-            styles.append(f"height:{tr_height}pt;")
-        if properties.tblHeader:
+        row_props = properties or TableRowProperties.model_validate({})
+        styles: List[str] = []
+        if row_props.trHeight:
+            tr_height = (
+                float(row_props.trHeight)
+                if isinstance(row_props.trHeight, str)
+                else row_props.trHeight
+            )
+            if tr_height is not None:
+                styles.append(f"height:{tr_height}pt;")
+        if row_props.tblHeader:
             styles.append("font-weight:bold;")
         return " ".join(styles)
 
     @staticmethod
-    def convert_cells(cells, tblCellMar) -> list:
+    def convert_cells(
+        cells: Sequence[TableCell], tblCellMar: Optional[MarginProperties]
+    ) -> list:
         """
         Converts table cells to HTML.
 
@@ -278,33 +319,57 @@ class TableConverter:
 
                 'width:250pt; border-top:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; border-right:1pt solid #000000; background-color:#FFFFFF; padding:5pt 5pt 5pt 5pt; vertical-align:top;'
         """
+        cell_properties = properties or TableCellProperties.model_validate({})
         styles = [
             "word-wrap: break-word;",       # Allow words to be broken at arbitrary points
             "word-break: break-all;",       # Ensure long words break and wrap into next line
             "overflow-wrap: break-word;",   # Handle long words in tables
             "overflow: hidden;"             # Hide overflow content
         ]
-        if properties.tcW:
-            styles.append(f"width:{properties.tcW.width}pt;")
-        if properties.tcBorders:
-            if properties.tcBorders.top:
-                styles.append(f"border-top:{properties.tcBorders.top.size / 8}pt {TableConverter.map_border_style(properties.tcBorders.top.val)} #{properties.tcBorders.top.color};")
-            if properties.tcBorders.left:
-                styles.append(f"border-left:{properties.tcBorders.left.size / 8}pt {TableConverter.map_border_style(properties.tcBorders.left.val)} #{properties.tcBorders.left.color};")
-            if properties.tcBorders.bottom:
-                styles.append(f"border-bottom:{properties.tcBorders.bottom.size / 8}pt {TableConverter.map_border_style(properties.tcBorders.bottom.val)} #{properties.tcBorders.bottom.color};")
-            if properties.tcBorders.right:
-                styles.append(f"border-right:{properties.tcBorders.right.size / 8}pt {TableConverter.map_border_style(properties.tcBorders.right.val)} #{properties.tcBorders.right.color};")
-        if properties.shd:
-            styles.append(f"background-color:#{properties.shd.fill};")
+        if cell_properties.tcW and cell_properties.tcW.width is not None:
+            styles.append(f"width:{cell_properties.tcW.width}pt;")
+        if cell_properties.tcBorders:
+            borders = cell_properties.tcBorders
+            if borders.top and borders.top.size is not None:
+                styles.append(
+                    f"border-top:{borders.top.size / 8}pt "
+                    f"{TableConverter.map_border_style(borders.top.val)} #{borders.top.color};"
+                )
+            if borders.left and borders.left.size is not None:
+                styles.append(
+                    f"border-left:{borders.left.size / 8}pt "
+                    f"{TableConverter.map_border_style(borders.left.val)} #{borders.left.color};"
+                )
+            if borders.bottom and borders.bottom.size is not None:
+                styles.append(
+                    f"border-bottom:{borders.bottom.size / 8}pt "
+                    f"{TableConverter.map_border_style(borders.bottom.val)} #{borders.bottom.color};"
+                )
+            if borders.right and borders.right.size is not None:
+                styles.append(
+                    f"border-right:{borders.right.size / 8}pt "
+                    f"{TableConverter.map_border_style(borders.right.val)} #{borders.right.color};"
+                )
+        if cell_properties.shd and cell_properties.shd.fill:
+            styles.append(f"background-color:#{cell_properties.shd.fill};")
         if tblCellMar:
-            styles.append(f"padding: {tblCellMar.top}pt {tblCellMar.right}pt {tblCellMar.bottom}pt {tblCellMar.left}pt;")
-        if hasattr(properties, 'verticalAlignment'):
-            styles.append(f"vertical-align:{TableConverter.map_vertical_alignment(properties.verticalAlignment)};")
+            styles.append(
+                f"padding: {tblCellMar.top}pt {tblCellMar.right}pt "
+                f"{tblCellMar.bottom}pt {tblCellMar.left}pt;"
+            )
+        alignment_value = getattr(cell_properties, "verticalAlignment", None)
+        if not alignment_value and cell_properties.vAlign:
+            alignment_value = cell_properties.vAlign
+        if alignment_value:
+            styles.append(
+                f"vertical-align:{TableConverter.map_vertical_alignment(alignment_value)};"
+            )
         else:
-            styles.append("vertical-align: top;")  # Default to top if not specified
-        if hasattr(properties, 'textAlignment'):
-            styles.append(f"text-align:{properties.textAlignment};")
+            styles.append("vertical-align:top;")
+
+        text_alignment = getattr(cell_properties, "textAlignment", None)
+        if text_alignment:
+            styles.append(f"text-align:{text_alignment};")
         return " ".join(styles)
 
     @staticmethod
