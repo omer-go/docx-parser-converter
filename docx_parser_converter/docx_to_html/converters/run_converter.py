@@ -1,6 +1,13 @@
 from typing import Optional
+from html import escape
 
-from docx_parser_converter.docx_parsers.models.paragraph_models import Run, Paragraph, TextContent, TabContent
+from docx_parser_converter.docx_parsers.models.paragraph_models import (
+    Run,
+    Paragraph,
+    TextContent,
+    TabContent,
+    BreakContent,
+)
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_to_html.converters.style_converter import StyleConverter
 
@@ -30,13 +37,19 @@ class RunConverter:
                 <span style="font-weight:bold;">This is bold text</span>
                 <span style="display:inline-block; width:36pt;"></span>
         """
-        run_html = f"<span{RunConverter.convert_run_properties(run.properties)}>"
+        style_attr = RunConverter.convert_run_properties(run.properties)
+        if RunConverter._run_requires_whitespace_preservation(run):
+            style_attr = RunConverter._append_style_attribute(style_attr, "white-space:pre-wrap;")
+
+        run_html = f"<span{style_attr}>"
         for content in run.contents:
             if isinstance(content.run, TabContent):
                 tab_width = RunConverter.get_next_tab_width(paragraph)
                 run_html += f'<span style="display:inline-block; width:{tab_width}pt;"></span>'
             elif isinstance(content.run, TextContent):
-                run_html += content.run.text
+                run_html += escape(content.run.text, quote=False)
+            elif isinstance(content.run, BreakContent):
+                run_html += "<br/>"
         run_html += "</span>"
         return run_html
 
@@ -117,3 +130,40 @@ class RunConverter:
         elif properties.small_caps:
             style += StyleConverter.convert_small_caps(properties.small_caps)
         return f' style="{style}"' if style else ""
+
+    @staticmethod
+    def _append_style_attribute(style_attr: str, addition: str) -> str:
+        """
+        Ensures the provided style string contains the additional declaration.
+        """
+        if style_attr:
+            return f'{style_attr[:-1]}{addition}"'
+        return f' style="{addition}"'
+
+    @staticmethod
+    def _run_requires_whitespace_preservation(run: Run) -> bool:
+        """
+        Determines if any text content inside the run requires preserving whitespace.
+        """
+        for content in run.contents:
+            if isinstance(content.run, TextContent):
+                if RunConverter._text_requires_whitespace_preservation(content.run.text):
+                    return True
+        return False
+
+    @staticmethod
+    def _text_requires_whitespace_preservation(text: str) -> bool:
+        """
+        Returns True if the text contains whitespace that should be preserved.
+        """
+        if not text:
+            return False
+
+        normalized = text.replace("\r\n", "\n")
+        if "\n" in normalized or "\r" in text or "\t" in text:
+            return True
+        if text.startswith(" ") or text.endswith(" ") or "  " in text:
+            return True
+        if "\n " in normalized or "\n\t" in normalized:
+            return True
+        return False

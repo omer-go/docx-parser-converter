@@ -49,6 +49,12 @@ class TabContent(BaseModel):
     """
     type: str = Field("tab", description="The type of content, default is 'tab'.")
 
+class BreakContent(BaseModel):
+    """
+    Represents a line or page break within a run.
+    """
+    break_type: str = Field("textWrapping", description="The type of break (e.g., textWrapping, page).")
+
 class RunContent(BaseModel):
     """
     Represents the content of a run, which can be either text or a tab.
@@ -63,7 +69,7 @@ class RunContent(BaseModel):
                 <w:tab/>
             </w:r>
     """
-    run: Union[TextContent, TabContent] = Field(..., description="The content of the run.")
+    run: Union[TextContent, TabContent, BreakContent] = Field(..., description="The content of the run.")
 
 class Run(BaseModel):
     """

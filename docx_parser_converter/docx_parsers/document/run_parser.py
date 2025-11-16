@@ -1,7 +1,13 @@
 from typing import List
 from lxml import etree  # type: ignore
 from docx_parser_converter.docx_parsers.helpers.common_helpers import extract_element, NAMESPACE_URI
-from docx_parser_converter.docx_parsers.models.paragraph_models import Run, RunContent, TextContent, TabContent
+from docx_parser_converter.docx_parsers.models.paragraph_models import (
+    Run,
+    RunContent,
+    TextContent,
+    TabContent,
+    BreakContent,
+)
 from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
 from docx_parser_converter.docx_parsers.styles.run_properties_parser import RunPropertiesParser
 
@@ -74,4 +80,8 @@ class RunParser:
             elif elem.tag == f"{{{NAMESPACE_URI}}}t":
                 text_value = elem.text or ""
                 contents.append(RunContent(run=TextContent(text=text_value)))
+            elif elem.tag in {f"{{{NAMESPACE_URI}}}br", f"{{{NAMESPACE_URI}}}cr"}:
+                break_type = elem.attrib.get(f"{{{NAMESPACE_URI}}}type", "textWrapping")
+                break_content = BreakContent(break_type=break_type)
+                contents.append(RunContent(run=break_content))
         return contents

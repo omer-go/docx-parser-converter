@@ -1,4 +1,11 @@
-from docx_parser_converter.docx_parsers.models.styles_models import RunStyleProperties
+from docx_parser_converter.docx_parsers.models.paragraph_models import (
+    Paragraph,
+    Run,
+    RunContent,
+    TextContent,
+    BreakContent,
+)
+from docx_parser_converter.docx_parsers.models.styles_models import ParagraphStyleProperties, RunStyleProperties
 from docx_parser_converter.docx_to_html.converters.run_converter import RunConverter
 
 
@@ -60,3 +67,60 @@ def test_run_converter_uses_small_caps_when_no_all_caps():
     style_attr = RunConverter.convert_run_properties(properties)
 
     assert 'font-variant:small-caps;' in style_attr
+
+
+def test_run_converter_escapes_xml_like_text_content():
+    run = Run(
+        contents=[RunContent(run=TextContent(text="<tag> & value"))],
+        properties=None,
+    )
+    paragraph = Paragraph(
+        properties=ParagraphStyleProperties.model_validate({}),
+        runs=[run],
+        numbering=None,
+    )
+
+    html = RunConverter.convert_run(run, paragraph)
+
+    assert "&lt;tag&gt;" in html
+    assert "&amp;" in html
+
+
+def test_run_converter_renders_line_breaks():
+    run = Run(
+        contents=[
+            RunContent(run=TextContent(text="Start")),
+            RunContent(run=BreakContent(break_type="textWrapping")),
+            RunContent(run=TextContent(text="End")),
+        ],
+        properties=None,
+    )
+    paragraph = Paragraph(
+        properties=ParagraphStyleProperties.model_validate({}),
+        runs=[run],
+        numbering=None,
+    )
+
+    html = RunConverter.convert_run(run, paragraph)
+
+    assert "<br/>" in html
+    assert "Start" in html and "End" in html
+
+
+def test_run_converter_preserves_multiline_whitespace():
+    run = Run(
+        contents=[
+            RunContent(run=TextContent(text="<root>\n  <child/>\n</root>")),
+        ],
+        properties=None,
+    )
+    paragraph = Paragraph(
+        properties=ParagraphStyleProperties.model_validate({}),
+        runs=[run],
+        numbering=None,
+    )
+
+    html = RunConverter.convert_run(run, paragraph)
+
+    assert "white-space:pre-wrap;" in html
+    assert "&lt;root&gt;\n  &lt;child/&gt;\n&lt;/root&gt;" in html
