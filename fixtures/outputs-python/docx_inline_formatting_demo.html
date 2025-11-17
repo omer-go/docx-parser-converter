@@ -1,0 +1,358 @@
+<html><body><div style="padding-top:72.0pt; padding-right:72.0pt; padding-bottom:72.0pt; padding-left:72.0pt; padding-top:36.0pt; padding-bottom:36.0pt;">
+<p><span style="font-weight:bold;font-size:20.0pt;">DOCX Inline Formatting Demo</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">This document demonstrates inline run properties (w:rPr) applied directly in document.xml without using styles.xml. Each section shows the style name, a styled sample, the corresponding run XML, and a note about CSS equivalence or approximation.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bold</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:b/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: font-weight: bold;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Italic</span></p>
+<p></p>
+<p><span style="font-style:italic;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:i/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: font-style: italic;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bold + Italic</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-style:italic;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:b/&gt;&lt;w:i/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: font-weight: bold; font-style: italic;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline single</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:solid;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="single"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: solid;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline words</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:solid;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="words"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; (CSS underlines spaces as well).</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline double</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:double;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="double"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: double;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dotted</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dotted;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dotted"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: dotted;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline thick</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:solid;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="thick"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dottedHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dotted;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dottedHeavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-style: dotted; text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dash</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dash"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: dashed;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dashedHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dash</span><span style="font-size:10.5pt;">ed</span><span style="font-size:10.5pt;">Heavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-style: dashed; text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dashLong</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dashLong"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dashLongHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dashLongHeavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed; text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dotDash</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dotDash"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dashDotHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="</span><span style="font-size:10.5pt;">dashDot</span><span style="font-size:10.5pt;">Heavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;</span><span style="font-size:10.5pt;white-space:pre-wrap;"> </span><span style="font-size:10.5pt;">text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dotDotDash</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="dotDotDash"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline dashDotDotHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:dashed;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="</span><span style="font-size:10.5pt;">dashD</span><span style="font-size:10.5pt;">otDotHeavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline wave</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:wavy;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="wave"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: wavy;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline wavyHeavy</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:wavy;text-decoration-thickness:0.15em;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="wavyHeavy"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: wavy; text-decoration-thickness: 0.2em;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline wavyDouble</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:wavy;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="wavyDouble"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: wavy;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Underline none</span></p>
+<p></p>
+<p><span style="text-decoration-line:none;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:u w:val="none"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: none;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Strikethrough</span></p>
+<p></p>
+<p><span style="text-decoration-line:line-through;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:strike/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-decoration-line: line-through;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Double strikethrough</span></p>
+<p></p>
+<p><span style="text-decoration-line:line-through;text-decoration-style:double;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:dstrike/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: text-decoration-line: line-through; text-decoration-style: double;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">All caps</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;text-transform:uppercase;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:caps/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: text-transform: uppercase;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Small caps</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;font-variant:small-caps;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:smallCaps/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: font-variant: small-caps;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Superscript</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;white-space:pre-wrap;">Regular Text vs. </span><span style="font-size:10.5pt;vertical-align:super;font-size:smaller;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:vertAlign w:val="superscript"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: vertical-align: super; font-size: smaller;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Subscript</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;white-space:pre-wrap;">Regular Text vs. </span><span style="font-size:10.5pt;vertical-align:sub;font-size:smaller;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:vertAlign w:val="subscript"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: vertical-align: sub; font-size: smaller;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Highlight (yellow</span><span style="font-weight:bold;font-size:14.0pt;white-space:pre-wrap;"> - excplicit name</span><span style="font-weight:bold;font-size:14.0pt;">)</span></p>
+<p></p>
+<p><span style="background-color:yellow;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:highlight w:val="yellow"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: background-color: yellow;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Text color (red</span><span style="font-weight:bold;font-size:14.0pt;white-space:pre-wrap;"> - FF0000 hex</span><span style="font-weight:bold;font-size:14.0pt;">)</span></p>
+<p></p>
+<p><span style="color:#FF0000;text-decoration-color:#FF0000;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:color w:val="FF0000"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: color: #FF0000;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Larger font size (36 half-points)</span></p>
+<p></p>
+<p><span style="font-size:18.0pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:sz w:val="36"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Direct CSS: font-size: 18pt;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Outline</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:outline/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: No direct CSS; common approximation: -webkit-text-stroke: 1px currentColor; color: transparent;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Shadow</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:shadow/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: text-shadow: 1px 1px 1px rgba(0,0,0,0.5);</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Emboss</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:emboss/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate with multiple text-shadow values to simulate raised effect.</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Imprint</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:imprint/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate with multiple text-shadow values to simulate inset effect.</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Hidden (vanish)</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Run XML:</span></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:vanish/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: Approximate CSS: visibility: hidden; (or display: none;).</span></p>
+<p></p>
+<p></p>
+</div></body></html>

@@ -1,0 +1,325 @@
+<html><body><div style="padding-top:72.0pt; padding-right:72.0pt; padding-bottom:72.0pt; padding-left:72.0pt; padding-top:36.0pt; padding-bottom:36.0pt;">
+<p><span style="font-weight:bold;font-size:20.0pt;">DOCX Formatting Demo - Combinations, Paragraph Properties, Fonts</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">This document demonstrates combined inline run properties, paragraph properties affecting layout, and font/size variations, all applied directly in document.xml without styles.xml. Each section shows a header, a styled sample, the corresponding XML, and a CSS mapping or approximation.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:16.0pt;">Section 1: Combined Inline Styles</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bold + Red + Yellow highlight</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-weight:bold;color:#FF0000;text-decoration-color:#FF0000;background-color:yellow;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:b/&gt;&lt;w:color w:val="FF0000"/&gt;&lt;w:highlight w:val="yellow"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: font-weight: bold; color: #FF0000; background-color: yellow;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Italic + Single underline + Blue underline color</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-style:italic;text-decoration-line:underline;text-decoration-style:solid;text-decoration-color:#0000FF;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:i/&gt;&lt;w:u w:val="single" w:color="0000FF"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: font-style: italic; text-decoration-line: underline; text-decoration-color: #0000FF;</span></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bold + Double underline + Purple underline color</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-weight:bold;text-decoration-line:underline;text-decoration-style:double;text-decoration-color:#800080;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:b/&gt;&lt;w:u w:val="double" w:color="800080"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: font-weight: bold; text-decoration-line: underline; text-decoration-style: double; text-decoration-color: #800080;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Red text + Yellow highlight + Wavy underline (orange)</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="text-decoration-line:underline;text-decoration-style:wavy;color:#FF0000;text-decoration-color:#FF0000;text-decoration-color:#FFA500;background-color:yellow;font-size:10.5pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:color w:val="FF0000"/&gt;&lt;w:highlight w:val="yellow"/&gt;&lt;w:u w:val="wave" w:color="FFA500"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: color: #FF0000; background-color: yellow; text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: #FFA500;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:16.0pt;">Section 2: Paragraph Properties</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Alignment: Left</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Paragraph aligned left.</span></p>
+<p></p>
+<p style="text-align:left;"><span style="font-size:10.5pt;">Sample paragraph for: Alignment: Left</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:jc w:val="left"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: text-align: left;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Alignment: Center</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Paragraph aligned center.</span></p>
+<p></p>
+<p style="text-align:center;"><span style="font-size:10.5pt;">Sample paragraph for: Alignment: Center</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:jc w:val="center"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: text-align: center;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Alignment: Right</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Paragraph aligned right.</span></p>
+<p></p>
+<p style="text-align:right;"><span style="font-size:10.5pt;">Sample paragraph for: Alignment: Right</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:jc w:val="right"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: text-align: right;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Alignment: Justify</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Paragraph justified (both).</span></p>
+<p></p>
+<p style="text-align:justify;"><span style="font-size:10.5pt;">Sample paragraph for: Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Alignment: Justify</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:jc w:val="both"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: text-align: justify;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Line spacing: Single</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Single line spacing.</span></p>
+<p></p>
+<p style="line-height:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Single</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:spacing w:line="240" w:lineRule="auto"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: line-height: 1.0;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Line spacing: 1.5 lines</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">One-and-a-half line spacing.</span></p>
+<p></p>
+<p style="line-height:18.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: 1.5 lines</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:spacing w:line="360" w:lineRule="auto"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: line-height: 1.5;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Line spacing: Double</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Double line spacing.</span></p>
+<p></p>
+<p style="line-height:24.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Line spacing: Double</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:spacing w:line="480" w:lineRule="auto"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: line-height: 2.0;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Spacing before: 12pt</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">12pt space before each paragraph.</span></p>
+<p></p>
+<p style="margin-top:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;">.</span></p>
+<p style="margin-top:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 2 for: Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p style="margin-top:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 3 for: Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing before: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:spacing w:before="240"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: margin-top: 12pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Spacing after: 12pt</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">12pt space after each paragraph.</span></p>
+<p></p>
+<p style="margin-bottom:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p style="margin-bottom:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 2 for: Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p style="margin-bottom:12.0pt;"><span style="font-size:10.5pt;">Sample paragraph 3 for: Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Spacing after: 12pt</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:spacing w:after="240"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: margin-bottom: 12pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">First line indent: 0.5in</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">First line indented by 0.5 inch.</span></p>
+<p></p>
+<p style="text-indent:36.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">First line indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:ind w:firstLine="720"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: text-indent: 0.5in;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Left indent: 0.5in</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Entire paragraph indented from left.</span></p>
+<p></p>
+<p style="margin-left:36.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Left indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:ind w:left="720"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: margin-left: 0.5in;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Hanging indent: 0.5in</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">First line outdented (hanging) by 0.5 inch.</span></p>
+<p></p>
+<p style="text-indent:-36.0pt;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Hanging indent: 0.5in</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:ind w:hanging="720"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: padding-left: 0.5in; text-indent: -0.5in;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Tabs: left, center, right</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Line with left, center, and right tab stops.</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Left</span><span style="font-size:10.5pt;"><span style="display:inline-block; width:36.0pt;"></span></span><span style="font-size:10.5pt;">Center</span><span style="font-size:10.5pt;"><span style="display:inline-block; width:36.0pt;"></span></span><span style="font-size:10.5pt;">Right</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:tabs&gt;&lt;w:tab w:val="left" w:pos="720"/&gt;&lt;w:tab w:val="center" w:pos="2880"/&gt;&lt;w:tab w:val="right" w:pos="5040"/&gt;&lt;/w:tabs&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: use CSS columns or flexbox; no direct tab stop equivalent.</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Combination: Centered + Double spaced + 12pt before/after</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Centered paragraph with double line spacing and 12pt space before and after.</span></p>
+<p></p>
+<p style="margin-top:12.0pt;margin-bottom:12.0pt;line-height:24.0pt;text-align:center;"><span style="font-size:10.5pt;">Sample paragraph 1 for: Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p style="margin-top:12.0pt;margin-bottom:12.0pt;line-height:24.0pt;text-align:center;"><span style="font-size:10.5pt;">Sample paragraph 2 for: Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p style="margin-top:12.0pt;margin-bottom:12.0pt;line-height:24.0pt;text-align:center;"><span style="font-size:10.5pt;">Sample paragraph 3 for: Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span><span style="font-size:10.5pt;">Combination: Centered + Double spaced + 12pt before/after</span><span style="font-size:10.5pt;white-space:pre-wrap;">. </span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML (one sample paragraph):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:jc w:val="center"/&gt;&lt;w:spacing w:line="480" w:lineRule="auto" w:before="240" w:after="240"/&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Sample paragraph for XML view&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: text-align: center; line-height: 2.0; margin-top: 12pt; margin-bottom: 12pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:16.0pt;">Section 3: Fonts and Sizes</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Font: Times New Roman, 12pt</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-family:Times New Roman;font-size:12.0pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/&gt;&lt;w:sz w:val="24"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: font-family: 'Times New Roman', serif; font-size: 12pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Font: Arial, 16pt</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-family:Arial;font-size:16.0pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:rFonts w:ascii="Arial" w:hAnsi="Arial"/&gt;&lt;w:sz w:val="32"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: font-family: Arial, sans-serif; font-size: 16pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Font: Courier New, 14pt</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-family:Courier New;font-size:14.0pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/&gt;&lt;w:sz w:val="28"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: font-family: 'Courier New', monospace; font-size: 14pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Font: Calibri, 20pt</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample Text:</span></p>
+<p></p>
+<p><span style="font-family:Calibri;font-size:20.0pt;">Sample Text</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Run XML:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:rPr&gt;&lt;w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/&gt;&lt;w:sz w:val="40"/&gt;&lt;/w:rPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:t&gt;Sample Text&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:r&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: font-family: Calibri, sans-serif; font-size: 20pt;</span></p>
+<p></p>
+<p></p>
+<p></p>
+</div></body></html>

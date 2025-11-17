@@ -1,0 +1,354 @@
+DOCX List Formatting Demo (v5)
+
+This document demonstrates different list formats (decimal, alphabetic, Roman, bullets, combinations), including multi-level lists up to 4 levels and a decimal list starting at 5. Each demo uses its own numId and abstractNumId so numbering is independent. For each sample item, the text explicitly states what the numbering should be. For multi-level lists, you also get numbering.xml snippets for all levels shown.
+
+Section 1: Single-level Lists
+
+Decimal list (single-level)
+
+Simple decimal list: 1., 2., 3.
+
+Sample List:
+
+12. Item that should be numbered 1.
+13. Item that should be numbered 2.
+14. Item that should be numbered 3.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered 1.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="1">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="1">  <w:abstractNumId w:val="1"/></w:num>
+
+CSS mapping: CSS: list-style-type: decimal;
+
+
+
+Lower-alpha list (single-level)
+
+Lowercase alphabetic list: a., b., c.
+
+Sample List:
+
+d. Item that should be numbered a.
+e. Item that should be numbered b.
+f. Item that should be numbered c.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered a.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="2">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="2">  <w:abstractNumId w:val="2"/></w:num>
+
+CSS mapping: CSS: list-style-type: lower-alpha;
+
+
+
+Upper-alpha list (single-level)
+
+Uppercase alphabetic list: A., B., C.
+
+Sample List:
+
+A. Item that should be numbered A.
+B. Item that should be numbered B.
+C. Item that should be numbered C.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="3"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered A.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="3">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="3">  <w:abstractNumId w:val="3"/></w:num>
+
+CSS mapping: CSS: list-style-type: upper-alpha;
+
+
+
+Lower-roman list (single-level)
+
+Lowercase Roman numerals: i., ii., iii.
+
+Sample List:
+
+i. Item that should be numbered i.
+ii. Item that should be numbered ii.
+iii. Item that should be numbered iii.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="4"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered i.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="4">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="4">  <w:abstractNumId w:val="4"/></w:num>
+
+CSS mapping: CSS: list-style-type: lower-roman;
+
+
+
+Upper-roman list (single-level)
+
+Uppercase Roman numerals: I., II., III.
+
+Sample List:
+
+I. Item that should be numbered I.
+II. Item that should be numbered II.
+III. Item that should be numbered III.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="5"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered I.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="5">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="upperRoman"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="5">  <w:abstractNumId w:val="5"/></w:num>
+
+CSS mapping: CSS: list-style-type: upper-roman;
+
+
+
+Bulleted list (•)
+
+Standard bullet list using the filled circle (•).
+
+Sample List:
+
+• Item that should have a • bullet.
+• Another item that should have a • bullet.
+• Third item that should have a • bullet.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="6"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should have a • bullet.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="6">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="•"/>  </w:lvl></w:abstractNum><w:num w:numId="6">  <w:abstractNumId w:val="6"/></w:num>
+
+CSS mapping: CSS: list-style-type: disc;
+
+
+
+Decimal list starting at 5
+
+Decimal list whose first item is numbered 5.
+
+Sample List:
+
+1. Item that should be numbered 5.
+2. Item that should be numbered 6.
+3. Item that should be numbered 7.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="7"/></w:numPr></w:pPr>  <w:r>    <w:t>Item that should be numbered 5.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="7">  <w:lvl w:ilvl="0">    <w:start w:val="5"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1."/>  </w:lvl></w:abstractNum><w:num w:numId="7">  <w:abstractNumId w:val="7"/></w:num>
+
+CSS mapping: CSS approx: list-style-type: decimal; start: 5 via HTML <ol start="5"> or CSS counters;
+
+
+
+Section 2: Multi-level Lists and Combinations
+
+Decimal list (multi-level)
+
+Multi-level decimal list: 1., 1.1., 1.1.1., 1.1.1.1.
+
+Sample List:
+
+1. Level 1 – numbering should be 1.
+1.1. Level 2 – numbering should be 1.1.
+1.1.1. Level 3 – numbering should be 1.1.1.
+1.1.1.1. Level 4 – numbering should be 1.1.1.1.
+2. Level 1 – numbering should be 2.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="8"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be 1.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="8">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1."/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1.%2."/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1.%2.%3."/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1.%2.%3.%4."/>  </w:lvl></w:abstractNum><w:num w:numId="8">  <w:abstractNumId w:val="8"/></w:num>
+
+CSS mapping: CSS approx: nested <ol> with list-style-type: decimal at each level;
+
+
+
+Lower-alpha list (multi-level)
+
+Multi-level lower-alpha list with parentheses: (a), (a.a), (a.a.a), (a.a.a.a).
+
+Sample List:
+
+(a) Level 1 – numbering should be (a).
+(a.a) Level 2 – numbering should be (a.a).
+(a.a.a) Level 3 – numbering should be (a.a.a).
+(a.a.a.a) Level 4 – numbering should be (a.a.a.a).
+(b) Level 1 – numbering should be (b).
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="9"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be (a).</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="9">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%1)"/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%1.%2)"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%1.%2.%3)"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%1.%2.%3.%4)"/>  </w:lvl></w:abstractNum><w:num w:numId="9">  <w:abstractNumId w:val="9"/></w:num>
+
+CSS mapping: CSS approx: nested <ol> with list-style-type: lower-alpha;
+
+
+
+Upper-alpha list (multi-level)
+
+Multi-level upper-alpha list with closing parenthesis.
+
+Sample List:
+
+A) Level 1 – numbering should be A).
+A.A) Level 2 – numbering should be A.A).
+A.A.A) Level 3 – numbering should be A.A.A).
+A.A.A.A) Level 4 – numbering should be A.A.A.A).
+B) Level 1 – numbering should be B).
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="10"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be A).</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="10">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1)"/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1.%2)"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1.%2.%3)"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1.%2.%3.%4)"/>  </w:lvl></w:abstractNum><w:num w:numId="10">  <w:abstractNumId w:val="10"/></w:num>
+
+CSS mapping: CSS approx: nested <ol> with list-style-type: upper-alpha;
+
+
+
+Lower-roman list (multi-level)
+
+Multi-level lower-roman list: i., i.i., i.i.i., i.i.i.i.
+
+Sample List:
+
+i. Level 1 – numbering should be i.
+i.i. Level 2 – numbering should be i.i.
+i.i.i. Level 3 – numbering should be i.i.i.
+i.i.i.i. Level 4 – numbering should be i.i.i.i.
+ii. Level 1 – numbering should be ii.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="11"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be i.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="11">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%1."/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%1.%2."/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%1.%2.%3."/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%1.%2.%3.%4."/>  </w:lvl></w:abstractNum><w:num w:numId="11">  <w:abstractNumId w:val="11"/></w:num>
+
+CSS mapping: CSS approx: nested <ol> with list-style-type: lower-roman;
+
+
+
+Upper-roman list (multi-level)
+
+Multi-level upper-roman list with parentheses.
+
+Sample List:
+
+(I) Level 1 – numbering should be (I).
+(I.I) Level 2 – numbering should be (I.I).
+(I.I.I) Level 3 – numbering should be (I.I.I).
+(I.I.I.I) Level 4 – numbering should be (I.I.I.I).
+(II) Level 1 – numbering should be (II).
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="12"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be (I).</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="12">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="upperRoman"/>    <w:lvlText w:val="(%1)"/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="upperRoman"/>    <w:lvlText w:val="(%1.%2)"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="upperRoman"/>    <w:lvlText w:val="(%1.%2.%3)"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="upperRoman"/>    <w:lvlText w:val="(%1.%2.%3.%4)"/>  </w:lvl></w:abstractNum><w:num w:numId="12">  <w:abstractNumId w:val="12"/></w:num>
+
+CSS mapping: CSS approx: nested <ol> with list-style-type: upper-roman;
+
+
+
+Bulleted list (• → ○ → ▪ → •)
+
+Multi-level bullet list: •, ○, ▪, • (four levels).
+
+Sample List:
+
+• Level 1 – bullet should be •.
+○ Level 2 – bullet should be ○.
+▪ Level 3 – bullet should be ▪.
+• Level 4 – bullet should be • again.
+• Level 1 – bullet should be •.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="13"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – bullet should be •.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="13">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="•"/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="○"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="▪"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="•"/>  </w:lvl></w:abstractNum><w:num w:numId="13">  <w:abstractNumId w:val="13"/></w:num>
+
+CSS mapping: CSS: nested <ul> with list-style-type: disc / circle / square / disc;
+
+
+
+Combination list: 1 → (a) → i) → •
+
+Four-level combination: 1., (a), i), •.
+
+Sample List:
+
+1. Level 1 – numbering should be 1.
+(a) Level 2 – numbering should be (a).
+i) Level 3 – numbering should be i).
+• Level 4 – bullet should be •.
+2. Level 1 – numbering should be 2.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="14"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be 1.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="14">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%1."/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%2)"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="%3)"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="bullet"/>    <w:lvlText w:val="•"/>  </w:lvl></w:abstractNum><w:num w:numId="14">  <w:abstractNumId w:val="14"/></w:num>
+
+CSS mapping: CSS approx: nested lists with list-style-type: decimal / lower-alpha / lower-roman / disc;
+
+
+
+Combination list: A → (a) → 1) → (i)
+
+Four-level combination: A., (a), 1), (i).
+
+Sample List:
+
+A. Level 1 – numbering should be A.
+(a) Level 2 – numbering should be (a).
+1) Level 3 – numbering should be 1).
+(i) Level 4 – numbering should be (i).
+B. Level 1 – numbering should be B.
+
+Paragraph XML for first list item:
+
+<w:p>  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="15"/></w:numPr></w:pPr>  <w:r>    <w:t>Level 1 – numbering should be A.</w:t>  </w:r></w:p>
+
+Numbering XML snippet (all levels used + num mapping):
+
+<w:abstractNum w:abstractNumId="15">  <w:lvl w:ilvl="0">    <w:start w:val="1"/>    <w:numFmt w:val="upperLetter"/>    <w:lvlText w:val="%1."/>  </w:lvl>  <w:lvl w:ilvl="1">    <w:start w:val="1"/>    <w:numFmt w:val="lowerLetter"/>    <w:lvlText w:val="(%2)"/>  </w:lvl>  <w:lvl w:ilvl="2">    <w:start w:val="1"/>    <w:numFmt w:val="decimal"/>    <w:lvlText w:val="%3)"/>  </w:lvl>  <w:lvl w:ilvl="3">    <w:start w:val="1"/>    <w:numFmt w:val="lowerRoman"/>    <w:lvlText w:val="(%4)"/>  </w:lvl></w:abstractNum><w:num w:numId="15">  <w:abstractNumId w:val="15"/></w:num>
+
+CSS mapping: CSS approx: nested lists with list-style-type: upper-alpha / lower-alpha / decimal / lower-roman;
+
+
+

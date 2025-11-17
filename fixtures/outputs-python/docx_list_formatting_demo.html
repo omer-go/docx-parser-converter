@@ -1,0 +1,356 @@
+<html><body><div style="padding-top:72.0pt; padding-right:72.0pt; padding-bottom:72.0pt; padding-left:72.0pt; padding-top:36.0pt; padding-bottom:36.0pt;">
+<p><span style="font-weight:bold;font-size:20.0pt;">DOCX List Formatting Demo (v5)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">This document demonstrates different list formats (decimal, alphabetic, Roman, bullets, combinations), including multi-level lists up to 4 levels and a decimal list starting at 5. Each demo uses its own numId and abstractNumId so numbering is independent. For each sample item, the text explicitly states what the numbering should be. For multi-level lists, you also get numbering.xml snippets for all levels shown.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:16.0pt;">Section 1: Single-level Lists</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Decimal list (single-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Simple decimal list: 1., 2., 3.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 1.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">2.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 2.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">3.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 3.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="1"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered 1.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: decimal;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Lower-alpha list (single-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Lowercase alphabetic list: a., b., c.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">a.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered a.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">b.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered b.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">c.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered c.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="2"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered a.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="2"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: lower-alpha;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Upper-alpha list (single-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Uppercase alphabetic list: A., B., C.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">A.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered A.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">B.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered B.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">C.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered C.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="3"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered A.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="3"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: upper-alpha;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Lower-roman list (single-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Lowercase Roman numerals: i., ii., iii.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">i.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered i.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">ii.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered ii.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">iii.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered iii.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="4"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered i.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="4"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="4"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="4"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: lower-roman;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Upper-roman list (single-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Uppercase Roman numerals: I., II., III.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">I.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered I.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">II.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered II.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">III.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered III.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="5"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered I.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="5"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="5"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="5"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: upper-roman;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bulleted list (•)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Standard bullet list using the filled circle (•).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should have a • bullet.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Another item that should have a • bullet.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Third item that should have a • bullet.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="6"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should have a • bullet.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="6"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="•"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="6"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="6"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: list-style-type: disc;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Decimal list starting at 5</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Decimal list whose first item is numbered 5.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 5.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">2.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 6.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">3.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Item that should be numbered 7.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="7"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Item that should be numbered 5.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="7"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="5"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="7"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="7"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: list-style-type: decimal; start: 5 via HTML &lt;ol start="5"&gt; or CSS counters;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:16.0pt;">Section 2: Multi-level Lists and Combinations</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Decimal list (multi-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level decimal list: 1., 1.1., 1.1.1., 1.1.1.1.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be 1.</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">1.1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be 1.1.</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">1.1.1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be 1.1.1.</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">1.1.1.1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be 1.1.1.1.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">2.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be 2.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="8"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be 1.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="8"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3.%4."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="8"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="8"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested &lt;ol&gt; with list-style-type: decimal at each level;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Lower-alpha list (multi-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level lower-alpha list with parentheses: (a), (a.a), (a.a.a), (a.a.a.a).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">(a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be (a).</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">(a.a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be (a.a).</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">(a.a.a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be (a.a.a).</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">(a.a.a.a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be (a.a.a.a).</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">(b)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be (b).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="9"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be (a).&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="9"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2.%3)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2.%3.%4)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="9"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="9"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested &lt;ol&gt; with list-style-type: lower-alpha;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Upper-alpha list (multi-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level upper-alpha list with closing parenthesis.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">A)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be A).</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">A.A)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be A.A).</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">A.A.A)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be A.A.A).</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">A.A.A.A)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be A.A.A.A).</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">B)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be B).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="10"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be A).&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="10"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3.%4)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="10"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="10"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested &lt;ol&gt; with list-style-type: upper-alpha;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Lower-roman list (multi-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level lower-roman list: i., i.i., i.i.i., i.i.i.i.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">i.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be i.</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">i.i.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be i.i.</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">i.i.i.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be i.i.i.</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">i.i.i.i.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be i.i.i.i.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">ii.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be ii.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="11"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be i.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="11"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1.%2.%3.%4."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="11"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="11"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested &lt;ol&gt; with list-style-type: lower-roman;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Upper-roman list (multi-level)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level upper-roman list with parentheses.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">(I)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be (I).</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">(I.I)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be (I.I).</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">(I.I.I)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be (I.I.I).</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">(I.I.I.I)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be (I.I.I.I).</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">(II)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be (II).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="12"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be (I).&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="12"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2.%3)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%1.%2.%3.%4)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="12"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="12"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested &lt;ol&gt; with list-style-type: upper-roman;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Bulleted list (• → ○ → ▪ → •)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Multi-level bullet list: •, ○, ▪, • (four levels).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – bullet should be •.</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">○<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – bullet should be ○.</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">▪<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – bullet should be ▪.</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – bullet should be • again.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – bullet should be •.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="13"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – bullet should be •.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="13"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="•"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="○"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="▪"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="•"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="13"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="13"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS: nested &lt;ul&gt; with list-style-type: disc / circle / square / disc;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Combination list: 1 → (a) → i) → •</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Four-level combination: 1., (a), i), •.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">1.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be 1.</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">(a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be (a).</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">i)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be i).</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">•<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – bullet should be •.</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">2.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be 2.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="14"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be 1.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="14"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%2)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%3)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="bullet"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="•"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="14"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="14"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested lists with list-style-type: decimal / lower-alpha / lower-roman / disc;</span></p>
+<p></p>
+<p></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:14.0pt;">Combination list: A → (a) → 1) → (i)</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">Four-level combination: A., (a), 1), (i).</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Sample List:</span></p>
+<p></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">A.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be A.</span></p>
+<p style="margin-left:72.0pt;text-indent:-18.0pt;">(a)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 2 – numbering should be (a).</span></p>
+<p style="margin-left:108.0pt;text-indent:-18.0pt;">1)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 3 – numbering should be 1).</span></p>
+<p style="margin-left:144.0pt;text-indent:-18.0pt;">(i)<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 4 – numbering should be (i).</span></p>
+<p style="margin-left:36.0pt;text-indent:-18.0pt;">B.<span style="padding-left:7.2pt;"></span><span style="font-size:10.5pt;">Level 1 – numbering should be B.</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Paragraph XML for first list item:</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:p&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:pPr&gt;&lt;w:numPr&gt;&lt;w:ilvl w:val="0"/&gt;&lt;w:numId w:val="15"/&gt;&lt;/w:numPr&gt;&lt;/w:pPr&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:t&gt;Level 1 – numbering should be A.&lt;/w:t&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:r&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:p&gt;</span></p>
+<p></p>
+<p><span style="font-weight:bold;font-size:10.5pt;">Numbering XML snippet (all levels used + num mapping):</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">&lt;w:abstractNum w:abstractNumId="15"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="0"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="upperLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%1."/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="1"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerLetter"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%2)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="2"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="decimal"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="%3)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:lvl w:ilvl="3"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:start w:val="1"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:numFmt w:val="lowerRoman"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">    &lt;w:lvlText w:val="(%4)"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;/w:lvl&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:abstractNum&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;w:num w:numId="15"&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;white-space:pre-wrap;">  &lt;w:abstractNumId w:val="15"/&gt;</span><span style="font-size:10.5pt;"><br></span><span style="font-size:10.5pt;">&lt;/w:num&gt;</span></p>
+<p></p>
+<p><span style="font-size:10.5pt;">CSS mapping: CSS approx: nested lists with list-style-type: upper-alpha / lower-alpha / decimal / lower-roman;</span></p>
+<p></p>
+<p></p>
+<p></p>
+</div></body></html>
