@@ -32,7 +32,7 @@ class NumberingInstance(BaseModel):
     """
 
     num_id: int
-    abstract_num_id: int
+    abstract_num_id: int | None = None
     lvl_override: list[LevelOverride] | None = None
 
     model_config = {"extra": "ignore"}

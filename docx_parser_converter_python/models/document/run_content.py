@@ -4,8 +4,6 @@ These models represent elements that can appear inside a run (<w:r>).
 """
 from pydantic import BaseModel
 
-from models.types import BreakClearType, BreakType
-
 
 class Text(BaseModel):
     """Text content within a run.
@@ -40,11 +38,11 @@ class Break(BaseModel):
 
     Attributes:
         type: Break type (None for line break, "page", "column", "textWrapping")
-        clear: For textWrapping breaks, where to restart text
+        clear: For textWrapping breaks, where to restart text (none, left, right, all)
     """
 
-    type: BreakType | None = None
-    clear: BreakClearType | None = None
+    type: str | None = None
+    clear: str | None = None
 
     model_config = {"extra": "ignore"}
 

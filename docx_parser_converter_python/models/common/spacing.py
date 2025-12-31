@@ -4,8 +4,6 @@ Represents the <w:spacing> element used in paragraph properties.
 """
 from pydantic import BaseModel
 
-from models.types import LineRuleType
-
 
 class Spacing(BaseModel):
     """Paragraph spacing specification.
@@ -35,7 +33,7 @@ class Spacing(BaseModel):
     before: int | None = None
     after: int | None = None
     line: int | None = None
-    line_rule: LineRuleType | None = None
+    line_rule: str | None = None
     before_lines: int | None = None
     after_lines: int | None = None
     before_autospacing: bool | None = None

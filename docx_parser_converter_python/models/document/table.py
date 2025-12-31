@@ -11,10 +11,6 @@ from models.common.shading import Shading
 from models.common.width import Width
 from models.document.table_cell import TableCellMargins
 from models.document.table_row import TableRow
-from models.types import (
-    JustificationType,
-    TableLayoutType,
-)
 
 
 class TableGridColumn(BaseModel):
@@ -108,11 +104,11 @@ class TableProperties(BaseModel):
 
     tbl_style: str | None = None
     tbl_w: Width | None = None
-    jc: JustificationType | None = None
+    jc: str | None = None
     tbl_ind: Width | None = None
     tbl_borders: TableBorders | None = None
     shd: Shading | None = None
-    tbl_layout: TableLayoutType | None = None
+    tbl_layout: str | None = None
     tbl_cell_mar: TableCellMargins | None = None
     tbl_look: TableLook | None = None
     tbl_caption: str | None = None

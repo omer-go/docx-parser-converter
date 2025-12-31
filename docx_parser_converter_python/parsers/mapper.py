@@ -124,94 +124,119 @@ class ParserMapper:
 # =============================================================================
 # These functions create mappers with parsers pre-registered for common use cases.
 # They use lazy imports to avoid circular dependencies.
-#
-# NOTE: The factory functions below are commented out until the corresponding
-# parser modules are implemented. Uncomment as parsers become available.
-
-# def create_run_content_mapper() -> ParserMapper:
-#     """Create mapper for run content elements (<w:r> children).
-#
-#     Maps elements that can appear inside a run:
-#     - w:t (text)
-#     - w:br (break)
-#     - w:tab (tab character)
-#     - w:cr (carriage return)
-#     - w:softHyphen
-#     - w:noBreakHyphen
-#     - w:sym (symbol)
-#     - etc.
-#
-#     Returns:
-#         ParserMapper configured for run content elements.
-#     """
-#     from docx_parser_converter.parsers.document.run_content_parser import (
-#         parse_break,
-#         parse_tab,
-#         parse_text,
-#     )
-#
-#     mapper = ParserMapper()
-#     mapper.register("t", parse_text)
-#     mapper.register("br", parse_break)
-#     mapper.register("tab", parse_tab)
-#     return mapper
 
 
-# def create_body_content_mapper() -> ParserMapper:
-#     """Create mapper for body content elements (<w:body> children).
-#
-#     Maps elements that can appear in the document body:
-#     - w:p (paragraph)
-#     - w:tbl (table)
-#     - w:sdt (structured document tag)
-#     - w:sectPr (section properties)
-#
-#     Returns:
-#         ParserMapper configured for body content elements.
-#     """
-#     from docx_parser_converter.parsers.document.paragraph_parser import parse_paragraph
-#     from docx_parser_converter.parsers.document.table_parser import parse_table
-#
-#     mapper = ParserMapper()
-#     mapper.register("p", parse_paragraph)
-#     mapper.register("tbl", parse_table)
-#     return mapper
+def create_run_content_mapper() -> ParserMapper:
+    """Create mapper for run content elements (<w:r> children).
+
+    Maps elements that can appear inside a run:
+    - w:t (text)
+    - w:br (break)
+    - w:tab (tab character)
+    - w:cr (carriage return)
+    - w:softHyphen
+    - w:noBreakHyphen
+    - w:sym (symbol)
+    - w:fldChar (field character)
+    - w:instrText (field instruction)
+    - w:footnoteReference
+    - w:endnoteReference
+
+    Returns:
+        ParserMapper configured for run content elements.
+    """
+    from parsers.document.run_content_parser import (
+        parse_break,
+        parse_carriage_return,
+        parse_endnote_reference,
+        parse_field_char,
+        parse_footnote_reference,
+        parse_instr_text,
+        parse_no_break_hyphen,
+        parse_soft_hyphen,
+        parse_symbol,
+        parse_tab_char,
+        parse_text,
+    )
+
+    mapper = ParserMapper()
+    mapper.register("t", parse_text)
+    mapper.register("br", parse_break)
+    mapper.register("tab", parse_tab_char)
+    mapper.register("cr", parse_carriage_return)
+    mapper.register("softHyphen", parse_soft_hyphen)
+    mapper.register("noBreakHyphen", parse_no_break_hyphen)
+    mapper.register("sym", parse_symbol)
+    mapper.register("fldChar", parse_field_char)
+    mapper.register("instrText", parse_instr_text)
+    mapper.register("footnoteReference", parse_footnote_reference)
+    mapper.register("endnoteReference", parse_endnote_reference)
+    return mapper
 
 
-# def create_paragraph_content_mapper() -> ParserMapper:
-#     """Create mapper for paragraph content elements (<w:p> children).
-#
-#     Maps elements that can appear inside a paragraph:
-#     - w:r (run)
-#     - w:hyperlink
-#     - w:bookmarkStart
-#     - w:bookmarkEnd
-#     - w:fldSimple (simple field)
-#
-#     Returns:
-#         ParserMapper configured for paragraph content elements.
-#     """
-#     from docx_parser_converter.parsers.document.run_parser import parse_run
-#
-#     mapper = ParserMapper()
-#     mapper.register("r", parse_run)
-#     return mapper
+def create_body_content_mapper() -> ParserMapper:
+    """Create mapper for body content elements (<w:body> children).
+
+    Maps elements that can appear in the document body:
+    - w:p (paragraph)
+    - w:tbl (table)
+    - w:sectPr (section properties)
+
+    Returns:
+        ParserMapper configured for body content elements.
+    """
+    from parsers.document.paragraph_parser import parse_paragraph
+    from parsers.document.section_parser import parse_section_properties
+    from parsers.document.table_parser import parse_table
+
+    mapper = ParserMapper()
+    mapper.register("p", parse_paragraph)
+    mapper.register("tbl", parse_table)
+    mapper.register("sectPr", parse_section_properties)
+    return mapper
 
 
-# def create_table_cell_content_mapper() -> ParserMapper:
-#     """Create mapper for table cell content elements (<w:tc> children).
-#
-#     Maps elements that can appear inside a table cell:
-#     - w:p (paragraph)
-#     - w:tbl (nested table)
-#
-#     Returns:
-#         ParserMapper configured for table cell content elements.
-#     """
-#     from docx_parser_converter.parsers.document.paragraph_parser import parse_paragraph
-#     from docx_parser_converter.parsers.document.table_parser import parse_table
-#
-#     mapper = ParserMapper()
-#     mapper.register("p", parse_paragraph)
-#     mapper.register("tbl", parse_table)
-#     return mapper
+def create_paragraph_content_mapper() -> ParserMapper:
+    """Create mapper for paragraph content elements (<w:p> children).
+
+    Maps elements that can appear inside a paragraph:
+    - w:r (run)
+    - w:hyperlink
+    - w:bookmarkStart
+    - w:bookmarkEnd
+
+    Returns:
+        ParserMapper configured for paragraph content elements.
+    """
+    from parsers.document.hyperlink_parser import (
+        parse_bookmark_end,
+        parse_bookmark_start,
+        parse_hyperlink,
+    )
+    from parsers.document.run_parser import parse_run
+
+    mapper = ParserMapper()
+    mapper.register("r", parse_run)
+    mapper.register("hyperlink", parse_hyperlink)
+    mapper.register("bookmarkStart", parse_bookmark_start)
+    mapper.register("bookmarkEnd", parse_bookmark_end)
+    return mapper
+
+
+def create_table_cell_content_mapper() -> ParserMapper:
+    """Create mapper for table cell content elements (<w:tc> children).
+
+    Maps elements that can appear inside a table cell:
+    - w:p (paragraph)
+    - w:tbl (nested table)
+
+    Returns:
+        ParserMapper configured for table cell content elements.
+    """
+    from parsers.document.paragraph_parser import parse_paragraph
+    from parsers.document.table_parser import parse_table
+
+    mapper = ParserMapper()
+    mapper.register("p", parse_paragraph)
+    mapper.register("tbl", parse_table)
+    return mapper

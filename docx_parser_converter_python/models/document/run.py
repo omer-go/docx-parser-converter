@@ -9,12 +9,6 @@ from pydantic import BaseModel
 from models.common.border import Border
 from models.common.color import Color
 from models.common.shading import Shading
-from models.types import (
-    FontHintType,
-    HighlightType,
-    UnderlineType,
-    VertAlignType,
-)
 
 
 class Language(BaseModel):
@@ -58,7 +52,7 @@ class RunFonts(BaseModel):
     h_ansi: str | None = None
     east_asia: str | None = None
     cs: str | None = None
-    hint: FontHintType | None = None
+    hint: str | None = None
 
     model_config = {"extra": "ignore"}
 
@@ -77,7 +71,7 @@ class Underline(BaseModel):
         theme_color: Theme color for underline
     """
 
-    val: UnderlineType | None = None
+    val: str | None = None
     color: str | None = None
     theme_color: str | None = None
 
@@ -144,12 +138,12 @@ class RunProperties(BaseModel):
     position: int | None = None
     sz: int | None = None
     sz_cs: int | None = None
-    highlight: HighlightType | None = None
+    highlight: str | None = None
     u: Underline | None = None
     effect: str | None = None
     bdr: Border | None = None
     shd: Shading | None = None
-    vert_align: VertAlignType | None = None
+    vert_align: str | None = None
     lang: Language | None = None
     spec_vanish: bool | None = None
 

@@ -6,12 +6,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from models.types import (
-    LevelJcType,
-    LevelSuffixType,
-    NumFmtType,
-)
-
 
 class Level(BaseModel):
     """A level definition within an abstract numbering.
@@ -50,14 +44,14 @@ class Level(BaseModel):
     tplc: str | None = None
     tentative: bool | None = None
     start: int | None = None
-    num_fmt: NumFmtType | None = None
+    num_fmt: str | None = None
     lvl_restart: int | None = None
     p_style: str | None = None
     is_lgl: bool | None = None
-    suff: LevelSuffixType | None = None
+    suff: str | None = None
     lvl_text: str | None = None
     lvl_pic_bullet_id: int | None = None
-    lvl_jc: LevelJcType | None = None
+    lvl_jc: str | None = None
     # Using dict to avoid circular imports
     p_pr: dict | None = None  # ParagraphProperties
     r_pr: dict | None = None  # RunProperties

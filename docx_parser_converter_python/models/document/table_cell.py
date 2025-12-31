@@ -9,11 +9,6 @@ from pydantic import BaseModel
 from models.common.border import TableBorders
 from models.common.shading import Shading
 from models.common.width import Width
-from models.types import (
-    TextDirectionType,
-    VAlignType,
-    VMergeType,
-)
 
 
 class TableCellMargins(BaseModel):
@@ -68,10 +63,10 @@ class TableCellProperties(BaseModel):
     tc_borders: TableBorders | None = None
     shd: Shading | None = None
     tc_mar: TableCellMargins | None = None
-    text_direction: TextDirectionType | None = None
-    v_align: VAlignType | None = None
+    text_direction: str | None = None
+    v_align: str | None = None
     grid_span: int | None = None
-    v_merge: VMergeType | None = None
+    v_merge: str | None = None
     h_merge: str | None = None  # Deprecated
     no_wrap: bool | None = None
     tc_fit_text: bool | None = None

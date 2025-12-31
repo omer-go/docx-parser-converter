@@ -8,10 +8,6 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from models.common.border import Border
-from models.types import (
-    OrientType,
-    SectionType,
-)
 
 
 class PageSize(BaseModel):
@@ -30,7 +26,7 @@ class PageSize(BaseModel):
 
     w: int | None = None
     h: int | None = None
-    orient: OrientType | None = None
+    orient: str | None = None
 
     model_config = {"extra": "ignore"}
 
@@ -250,7 +246,7 @@ class SectionProperties(BaseModel):
     footer_refs: list[HeaderFooterReference] | None = None
     pg_borders: PageBorders | None = None
     pg_num_type: PageNumberType | None = None
-    type: SectionType | None = None
+    type: str | None = None
     title_pg: bool | None = None
     ln_num_type: LineNumberType | None = None
     bidi: bool | None = None

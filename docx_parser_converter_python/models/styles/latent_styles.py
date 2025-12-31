@@ -24,7 +24,7 @@ class LatentStyleException(BaseModel):
         q_format: Show in Quick Styles gallery
     """
 
-    name: str
+    name: str | None = None
     locked: bool | None = None
     ui_priority: int | None = None
     semi_hidden: bool | None = None

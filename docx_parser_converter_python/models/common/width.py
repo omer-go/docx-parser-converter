@@ -4,8 +4,6 @@ Represents width elements like <w:tblW>, <w:tcW>, <w:tblInd>.
 """
 from pydantic import BaseModel
 
-from models.types import WidthType
-
 
 class Width(BaseModel):
     """Width specification for tables and cells.
@@ -23,10 +21,10 @@ class Width(BaseModel):
 
     Attributes:
         w: Width value (interpretation depends on type)
-        type: How to interpret the width value
+        type: How to interpret the width value ("dxa", "pct", "auto", "nil")
     """
 
     w: int | None = None
-    type: WidthType | None = None
+    type: str | None = None
 
     model_config = {"extra": "ignore"}

@@ -7,7 +7,6 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from models.styles.table_style import TableStyleProperties
-from models.types import StyleType
 
 
 class Style(BaseModel):
@@ -55,7 +54,7 @@ class Style(BaseModel):
         tbl_style_pr: Table style conditional formatting
     """
 
-    type: StyleType
+    type: str
     style_id: str
     default: bool | None = None
     custom_style: bool | None = None

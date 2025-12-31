@@ -6,8 +6,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from models.types import TableStyleConditionType
-
 
 class TableStyleProperties(BaseModel):
     """Conditional formatting for a part of a table.
@@ -33,7 +31,7 @@ class TableStyleProperties(BaseModel):
         tc_pr: Table cell properties for this condition
     """
 
-    type: TableStyleConditionType
+    type: str
     p_pr: dict | None = None  # ParagraphProperties
     r_pr: dict | None = None  # RunProperties
     tbl_pr: dict | None = None  # TableProperties

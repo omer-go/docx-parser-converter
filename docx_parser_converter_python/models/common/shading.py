@@ -4,8 +4,6 @@ Represents the <w:shd> element used in paragraphs, tables, and cells.
 """
 from pydantic import BaseModel
 
-from models.types import ShadingPatternType, ThemeColorType
-
 
 class Shading(BaseModel):
     """Shading (background) specification.
@@ -23,7 +21,7 @@ class Shading(BaseModel):
         val: Shading pattern type (e.g., "clear" for solid, "pct25" for 25%)
         color: Foreground color for pattern (RGB hex or "auto")
         fill: Background fill color (RGB hex or "auto")
-        theme_color: Theme color for foreground
+        theme_color: Theme color for foreground (e.g., "accent1")
         theme_fill: Theme color for background fill
         theme_tint: Tint applied to theme_color
         theme_shade: Shade applied to theme_color
@@ -31,11 +29,11 @@ class Shading(BaseModel):
         theme_fill_shade: Shade applied to theme_fill
     """
 
-    val: ShadingPatternType | None = None
+    val: str | None = None
     color: str | None = None
     fill: str | None = None
-    theme_color: ThemeColorType | None = None
-    theme_fill: ThemeColorType | None = None
+    theme_color: str | None = None
+    theme_fill: str | None = None
     theme_tint: str | None = None
     theme_shade: str | None = None
     theme_fill_tint: str | None = None

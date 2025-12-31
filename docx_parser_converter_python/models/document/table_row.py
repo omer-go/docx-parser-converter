@@ -8,10 +8,6 @@ from pydantic import BaseModel
 
 from models.common.width import Width
 from models.document.table_cell import TableCell
-from models.types import (
-    HeightRuleType,
-    JustificationType,
-)
 
 
 class TableRowHeight(BaseModel):
@@ -28,7 +24,7 @@ class TableRowHeight(BaseModel):
     """
 
     val: int | None = None
-    h_rule: HeightRuleType | None = None
+    h_rule: str | None = None
 
     model_config = {"extra": "ignore"}
 
@@ -48,7 +44,7 @@ class TableRowProperties(BaseModel):
 
     tr_height: TableRowHeight | None = None
     tbl_header: bool | None = None
-    jc: JustificationType | None = None
+    jc: str | None = None
     cant_split: bool | None = None
     tbl_cell_spacing: Width | None = None
 

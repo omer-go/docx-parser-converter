@@ -7,7 +7,6 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from models.numbering.level import Level
-from models.types import MultiLevelType
 
 
 class AbstractNumbering(BaseModel):
@@ -38,7 +37,7 @@ class AbstractNumbering(BaseModel):
 
     abstract_num_id: int
     nsid: str | None = None
-    multi_level_type: MultiLevelType | None = None
+    multi_level_type: str | None = None
     tmpl: str | None = None
     name: str | None = None
     style_link: str | None = None

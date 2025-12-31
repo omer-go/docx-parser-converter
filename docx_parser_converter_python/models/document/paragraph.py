@@ -10,12 +10,6 @@ from models.common.border import ParagraphBorders
 from models.common.indentation import Indentation
 from models.common.shading import Shading
 from models.common.spacing import Spacing
-from models.types import (
-    JustificationType,
-    TabLeaderType,
-    TabType,
-    TextDirectionType,
-)
 
 
 class TabStop(BaseModel):
@@ -29,12 +23,12 @@ class TabStop(BaseModel):
     Attributes:
         val: Tab stop type (left, center, right, decimal, bar, clear, num)
         pos: Position in twips (or points after conversion)
-        leader: Leader character style
+        leader: Leader character style (none, dot, hyphen, underscore, heavy, middleDot)
     """
 
-    val: TabType | None = None
+    val: str | None = None
     pos: int | None = None
-    leader: TabLeaderType | None = None
+    leader: str | None = None
 
     model_config = {"extra": "ignore"}
 
@@ -102,13 +96,13 @@ class ParagraphProperties(BaseModel):
     suppress_auto_hyphens: bool | None = None
     spacing: Spacing | None = None
     ind: Indentation | None = None
-    jc: JustificationType | None = None
+    jc: str | None = None
     outline_lvl: int | None = None
     num_pr: NumberingProperties | None = None
     bidi: bool | None = None
     # r_pr and frame_pr are imported lazily to avoid circular imports
     r_pr: dict | None = None  # Actually RunProperties, but avoiding circular import
-    text_direction: TextDirectionType | None = None
+    text_direction: str | None = None
     text_alignment: str | None = None
     frame_pr: dict | None = None  # Actually FrameProperties, but avoiding circular import
 

@@ -4,8 +4,6 @@ Represents border elements used in paragraphs, tables, and cells.
 """
 from pydantic import BaseModel
 
-from models.types import BorderStyleType, ThemeColorType
-
 
 class Border(BaseModel):
     """Single border specification.
@@ -20,18 +18,18 @@ class Border(BaseModel):
         sz: Border width in eighths of a point (e.g., 4 = 0.5pt)
         space: Spacing in points between border and content
         color: RGB color value (e.g., "000000" for black, "auto")
-        theme_color: Theme color identifier
+        theme_color: Theme color identifier (e.g., "accent1", "dark1")
         theme_tint: Tint applied to theme color
         theme_shade: Shade applied to theme color
         frame: Whether border has 3D frame effect
         shadow: Whether border has shadow effect
     """
 
-    val: BorderStyleType | None = None
+    val: str | None = None
     sz: int | None = None
     space: int | None = None
     color: str | None = None
-    theme_color: ThemeColorType | None = None
+    theme_color: str | None = None
     theme_tint: str | None = None
     theme_shade: str | None = None
     frame: bool | None = None
