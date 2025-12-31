@@ -14,11 +14,21 @@ This document outlines the proposed folder and file structure for the refactored
 ## Proposed Folder Structure
 
 ```
-docx_parser_converter/
-├── __init__.py
+docx_parser_converter_python/           # Project root
+├── __init__.py                         # Package entry point
+├── pyproject.toml                      # PDM project configuration
+├── pdm.lock                            # PDM lock file
+├── README.md
+├── SPECIFICATION.md
+├── STRUCTURE_PLAN.md
+├── IMPLEMENTATION_PLAN.md
+│
 ├── core/
 │   ├── __init__.py
-│   ├── docx_reader.py              # DOCX ZIP extraction, XML root loading
+│   ├── constants.py                # XML namespaces, file paths, configuration
+│   ├── exceptions.py               # Custom exception hierarchy
+│   ├── docx_reader.py              # DOCX ZIP extraction, validation
+│   ├── xml_extractor.py            # XML content extraction utilities
 │   ├── xml_helpers.py              # XML element/attribute extraction utilities
 │   ├── unit_conversion.py          # twips_to_points, half_points_to_points, etc.
 │   └── model_utils.py              # Pydantic model merging, deep copy utilities
@@ -66,6 +76,8 @@ docx_parser_converter/
 │
 ├── parsers/
 │   ├── __init__.py
+│   ├── mapper.py                   # Tag-to-parser routing (ParserMapper)
+│   ├── utils.py                    # Shared parsing utilities
 │   │
 │   ├── common/
 │   │   ├── __init__.py
@@ -138,8 +150,19 @@ docx_parser_converter/
     ├── __init__.py
     ├── conftest.py                 # Shared fixtures
     │
+    ├── fixtures/                   # Test fixture DOCX files
+    │   ├── text_formatting/        # Inline formatting tests
+    │   ├── paragraph_formatting/   # Paragraph style tests
+    │   ├── lists_numbering/        # Lists and numbering tests
+    │   ├── tables/                 # Table tests
+    │   └── comprehensive/          # Full document tests
+    │
     ├── unit/
     │   ├── __init__.py
+    │   ├── core/                   # Core module tests
+    │   │   ├── test_docx_reader.py
+    │   │   ├── test_xml_extractor.py
+    │   │   └── test_exceptions.py
     │   ├── parsers/
     │   │   ├── test_paragraph_parser.py
     │   │   ├── test_run_parser.py
@@ -212,10 +235,29 @@ converters/
 
 Shared utilities that don't belong to any specific domain:
 
-- `docx_reader.py` - ZIP extraction, XML parsing
+- `constants.py` - XML namespaces, file paths
+- `exceptions.py` - Custom exception hierarchy
+- `docx_reader.py` - ZIP extraction, validation
+- `xml_extractor.py` - XML content extraction
 - `xml_helpers.py` - Low-level XML utilities
 - `unit_conversion.py` - Twips, points, EMUs, etc.
 - `model_utils.py` - Pydantic model utilities
+
+### 6. Import Convention
+
+All imports use **absolute imports** from the project root:
+
+```python
+# Correct - absolute imports from project root
+from core.constants import WORD_NS
+from core.exceptions import DocxParserError
+from parsers.utils import get_attribute
+
+# Incorrect - do NOT use package prefix
+from docx_parser_converter.core.constants import WORD_NS  # NO!
+```
+
+This convention works because the project root is added to `PYTHONPATH` via `pyproject.toml`.
 
 ---
 

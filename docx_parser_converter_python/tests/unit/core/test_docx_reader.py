@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from docx_parser_converter.core.docx_reader import (
+from core.docx_reader import (
     has_part,
     is_valid_docx,
     list_docx_parts,
     open_docx,
     validate_docx,
 )
-from docx_parser_converter.core.exceptions import (
+from core.exceptions import (
     DocxEncryptedError,
     DocxMissingPartError,
     DocxNotFoundError,

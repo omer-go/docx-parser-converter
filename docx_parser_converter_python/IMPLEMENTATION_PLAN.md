@@ -107,7 +107,7 @@ parsers/
 from typing import Callable, Any
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
+from core.constants import WORD_NS
 
 # Type alias for parser functions
 ParserFunc = Callable[[Element], Any]
@@ -177,9 +177,9 @@ def create_run_content_mapper() -> ParserMapper:
 
     Maps: t, br, tab, cr, softHyphen, noBreakHyphen, sym, etc.
     """
-    from docx_parser_converter.parsers.document.text_parser import parse_text
-    from docx_parser_converter.parsers.document.break_parser import parse_break
-    from docx_parser_converter.parsers.document.tab_parser import parse_tab
+    from parsers.document.text_parser import parse_text
+    from parsers.document.break_parser import parse_break
+    from parsers.document.tab_parser import parse_tab
 
     mapper = ParserMapper()
     mapper.register("t", parse_text)
@@ -194,8 +194,8 @@ def create_body_content_mapper() -> ParserMapper:
 
     Maps: p, tbl, sdt, etc.
     """
-    from docx_parser_converter.parsers.document.paragraph_parser import parse_paragraph
-    from docx_parser_converter.parsers.document.table_parser import parse_table
+    from parsers.document.paragraph_parser import parse_paragraph
+    from parsers.document.table_parser import parse_table
 
     mapper = ParserMapper()
     mapper.register("p", parse_paragraph)
@@ -209,8 +209,8 @@ def create_paragraph_content_mapper() -> ParserMapper:
 
     Maps: r, hyperlink, bookmarkStart, bookmarkEnd, etc.
     """
-    from docx_parser_converter.parsers.document.run_parser import parse_run
-    # from docx_parser_converter.parsers.document.hyperlink_parser import parse_hyperlink
+    from parsers.document.run_parser import parse_run
+    # from parsers.document.hyperlink_parser import parse_hyperlink
 
     mapper = ParserMapper()
     mapper.register("r", parse_run)
@@ -223,8 +223,8 @@ def create_paragraph_content_mapper() -> ParserMapper:
 
 ```python
 # parsers/document/run_parser.py
-from docx_parser_converter.parsers.mapper import create_run_content_mapper
-from docx_parser_converter.core.constants import WORD_NS
+from parsers.mapper import create_run_content_mapper
+from core.constants import WORD_NS
 
 # Create mapper once at module level
 _content_mapper = create_run_content_mapper()
@@ -605,9 +605,9 @@ Example XML:
 """
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
-from docx_parser_converter.models.common.color import Color
-from docx_parser_converter.parsers.utils import get_attribute, get_bool_attribute, get_int_attribute
+from core.constants import WORD_NS
+from models.common.color import Color
+from parsers.utils import get_attribute, get_bool_attribute, get_int_attribute
 
 
 def parse_color(element: Element | None) -> Color | None:
@@ -646,11 +646,11 @@ Example XML:
 """
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
-from docx_parser_converter.models.document.paragraph_properties import ParagraphProperties
-from docx_parser_converter.parsers.common.spacing_parser import parse_spacing
-from docx_parser_converter.parsers.common.indentation_parser import parse_indentation
-from docx_parser_converter.parsers.utils import get_attribute, find_child
+from core.constants import WORD_NS
+from models.document.paragraph_properties import ParagraphProperties
+from parsers.common.spacing_parser import parse_spacing
+from parsers.common.indentation_parser import parse_indentation
+from parsers.utils import get_attribute, find_child
 
 
 def parse_paragraph_properties(element: Element | None) -> ParagraphProperties | None:
@@ -693,11 +693,11 @@ Example XML:
 """
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
-from docx_parser_converter.models.document.table import Table
-from docx_parser_converter.parsers.document.table_row_parser import parse_table_row
-from docx_parser_converter.parsers.document.table_properties_parser import parse_table_properties
-from docx_parser_converter.parsers.utils import find_child, find_all_children
+from core.constants import WORD_NS
+from models.document.table import Table
+from parsers.document.table_row_parser import parse_table_row
+from parsers.document.table_properties_parser import parse_table_properties
+from parsers.utils import find_child, find_all_children
 
 
 def parse_table(element: Element | None) -> Table | None:
@@ -740,7 +740,7 @@ Example XML:
 """
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
+from core.constants import WORD_NS
 
 
 def parse_toggle(element: Element | None) -> bool | None:
@@ -783,7 +783,7 @@ from typing import Literal
 
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS, LOGGER_NAME
+from core.constants import WORD_NS, LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -829,7 +829,7 @@ Common utilities used across all parsers. Located in `parsers/utils.py`:
 """Shared parsing utilities."""
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
+from core.constants import WORD_NS
 
 
 def get_attribute(element: Element | None, attr_name: str) -> str | None:
@@ -932,9 +932,9 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from docx_parser_converter.models.common.spacing import Spacing
-from docx_parser_converter.models.common.indentation import Indentation
-from docx_parser_converter.models.common.border import Borders
+from models.common.spacing import Spacing
+from models.common.indentation import Indentation
+from models.common.border import Borders
 
 JustificationType = Literal[
     "left", "center", "right", "both", "distribute",
@@ -988,9 +988,9 @@ Standard test structure:
 import pytest
 from lxml import etree
 
-from docx_parser_converter.core.constants import WORD_NS, NSMAP
-from docx_parser_converter.parsers.document.paragraph_parser import parse_paragraph
-from docx_parser_converter.models.document.paragraph import Paragraph
+from core.constants import WORD_NS, NSMAP
+from parsers.document.paragraph_parser import parse_paragraph
+from models.document.paragraph import Paragraph
 
 
 def make_element(xml_string: str) -> etree._Element:
@@ -1061,7 +1061,7 @@ class TestParseParagraphFromFixtures:
     @pytest.fixture
     def sample_docx(self, fixtures_path):
         """Load sample DOCX file."""
-        from docx_parser_converter.core import open_docx, extract_document_xml
+        fromcore import open_docx, extract_document_xml
         docx_path = fixtures_path / "sample.docx"
         with open_docx(docx_path) as zf:
             return extract_document_xml(zf)
@@ -1112,15 +1112,15 @@ from lxml.etree import _Element as Element
 from pydantic import BaseModel
 
 # Local - constants (always first)
-from docx_parser_converter.core.constants import WORD_NS, LOGGER_NAME
+from core.constants import WORD_NS, LOGGER_NAME
 
 # Local - models
-from docx_parser_converter.models.document.paragraph import Paragraph
-from docx_parser_converter.models.document.run import Run
+from models.document.paragraph import Paragraph
+from models.document.run import Run
 
 # Local - parsers
-from docx_parser_converter.parsers.document.run_parser import parse_run
-from docx_parser_converter.parsers.utils import find_child, get_attribute
+from parsers.document.run_parser import parse_run
+from parsers.utils import find_child, get_attribute
 ```
 
 **Important**: Never use relative imports (`from ..models import X`). Always use the full package path.
@@ -1130,7 +1130,7 @@ from docx_parser_converter.parsers.utils import find_child, get_attribute
 ```python
 import logging
 
-from docx_parser_converter.core.constants import LOGGER_NAME
+from core.constants import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

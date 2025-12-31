@@ -5,7 +5,7 @@ including attribute extraction, child element finding, and type conversion.
 """
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
+from core.constants import WORD_NS
 
 
 def get_attribute(element: Element | None, attr_name: str) -> str | None:

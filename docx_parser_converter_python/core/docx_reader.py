@@ -9,12 +9,12 @@ import zipfile
 from pathlib import Path
 from typing import BinaryIO
 
-from docx_parser_converter.core.constants import (
+from core.constants import (
     CONTENT_TYPES_PATH,
     DOCUMENT_XML_PATH,
     LOGGER_NAME,
 )
-from docx_parser_converter.core.exceptions import (
+from core.exceptions import (
     DocxEncryptedError,
     DocxMissingPartError,
     DocxNotFoundError,

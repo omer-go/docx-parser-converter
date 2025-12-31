@@ -5,7 +5,7 @@ This module provides the foundational utilities for working with DOCX files:
 - Extracting XML parts from the archive
 - Handling errors with custom exceptions
 """
-from docx_parser_converter.core.constants import (
+from core.constants import (
     DOCUMENT_XML_PATH,
     LOGGER_NAME,
     NSMAP,
@@ -13,14 +13,14 @@ from docx_parser_converter.core.constants import (
     STYLES_XML_PATH,
     WORD_NS,
 )
-from docx_parser_converter.core.docx_reader import (
+from core.docx_reader import (
     has_part,
     is_valid_docx,
     list_docx_parts,
     open_docx,
     validate_docx,
 )
-from docx_parser_converter.core.exceptions import (
+from core.exceptions import (
     DocxEncryptedError,
     DocxMissingPartError,
     DocxNotFoundError,
@@ -29,7 +29,7 @@ from docx_parser_converter.core.exceptions import (
     DocxValidationError,
     XmlParseError,
 )
-from docx_parser_converter.core.xml_extractor import (
+from core.xml_extractor import (
     extract_document_xml,
     extract_external_hyperlinks,
     extract_numbering_xml,

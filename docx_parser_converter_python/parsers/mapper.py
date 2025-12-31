@@ -5,7 +5,7 @@ appropriate parser functions. This is especially useful for parsing mixed
 content where multiple element types can appear (e.g., run children, body children).
 
 Usage:
-    from docx_parser_converter.parsers.mapper import create_run_content_mapper
+    from parsers.mapper import create_run_content_mapper
 
     mapper = create_run_content_mapper()
     for child in run_element:
@@ -18,7 +18,7 @@ from typing import Any, TypeVar
 
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import WORD_NS
+from core.constants import WORD_NS
 
 # Type alias for parser functions
 T = TypeVar("T")

@@ -9,7 +9,7 @@ import zipfile
 from lxml import etree
 from lxml.etree import _Element as Element
 
-from docx_parser_converter.core.constants import (
+from core.constants import (
     DOCUMENT_XML_PATH,
     LOGGER_NAME,
     NUMBERING_XML_PATH,
@@ -17,7 +17,7 @@ from docx_parser_converter.core.constants import (
     RELS_XML_PATH,
     STYLES_XML_PATH,
 )
-from docx_parser_converter.core.exceptions import XmlParseError
+from core.exceptions import XmlParseError
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -192,7 +192,7 @@ def get_body_element(document: Element) -> Element | None:
     Returns:
         The <w:body> element, or None if not found.
     """
-    from docx_parser_converter.core.constants import WORD_NS
+    from core.constants import WORD_NS
 
     return document.find(f"{WORD_NS}body")
 
@@ -206,7 +206,7 @@ def iter_paragraphs(body: Element) -> list[Element]:
     Returns:
         List of <w:p> elements.
     """
-    from docx_parser_converter.core.constants import WORD_NS
+    from core.constants import WORD_NS
 
     return body.findall(f".//{WORD_NS}p")
 
@@ -220,6 +220,6 @@ def iter_tables(body: Element) -> list[Element]:
     Returns:
         List of <w:tbl> elements.
     """
-    from docx_parser_converter.core.constants import WORD_NS
+    from core.constants import WORD_NS
 
     return body.findall(f".//{WORD_NS}tbl")

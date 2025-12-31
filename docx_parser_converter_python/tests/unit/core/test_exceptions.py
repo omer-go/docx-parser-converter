@@ -1,7 +1,7 @@
 """Tests for exceptions module."""
 import pytest
 
-from docx_parser_converter.core.exceptions import (
+from core.exceptions import (
     DocxEncryptedError,
     DocxInvalidContentTypeError,
     DocxMissingPartError,

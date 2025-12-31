@@ -30,16 +30,19 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
-[tool.hatch.build.targets.wheel]
-packages = ["docx_parser_converter"]
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+packages = ["core", "models", "parsers", "converters"]
 
 [tool.pyright]
 pythonVersion = "3.10"
 typeCheckingMode = "basic"
-include = ["docx_parser_converter", "tests"]
+include = ["core", "models", "parsers", "converters", "tests"]
 exclude = ["**/__pycache__"]
 reportMissingTypeStubs = false
 
@@ -62,7 +65,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["docx_parser_converter"]
+known-first-party = ["core", "models", "parsers", "converters"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
