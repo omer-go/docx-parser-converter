@@ -16,10 +16,10 @@ This document tracks the implementation progress for the `docx_parser_converter`
 | Phase 3: Parser Unit Tests | ✅ Complete | 100% |
 | Phase 4: Style Resolution | ✅ Complete | 100% |
 | Phase 5: HTML Converter | ✅ Complete | 100% |
-| Phase 6: Text Converter | 🔲 Not Started | 0% |
+| Phase 6: Text Converter | ✅ Complete | 100% |
 | Phase 7: Integration & Polish | 🔲 Not Started | 0% |
 
-**Total Tests:** 1055 passing (52 core + 350 parsers + 100 style resolution + 553 HTML converter)
+**Total Tests:** 1271 passing (52 core + 350 parsers + 100 style resolution + 553 HTML converter + 216 text converter)
 
 ---
 
@@ -164,41 +164,42 @@ This document tracks the implementation progress for the `docx_parser_converter`
 
 ---
 
-## Phase 6: Text Converter 🔲
+## Phase 6: Text Converter ✅
 
 ### Deliverables
-- [ ] `converters/text/text_converter.py` - Main entry point `docx_to_text()`
-- [ ] `converters/text/paragraph_to_text.py` - Paragraph conversion
-- [ ] `converters/text/run_to_text.py` - Run conversion
-- [ ] `converters/text/table_to_text.py` - ASCII/tab table conversion
-- [ ] `converters/text/numbering_to_text.py` - List prefixes
-- [ ] Unit tests for text conversion
+- [x] `converters/text/text_converter.py` - Main entry point `document_to_text()`
+- [x] `converters/text/paragraph_to_text.py` - Paragraph conversion
+- [x] `converters/text/run_to_text.py` - Run conversion
+- [x] `converters/text/table_to_text.py` - ASCII/tab table conversion
+- [x] `converters/text/numbering_to_text.py` - List prefixes
+- [x] Unit tests for text conversion (216 tests)
 
 ### Tasks
-1. Implement run converter
+1. Implement run converter ✅
    - Extract text content
    - Handle breaks as newlines
    - Optional: Markdown formatting mode
 
-2. Implement paragraph converter
+2. Implement paragraph converter ✅
    - Join runs with appropriate spacing
    - Add numbering prefixes
    - Handle paragraph breaks
 
-3. Implement table converter
+3. Implement table converter ✅
    - ASCII box mode for visible borders
    - Tab-separated mode for invisible borders
    - Plain text mode
+   - Auto mode (selects based on border visibility)
 
-4. Implement document converter
+4. Implement document converter ✅
    - Join paragraphs with blank lines
    - Handle section breaks
 
 ### Success Criteria
-- [ ] Preserves all text content exactly
-- [ ] Tables render appropriately based on borders
-- [ ] Optional Markdown mode works
-- [ ] Whitespace preserved correctly
+- [x] Preserves all text content exactly
+- [x] Tables render appropriately based on borders
+- [x] Optional Markdown mode works
+- [x] Whitespace preserved correctly
 
 ---
 
