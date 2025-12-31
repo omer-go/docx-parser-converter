@@ -554,3 +554,319 @@ More files, but each file is smaller and more focused. Average lines per file sh
   - `<w:tblInd>` - Table indentation (conceptually indentation, not width)
 
 Note: Although `<w:tblInd>` has similar XML attributes to Width (`w:w`, `w:type`), it represents table indentation from the margin, so it uses the Indentation model for semantic clarity.
+
+---
+
+## Code Templates and Patterns
+
+This section provides templates for implementing parsers, models, and tests to ensure consistency.
+
+### Parser Template - Simple Element with Attributes
+
+For elements that have attributes only (no child elements):
+
+```python
+"""Parser for simple element with attributes only."""
+from lxml.etree import _Element as Element
+
+from models.common.color import Color
+from parsers.utils import get_attribute
+
+
+def parse_color(element: Element | None) -> Color | None:
+    """Parse <w:color> element.
+
+    Args:
+        element: The <w:color> element or None
+
+    Returns:
+        Color model or None if element is None
+    """
+    if element is None:
+        return None
+
+    return Color(
+        val=get_attribute(element, "val"),
+        theme_color=get_attribute(element, "themeColor"),
+        theme_tint=get_attribute(element, "themeTint"),
+        theme_shade=get_attribute(element, "themeShade"),
+    )
+```
+
+### Parser Template - Element with Child Elements
+
+For elements that contain other elements:
+
+```python
+"""Parser for element with child elements."""
+from lxml.etree import _Element as Element
+
+from models.document.paragraph_properties import ParagraphProperties
+from parsers.common.spacing_parser import parse_spacing
+from parsers.common.indentation_parser import parse_indentation
+from parsers.utils import get_attribute, find_child
+
+
+def parse_paragraph_properties(element: Element | None) -> ParagraphProperties | None:
+    """Parse <w:pPr> element."""
+    if element is None:
+        return None
+
+    jc_elem = find_child(element, "jc")
+    spacing_elem = find_child(element, "spacing")
+    ind_elem = find_child(element, "ind")
+
+    return ParagraphProperties(
+        jc=get_attribute(jc_elem, "val") if jc_elem is not None else None,
+        spacing=parse_spacing(spacing_elem),
+        ind=parse_indentation(ind_elem),
+    )
+```
+
+### Parser Template - Collection Element
+
+For elements that contain a list of items:
+
+```python
+"""Parser for collection element."""
+from lxml.etree import _Element as Element
+
+from models.document.table import Table
+from parsers.document.table_row_parser import parse_table_row
+from parsers.document.table_properties_parser import parse_table_properties
+from parsers.utils import find_child, find_all_children
+
+
+def parse_table(element: Element | None) -> Table | None:
+    """Parse <w:tbl> element."""
+    if element is None:
+        return None
+
+    tbl_pr_elem = find_child(element, "tblPr")
+    tbl_pr = parse_table_properties(tbl_pr_elem)
+
+    row_elements = find_all_children(element, "tr")
+    rows = [parse_table_row(row) for row in row_elements]
+
+    return Table(tbl_pr=tbl_pr, rows=rows)
+```
+
+### Parser Template - Boolean Toggle Element
+
+For elements that are boolean toggles (presence = True):
+
+```python
+"""Parser for boolean toggle elements.
+
+Example XML:
+    <w:b/>           <!-- bold = True -->
+    <w:b w:val="0"/> <!-- bold = False (explicit) -->
+    <w:b w:val="1"/> <!-- bold = True (explicit) -->
+"""
+from lxml.etree import _Element as Element
+
+from core.constants import WORD_NS
+
+
+def parse_toggle(element: Element | None) -> bool | None:
+    """Parse boolean toggle element.
+
+    In OOXML, toggle properties work as follows:
+    - Element absent: property is not set (None)
+    - Element present with no val: property is True
+    - Element present with val="0" or val="false": property is False
+    - Element present with val="1" or val="true": property is True
+    """
+    if element is None:
+        return None
+
+    val = element.get(f"{WORD_NS}val")
+    if val is None:
+        return True  # Presence without val means True
+
+    return val.lower() not in ("0", "false", "off")
+```
+
+### Model Template
+
+Standard Pydantic model structure:
+
+```python
+"""Paragraph properties model."""
+from typing import Literal
+
+from pydantic import BaseModel
+
+from models.common.spacing import Spacing
+from models.common.indentation import Indentation
+
+JustificationType = Literal[
+    "left", "center", "right", "both", "distribute"
+]
+
+
+class ParagraphProperties(BaseModel):
+    """Properties for a paragraph (<w:pPr>).
+
+    Stores raw XML values. Unit conversion happens during output.
+    """
+
+    p_style: str | None = None
+    jc: JustificationType | None = None
+    spacing: Spacing | None = None
+    ind: Indentation | None = None
+    keep_next: bool | None = None
+    keep_lines: bool | None = None
+
+    class Config:
+        frozen = True
+```
+
+### Test Template
+
+Standard test structure for parsers:
+
+```python
+"""Tests for paragraph parser."""
+from tests.unit.parsers.conftest import make_element
+
+from parsers.document.paragraph_parser import parse_paragraph
+
+
+class TestParseParagraph:
+    """Tests for parse_paragraph function."""
+
+    def test_none_element_returns_none(self):
+        """Parsing None should return None."""
+        result = parse_paragraph(None)
+        assert result is None
+
+    def test_empty_paragraph(self):
+        """Empty paragraph should have no properties or runs."""
+        element = make_element('<w:p/>')
+        result = parse_paragraph(element)
+
+        assert result is not None
+        assert result.p_pr is None
+        assert result.content == []
+
+    def test_paragraph_with_text(self):
+        """Paragraph with single run containing text."""
+        element = make_element('''
+            <w:p>
+                <w:r>
+                    <w:t>Hello World</w:t>
+                </w:r>
+            </w:p>
+        ''')
+        result = parse_paragraph(element)
+
+        assert result is not None
+        assert len(result.content) == 1
+```
+
+### Utility Functions
+
+Common utilities used across all parsers (in `parsers/utils.py`):
+
+```python
+"""Shared parsing utilities."""
+from lxml.etree import _Element as Element
+
+from core.constants import WORD_NS
+
+
+def get_attribute(element: Element | None, attr_name: str) -> str | None:
+    """Get attribute value from element."""
+    if element is None:
+        return None
+    return element.get(f"{WORD_NS}{attr_name}")
+
+
+def get_int_attribute(element: Element | None, attr_name: str) -> int | None:
+    """Get integer attribute value from element."""
+    val = get_attribute(element, attr_name)
+    if val is None:
+        return None
+    try:
+        return int(val)
+    except ValueError:
+        return None
+
+
+def find_child(element: Element, tag_name: str) -> Element | None:
+    """Find first child element with given tag."""
+    return element.find(f"{WORD_NS}{tag_name}")
+
+
+def find_all_children(element: Element, tag_name: str) -> list[Element]:
+    """Find all child elements with given tag."""
+    return element.findall(f"{WORD_NS}{tag_name}")
+```
+
+---
+
+## Code Style Guidelines
+
+### General Principles
+
+1. **Single Responsibility**: Each parser handles one element type
+2. **Null Safety**: All parsers accept `None` and return `None` gracefully
+3. **Type Hints**: Full typing on all public functions
+4. **Docstrings**: Google-style docstrings on all public functions
+5. **Logging**: Use `logger.warning()` for skipped/unknown elements
+
+### Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Model class | PascalCase, full name | `ParagraphProperties` |
+| Parser function | `parse_<element_name>` | `parse_paragraph` |
+| Converter function | `convert_<element>_to_<format>` | `convert_paragraph_to_html` |
+| Test class | `Test<FunctionName>` | `TestParseParagraph` |
+| Test method | `test_<scenario>` | `test_empty_paragraph` |
+
+### Import Order
+
+All imports use **absolute paths** from the package root:
+
+```python
+# Standard library
+import logging
+from pathlib import Path
+from typing import Literal
+
+# Third-party
+from lxml.etree import _Element as Element
+from pydantic import BaseModel
+
+# Local - constants (always first)
+from core.constants import WORD_NS, LOGGER_NAME
+
+# Local - models
+from models.document.paragraph import Paragraph
+
+# Local - parsers
+from parsers.document.run_parser import parse_run
+from parsers.utils import find_child, get_attribute
+```
+
+### Error Handling
+
+```python
+import logging
+from core.constants import LOGGER_NAME
+
+logger = logging.getLogger(LOGGER_NAME)
+
+
+def parse_something(element: Element | None) -> Something | None:
+    if element is None:
+        return None
+
+    try:
+        return Something(...)
+    except (ValueError, KeyError) as e:
+        logger.warning(f"Failed to parse <w:something>: {e}")
+        return None
+```
