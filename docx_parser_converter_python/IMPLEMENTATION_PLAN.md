@@ -10,6 +10,7 @@ This document outlines the test-driven implementation plan for the `docx_parser_
 3. **Absolute imports** - All imports use absolute paths from package root
 4. **Centralized constants** - XML namespaces defined once in `constants.py`
 5. **Parser mapper** - Centralized routing for mixed content parsing
+6. **Schema documentation** - Model naming follows [docs/schemas/](docs/schemas/) conventions
 
 ---
 
@@ -325,7 +326,7 @@ Based on analysis of `/fixtures/test_docx_files/`, we have **~45-50% coverage** 
 > **Note**: These are documented for completeness but NOT the current focus.
 > The refactoring phase focuses on existing fixtures only.
 
-The following tags are documented in our schemas but **missing from test fixtures**:
+The following tags are documented in [docs/schemas/](docs/schemas/) but **missing from test fixtures**:
 
 #### Document Structure (Critical)
 | Tag | Description | Priority |

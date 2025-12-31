@@ -4,9 +4,9 @@
 
 This document outlines the proposed folder and file structure for the refactored `docx-parser-converter-python` package. The structure is designed around:
 
-1. **Schema alignment** - Organization mirrors the three core XML files (document.xml, styles.xml, numbering.xml)
+1. **Schema alignment** - Organization mirrors the three core XML files (document.xml, styles.xml, numbering.xml). See [docs/schemas/](docs/schemas/) for detailed XML-to-model mappings.
 2. **Single responsibility** - Each file handles one focused concern
-3. **Full model names** - As defined in our schema documentation
+3. **Full model names** - As defined in our [schema documentation](docs/schemas/README.md)
 4. **Clear separation** - Parsers, models, and converters in distinct layers
 
 ---
@@ -22,6 +22,13 @@ docx_parser_converter_python/           # Project root
 ├── SPECIFICATION.md
 ├── STRUCTURE_PLAN.md
 ├── IMPLEMENTATION_PLAN.md
+│
+├── docs/
+│   └── schemas/                        # XML schema documentation
+│       ├── README.md                   # Naming conventions
+│       ├── document.xml.md             # Document content schema
+│       ├── styles.xml.md               # Styles schema
+│       └── numbering.xml.md            # Numbering schema
 │
 ├── core/
 │   ├── __init__.py
