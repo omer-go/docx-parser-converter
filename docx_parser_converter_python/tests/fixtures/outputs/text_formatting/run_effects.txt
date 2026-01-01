@@ -1,0 +1,21 @@
+Double Strikethrough: This text has double strikethrough
+
+Outline: This text has outline effect
+
+Shadow: This text has shadow effect
+
+Emboss: This text has emboss effect
+
+Imprint: This text has imprint/engrave effect
+
+Hidden: This text is hidden (text after hidden)
+
+Character Border: This text has a border
+
+Position Raised: Raised 3pt normal Lowered 3pt
+
+Width Scale: 200% wide normal 50% condensed
+
+Special Vanish: This text has specVanish
+
+Combined: Bold italic double-strike outline red

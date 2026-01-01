@@ -1,0 +1,467 @@
+DOCX List Numbering & Text Styling Demo
+
+This document demonstrates how numbering and list item text can share or differ in inline styles (bold, italic, underline, font family, color, background). Each demo uses a separate numId and abstractNumId. For each list, the item text explicitly describes what the numbering and text styles should be, and both the paragraph XML (with numPr and run rPr) and the relevant numbering.xml snippet are shown.
+
+Numbering and Text Styling Variants
+
+Bold numbering and text
+
+Decimal list where both the numbering and the item text are bold.
+
+Sample List:
+
+1.	Item 1 – both number and text should be bold.
+
+2.	Item 2 – both number and text should be bold.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:b/></w:rPr>
+    <w:t>Item 1 – both number and text should be bold.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="1">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:b/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="1">
+  <w:abstractNumId w:val="1"/>
+</w:num>
+
+CSS mapping: CSS approx: font-weight: bold; on both marker and text;
+
+Italic numbering and text
+
+Decimal list where both the numbering and the item text are italic.
+
+Sample List:
+
+1.	Item 1 – both number and text should be italic.
+
+2.	Item 2 – both number and text should be italic.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:i/></w:rPr>
+    <w:t>Item 1 – both number and text should be italic.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="2">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:i/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="2">
+  <w:abstractNumId w:val="2"/>
+</w:num>
+
+CSS mapping: CSS approx: font-style: italic; on both marker and text;
+
+Underlined numbering and text
+
+Decimal list where both the numbering and the item text are underlined.
+
+Sample List:
+
+1.	Item 1 – both number and text should be underlined.
+
+2.	Item 2 – both number and text should be underlined.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="3"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:u w:val="single"/></w:rPr>
+    <w:t>Item 1 – both number and text should be underlined.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="3">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:u w:val="single"/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="3">
+  <w:abstractNumId w:val="3"/>
+</w:num>
+
+CSS mapping: CSS approx: text-decoration: underline; on both marker and text;
+
+Bold numbering, normal text
+
+Decimal list where the numbering is bold but the item text is normal.
+
+Sample List:
+
+1.	Item 1 – number should be bold, text normal.
+
+2.	Item 2 – number should be bold, text normal.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="4"/></w:numPr></w:pPr>
+  <w:r>
+    <w:t>Item 1 – number should be bold, text normal.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="4">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:b/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="4">
+  <w:abstractNumId w:val="4"/>
+</w:num>
+
+CSS mapping: CSS approx: font-weight: bold; on marker only;
+
+Normal numbering, bold text
+
+Decimal list where the numbering is normal and the item text is bold.
+
+Sample List:
+
+1.	Item 1 – number should be normal, text bold.
+
+2.	Item 2 – number should be normal, text bold.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="5"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:b/></w:rPr>
+    <w:t>Item 1 – number should be normal, text bold.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="5">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="5">
+  <w:abstractNumId w:val="5"/>
+</w:num>
+
+CSS mapping: CSS approx: font-weight: bold; on text only;
+
+Italic numbering, underlined text
+
+Decimal list where the numbering is italic and the item text is underlined.
+
+Sample List:
+
+1.	Item 1 – number should be italic, text underlined.
+
+2.	Item 2 – number should be italic, text underlined.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="6"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:u w:val="single"/></w:rPr>
+    <w:t>Item 1 – number should be italic, text underlined.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="6">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:i/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="6">
+  <w:abstractNumId w:val="6"/>
+</w:num>
+
+CSS mapping: CSS approx: font-style: italic; on marker, text-decoration: underline; on text;
+
+Times New Roman numbering, Calibri text
+
+Decimal list where the numbering uses Times New Roman and the text uses Calibri.
+
+Sample List:
+
+1.	Item 1 – number should be Times New Roman, text Calibri.
+
+2.	Item 2 – number should be Times New Roman, text Calibri.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="7"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/></w:rPr>
+    <w:t>Item 1 – number should be Times New Roman, text Calibri.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="7">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="7">
+  <w:abstractNumId w:val="7"/>
+</w:num>
+
+CSS mapping: CSS approx: font-family: 'Times New Roman' for marker, 'Calibri' for text;
+
+Courier New numbering, Arial text
+
+Decimal list where the numbering uses Courier New and the text uses Arial.
+
+Sample List:
+
+1.	Item 1 – number should be Courier New, text Arial.
+
+2.	Item 2 – number should be Courier New, text Arial.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="8"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>
+    <w:t>Item 1 – number should be Courier New, text Arial.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="8">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="8">
+  <w:abstractNumId w:val="8"/>
+</w:num>
+
+CSS mapping: CSS approx: font-family: 'Courier New' for marker, 'Arial' for text;
+
+Red numbering, default text color
+
+Decimal list where the numbering is red and the text has default color.
+
+Sample List:
+
+1.	Item 1 – number should be red, text default color.
+
+2.	Item 2 – number should be red, text default color.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="9"/></w:numPr></w:pPr>
+  <w:r>
+    <w:t>Item 1 – number should be red, text default color.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="9">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:color w:val="FF0000"/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="9">
+  <w:abstractNumId w:val="9"/>
+</w:num>
+
+CSS mapping: CSS approx: color: red; on marker only;
+
+Default numbering, red text
+
+Decimal list where the numbering is default color and the text is red.
+
+Sample List:
+
+1.	Item 1 – number default color, text red.
+
+2.	Item 2 – number default color, text red.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="10"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:color w:val="FF0000"/></w:rPr>
+    <w:t>Item 1 – number default color, text red.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="10">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="10">
+  <w:abstractNumId w:val="10"/>
+</w:num>
+
+CSS mapping: CSS approx: color: red; on text only;
+
+Yellow background on numbering only
+
+Decimal list where the numbering has yellow background and the text has none.
+
+Sample List:
+
+1.	Item 1 – number yellow background, text none.
+
+2.	Item 2 – number yellow background, text none.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="11"/></w:numPr></w:pPr>
+  <w:r>
+    <w:t>Item 1 – number yellow background, text none.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="11">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:rPr><w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/></w:rPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="11">
+  <w:abstractNumId w:val="11"/>
+</w:num>
+
+CSS mapping: CSS approx: background-color: #FFFF00 on marker only;
+
+Yellow background on text only
+
+Decimal list where the text has yellow background and the numbering has none.
+
+Sample List:
+
+1.	Item 1 – number no background, text yellow background.
+
+2.	Item 2 – number no background, text yellow background.
+
+Paragraph XML for first list item:
+
+<w:p>
+  <w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="12"/></w:numPr></w:pPr>
+  <w:r>
+    <w:rPr><w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/></w:rPr>
+    <w:t>Item 1 – number no background, text yellow background.</w:t>
+  </w:r>
+</w:p>
+
+Numbering XML snippet (level 0 + num mapping):
+
+<w:abstractNum w:abstractNumId="12">
+  <w:multiLevelType w:val="singleLevel"/>
+  <w:lvl w:ilvl="0">
+    <w:start w:val="1"/>
+    <w:numFmt w:val="decimal"/>
+    <w:lvlText w:val="%1."/>
+    <w:lvlJc w:val="left"/>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+  </w:lvl>
+</w:abstractNum>
+<w:num w:numId="12">
+  <w:abstractNumId w:val="12"/>
+</w:num>
+
+CSS mapping: CSS approx: background-color: #FFFF00 on text only;

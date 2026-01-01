@@ -1,0 +1,379 @@
+DOCX Formatting Demo - Combinations, Paragraph Properties, Fonts
+
+This document demonstrates combined inline run properties, paragraph properties affecting layout, and font/size variations, all applied directly in document.xml without styles.xml. Each section shows a header, a styled sample, the corresponding XML, and a CSS mapping or approximation.
+
+Section 1: Combined Inline Styles
+
+Bold + Red + Yellow highlight
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:b/><w:color w:val="FF0000"/><w:highlight w:val="yellow"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS approx: font-weight: bold; color: #FF0000; background-color: yellow;
+
+Italic + Single underline + Blue underline color
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:i/><w:u w:val="single" w:color="0000FF"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS approx: font-style: italic; text-decoration-line: underline; text-decoration-color: #0000FF;
+
+Bold + Double underline + Purple underline color
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:b/><w:u w:val="double" w:color="800080"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS approx: font-weight: bold; text-decoration-line: underline; text-decoration-style: double; text-decoration-color: #800080;
+
+Red text + Yellow highlight + Wavy underline (orange)
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:color w:val="FF0000"/><w:highlight w:val="yellow"/><w:u w:val="wave" w:color="FFA500"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS approx: color: #FF0000; background-color: yellow; text-decoration-line: underline; text-decoration-style: wavy; text-decoration-color: #FFA500;
+
+Section 2: Paragraph Properties
+
+Alignment: Left
+
+Paragraph aligned left.
+
+Sample paragraph for: Alignment: Left
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:jc w:val="left"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS: text-align: left;
+
+Alignment: Center
+
+Paragraph aligned center.
+
+Sample paragraph for: Alignment: Center
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:jc w:val="center"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS: text-align: center;
+
+Alignment: Right
+
+Paragraph aligned right.
+
+Sample paragraph for: Alignment: Right
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:jc w:val="right"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS: text-align: right;
+
+Alignment: Justify
+
+Paragraph justified (both).
+
+Sample paragraph for: Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. Alignment: Justify. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:jc w:val="both"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS: text-align: justify;
+
+Line spacing: Single
+
+Single line spacing.
+
+Sample paragraph 1 for: Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. Line spacing: Single. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:spacing w:line="240" w:lineRule="auto"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: line-height: 1.0;
+
+Line spacing: 1.5 lines
+
+One-and-a-half line spacing.
+
+Sample paragraph 1 for: Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. Line spacing: 1.5 lines. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: line-height: 1.5;
+
+Line spacing: Double
+
+Double line spacing.
+
+Sample paragraph 1 for: Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. Line spacing: Double. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:spacing w:line="480" w:lineRule="auto"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: line-height: 2.0;
+
+Spacing before: 12pt
+
+12pt space before each paragraph.
+
+Sample paragraph 1 for: Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt.
+
+Sample paragraph 2 for: Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. 
+
+Sample paragraph 3 for: Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. Spacing before: 12pt. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:spacing w:before="240"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: margin-top: 12pt;
+
+Spacing after: 12pt
+
+12pt space after each paragraph.
+
+Sample paragraph 1 for: Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. 
+
+Sample paragraph 2 for: Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. 
+
+Sample paragraph 3 for: Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. Spacing after: 12pt. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:spacing w:after="240"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: margin-bottom: 12pt;
+
+First line indent: 0.5in
+
+First line indented by 0.5 inch.
+
+Sample paragraph 1 for: First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. First line indent: 0.5in. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:ind w:firstLine="720"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: text-indent: 0.5in;
+
+Left indent: 0.5in
+
+Entire paragraph indented from left.
+
+Sample paragraph 1 for: Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. Left indent: 0.5in. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:ind w:left="720"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: margin-left: 0.5in;
+
+Hanging indent: 0.5in
+
+First line outdented (hanging) by 0.5 inch.
+
+Sample paragraph 1 for: Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. Hanging indent: 0.5in. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:ind w:hanging="720"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: padding-left: 0.5in; text-indent: -0.5in;
+
+Tabs: left, center, right
+
+Line with left, center, and right tab stops.
+
+Left	Center	Right
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:tabs><w:tab w:val="left" w:pos="720"/><w:tab w:val="center" w:pos="2880"/><w:tab w:val="right" w:pos="5040"/></w:tabs></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: use CSS columns or flexbox; no direct tab stop equivalent.
+
+Combination: Centered + Double spaced + 12pt before/after
+
+Centered paragraph with double line spacing and 12pt space before and after.
+
+Sample paragraph 1 for: Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. 
+
+Sample paragraph 2 for: Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. 
+
+Sample paragraph 3 for: Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. Combination: Centered + Double spaced + 12pt before/after. 
+
+Paragraph XML (one sample paragraph):
+
+<w:p>
+  <w:pPr><w:jc w:val="center"/><w:spacing w:line="480" w:lineRule="auto" w:before="240" w:after="240"/></w:pPr>
+  <w:r>
+    <w:t>Sample paragraph for XML view</w:t>
+  </w:r>
+</w:p>
+
+CSS mapping: CSS approx: text-align: center; line-height: 2.0; margin-top: 12pt; margin-bottom: 12pt;
+
+Section 3: Fonts and Sizes
+
+Font: Times New Roman, 12pt
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/><w:sz w:val="24"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS: font-family: 'Times New Roman', serif; font-size: 12pt;
+
+Font: Arial, 16pt
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="32"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS: font-family: Arial, sans-serif; font-size: 16pt;
+
+Font: Courier New, 14pt
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/><w:sz w:val="28"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS: font-family: 'Courier New', monospace; font-size: 14pt;
+
+Font: Calibri, 20pt
+
+Sample Text:
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="40"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: CSS: font-family: Calibri, sans-serif; font-size: 20pt;

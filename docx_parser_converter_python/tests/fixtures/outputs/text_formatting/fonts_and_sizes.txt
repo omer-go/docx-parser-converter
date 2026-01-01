@@ -1,0 +1,53 @@
+Fonts and Sizes Demo
+
+Font Families
+
+Arial - A clean, modern sans-serif font that is universally supported across all platforms.
+
+Times New Roman - A classic serif font, ideal for traditional documents and academic papers.
+
+Calibri - Microsoft's modern default font, featuring rounded letterforms and excellent readability.
+
+Georgia - An elegant serif font optimized for screen display with generous spacing.
+
+Verdana - A highly legible sans-serif font designed specifically for on-screen reading.
+
+Courier New - A monospace font where each character occupies the same width, used for code.
+
+Tahoma - A compact sans-serif font with tight letter spacing, good for UI elements.
+
+Comic Sans MS - An informal, casual font that mimics comic book lettering.
+
+Font Sizes
+
+6pt - Very tiny text
+
+8pt - Small text (fine print)
+
+10pt - Compact body text
+
+12pt - Standard body text (default)
+
+14pt - Slightly larger text
+
+16pt - Subheading size
+
+18pt - Large subheading
+
+20pt - Small heading
+
+24pt - Heading size
+
+28pt - Large heading
+
+36pt - Display text
+
+Font Combinations
+
+Heading in Georgia 18pt
+
+Body text in Verdana 12pt. This combination creates an elegant contrast between serif headings and clean sans-serif body text, making documents both professional and easy to read.
+
+Heading in Arial Bold 16pt
+
+Body text in Arial 12pt. Using the same font family for both headings and body creates a clean, cohesive, modern look that works well for business documents.

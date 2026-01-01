@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>paragraph_control</title><meta name="generator" content="docx-parser-converter"><style>body {
+    font-family: 'Calibri', 'Arial', sans-serif;
+    line-height: 1.5;
+    margin: 0 auto;
+    padding: 20px;
+}
+.page-break {
+    page-break-after: always;
+    break-after: page;
+}
+
+@media print {
+    .page-break {
+        page-break-after: always;
+    }
+}</style></head><body><main id="content" role="main"><p style="page-break-after: avoid">This paragraph has keepNext - it stays with the next paragraph</p><p>This paragraph follows the keepNext paragraph</p><p style="page-break-inside: avoid">This paragraph has keepLines - all lines stay on the same page. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><p style="page-break-before: always">This paragraph has pageBreakBefore - it starts on a new page</p><p>This paragraph has widowControl enabled</p><p>This paragraph has widowControl disabled</p><p>This paragraph suppresses line numbers</p><p>This paragraph suppresses automatic hyphenation</p><p style="direction: rtl" dir="rtl">This paragraph is bidirectional (RTL)</p><p>This paragraph has textDirection tbRl (top-to-bottom, right-to-left)</p><p>This paragraph has textAlignment center</p><p>This paragraph has outlineLvl 0 (like Heading 1)</p><p>This paragraph has outlineLvl 1 (like Heading 2)</p><p>This is framed text with specific dimensions</p><p><span style="font-size: 36pt">D</span></p><p>rop cap example - the large D above is a drop cap spanning 3 lines.</p><p>This paragraph has default run properties (bold, italic, 14pt) applied via pPr/rPr</p><p style="page-break-after: avoid; page-break-inside: avoid">Combined: keepNext + keepLines + widowControl</p></main></body></html>

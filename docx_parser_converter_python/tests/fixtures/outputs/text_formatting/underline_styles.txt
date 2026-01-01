@@ -1,0 +1,39 @@
+DOCX Underline Styles Demo
+
+Each line below shows a DOCX underline style (w:u/@w:val) applied to the text "Sample text". For styles that do NOT directly map to a native CSS underline style, a note is added so users know these will be approximated in HTML.
+
+w:u w:val="single": Sample text  ✅ Directly mapped to a CSS underline style.
+
+w:u w:val="words": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="double": Sample text  ✅ Directly mapped to a CSS underline style.
+
+w:u w:val="thick": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dotted": Sample text  ✅ Directly mapped to a CSS underline style.
+
+w:u w:val="dottedHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dash": Sample text  ✅ Directly mapped to a CSS underline style.
+
+w:u w:val="dashedHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dashLong": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dashLongHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dotDash": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dashDotHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dotDotDash": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="dashDotDotHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="wave": Sample text  ✅ Directly mapped to a CSS underline style.
+
+w:u w:val="wavyHeavy": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="wavyDouble": Sample text  ⚠ Does NOT directly map to a CSS underline style; it will be approximated in HTML/CSS.
+
+w:u w:val="none": Sample text  ✅ Directly mapped to a CSS underline style.

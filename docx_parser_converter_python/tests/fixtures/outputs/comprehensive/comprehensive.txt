@@ -1,0 +1,123 @@
+Comprehensive DOCX Features Demonstration
+
+1. Inline Text Formatting
+
+This section demonstrates various inline text formatting options.
+
+1.1 Basic Formatting
+
+Normal text, bold text, italic text, bold and italic.
+
+Single underline, double underline, wavy underline.
+
+Strikethrough text, highlighted text, SMALL CAPS TEXT.
+
+Mathematical notation: x2 + y = H2O
+
+2. Font Types and Sizes
+
+2.1 Different Font Types
+
+Arial font (default sans-serif)
+
+Times New Roman font (classic serif)
+
+Calibri font (modern sans-serif)
+
+Georgia font (elegant serif)
+
+Verdana font (screen-optimized)
+
+Courier New font (monospace)
+
+2.2 Different Font Sizes
+
+8pt text (very small)
+
+10pt text (small)
+
+12pt text (standard body)
+
+14pt text (slightly larger)
+
+18pt text (subheading size)
+
+24pt text (heading size)
+
+3. Text Colors
+
+Red text | Blue text | Green text | Orange text
+
+Purple text | Teal text | Brown text | Gray text
+
+Yellow highlight | Green highlight | Cyan highlight
+
+4. Styles from styles.xml
+
+The following paragraphs use styles defined in the styles section above:
+
+This paragraph uses the 'CustomHighlight' style with yellow background.
+
+This sentence has red bold character style and blue italic character style applied from styles.xml.
+
+5. Lists
+
+5.1 Bullet List
+
+•	First bullet point - demonstrating proper bullet formatting
+
+•	Second bullet point - uses LevelFormat.BULLET constant
+
+•	Third bullet point - not unicode symbols
+
+5.2 Numbered List
+
+1.	First numbered item - uses decimal numbering
+
+2.	Second numbered item - continues sequence
+
+3.	Third numbered item - proper Word numbering
+
+6. Tables
+
+Below is a table demonstrating borders, shading, and cell formatting:
+
++---------+--------------------+--------------+
+| Feature | Description        | Example      |
++---------+--------------------+--------------+
+| Bold    | Makes text bold    | Bold text    |
++---------+--------------------+--------------+
+| Italic  | Makes text italic  | Italic text  |
++---------+--------------------+--------------+
+| Color   | Changes text color | Colored text |
++---------+--------------------+--------------+
+
+7. Text Alignment
+
+This paragraph is left-aligned (default).
+
+This paragraph is center-aligned.
+
+This paragraph is right-aligned.
+
+This paragraph is justified. When there is enough text in a justified paragraph, it will stretch to fill the entire width of the page from left to right margin, creating clean edges on both sides.
+
+Summary
+
+This document demonstrates all major DOCX features:
+
+•	Inline formatting: bold, italic, underline, strikethrough, highlights
+
+•	Multiple font types: Arial, Times New Roman, Calibri, Georgia, Verdana, Courier New
+
+•	Font sizes: from 8pt to 24pt
+
+•	Text colors and highlights
+
+•	Style-based formatting using styles.xml references
+
+•	Bullet and numbered lists
+
+•	Tables with borders, shading, and formatted cells
+
+•	Text alignment options

@@ -1,0 +1,193 @@
+Text Formatting & Styles Demo
+
+1. Inline Text Formatting
+
+Basic Text Styles
+
+Here is bold text, italic text, bold and italic text, and underlined text.
+
+Underline Styles
+
+Single underline | Double underline | Thick underline | Dotted underline.
+
+Dash underline | Wavy underline | Colored underline.
+
+Text Effects
+
+Strikethrough | Double strikethrough | Small Caps | all caps (written in all lower case).
+
+Subscript and Superscript
+
+Chemical formula: H2O represents water. Einstein's famous equation: E=mc2. Mathematical notation: xn + yn = zn.
+
+Highlights (Named Colors)
+
+yellow highlight | green highlight | cyan highlight | magenta highlight
+
+blue highlight | red highlight | darkBlue highlight | darkRed highlight
+
+darkYellow highlight | darkGreen highlight | darkCyan highlight | darkMagenta highlight
+
+darkGray highlight | lightGray highlight | black highlight
+
+Text Colors (Hex Values)
+
+Primary colors with hex codes:
+
+Red (#FF0000) | Green (#00FF00) | Blue (#0000FF)
+
+Secondary and tertiary colors:
+
+Orange (#FF6600) | Purple (#800080) | Teal (#008080) | Pink (#FF69B4)
+
+Darker shades:
+
+Dark Red (#8B0000) | Dark Green (#006400) | Dark Blue (#00008B) | Dark Gray (#404040)
+
+Web-safe colors:
+
+Navy (#000080) | Maroon (#800000) | Olive (#808000) | Brown (#8B4513)
+
+Bright colors:
+
+Gold (#FFD700) | Cyan (#00FFFF) | Magenta (#FF00FF) | Lime (#00FF00)
+
+Grayscale:
+
+Black (#000000) | Dark Gray (#808080) | Silver (#C0C0C0) | Light Gray (#D3D3D3)
+
+Color + Highlight Combinations
+
+Red text (#FF0000) on yellow highlight | Blue (#0000FF) on cyan
+
+White (#FFFFFF) on red highlight | Green (#00AA00) on yellow
+
+Navy (#000080) on lightGray | Maroon (#800000) on cyan
+
+Combined Formatting
+
+Bold + Italic + Red + Underlined shows that multiple formatting options can be combined on the same text.
+
+Large Bold Green Text demonstrates size, weight, and color together.
+
+2. Style-based Formatting (from styles.xml)
+
+The following examples use paragraph and character styles defined in the styles section:
+
+Paragraph Styles
+
+This paragraph uses the 'Quote' style: italic text in Georgia font with indentation on both sides, perfect for highlighting quotations and testimonials.
+
+function hello() { return 'This uses the Code style: Courier New font with gray background'; }
+
+⚠️ This paragraph uses the 'Important' style with bold red text on a light red background to draw attention to critical information.
+
+Character Styles
+
+This sentence contains highlighted text using the Highlight character style, emphasized text using the Emphasis style, and strong text using the Strong style.
+
+Pay attention to ALERT TEXT which uses the Alert character style to indicate warnings or important notices.
+
+4. Line Spacing and Paragraph Spacing
+
+Line Spacing (Vertical space between lines)
+
+───────────────────────────────────────────────────────────
+
+SINGLE SPACING (line: 240): This is the first line of a paragraph with single spacing. This is the second line of the same paragraph with single spacing. This is the third line demonstrating how lines sit close together with minimal vertical space. Notice how compact the text appears when using single spacing, which is the default for most documents.
+
+───────────────────────────────────────────────────────────
+
+1.5 LINE SPACING (line: 360): This is the first line of a paragraph with 1.5 line spacing. This is the second line of the same paragraph with 1.5 spacing. This is the third line demonstrating increased breathing room between lines. Notice how the extra vertical space makes this more readable than single spacing, especially for longer documents.
+
+───────────────────────────────────────────────────────────
+
+DOUBLE SPACING (line: 480): This is the first line of a paragraph with double spacing. This is the second line of the same paragraph with double spacing. This is the third line demonstrating maximum standard vertical space between lines. Notice the significant space between each line, which is commonly required in academic manuscripts for editing and annotation purposes.
+
+───────────────────────────────────────────────────────────
+
+EXACT LINE HEIGHT of 18pt (line: 360, lineRule: 'exact') - First paragraph: This paragraph uses exact line height, which ensures consistent vertical spacing regardless of font size or special characters.
+
+EXACT LINE HEIGHT - Second paragraph: Another paragraph with exact 18pt line height. The spacing between this paragraph and the previous one is precisely controlled.
+
+EXACT LINE HEIGHT - Third paragraph: A third paragraph demonstrating that exact line height maintains uniform spacing throughout, regardless of content.
+
+───────────────────────────────────────────────────────────
+
+AT LEAST 15pt line height (line: 300, lineRule: 'atLeast') - First paragraph: This paragraph uses 'at least' line height, which ensures minimum spacing but can expand if needed.
+
+AT LEAST - Second paragraph: Another paragraph with 'at least' 15pt line height. This setting is flexible and will expand for larger characters or special formatting like superscripts.
+
+AT LEAST - Third paragraph: A third paragraph demonstrating the minimum spacing that adapts when necessary for content requirements.
+
+───────────────────────────────────────────────────────────
+
+Paragraph Spacing (Space before/after paragraphs)
+
+═══════════════════════════════════════════════════════════
+
+DEFAULT SPACING - First paragraph: This paragraph has no extra spacing before or after. It sits directly next to adjacent paragraphs with minimal separation.
+
+DEFAULT SPACING - Second paragraph: Another paragraph with default spacing. Notice how close it is to the previous and next paragraphs. There's minimal visual separation between them.
+
+DEFAULT SPACING - Third paragraph: Yet another paragraph with default spacing, demonstrating how paragraphs flow continuously without extra space between them.
+
+═══════════════════════════════════════════════════════════
+
+EXTRA SPACING (12pt before/after + 1.5 line spacing) - First paragraph: This paragraph has 12pt space before and after (before: 240, after: 240), plus 1.5 line spacing. Notice the clear visual separation from surrounding paragraphs.
+
+EXTRA SPACING - Second paragraph: Another paragraph with the same spacing settings. See how the space between this and the previous paragraph creates distinct visual blocks, making the document easier to scan and read.
+
+EXTRA SPACING - Third paragraph: A third paragraph demonstrating consistent spacing. This spacing style is excellent for reports, articles, and documents where clear paragraph separation improves readability.
+
+═══════════════════════════════════════════════════════════
+
+BACK TO DEFAULT - First paragraph: Now we're back to default spacing without any extra space before or after. Notice the immediate difference in how tightly these paragraphs sit together compared to the spaced paragraphs above.
+
+BACK TO DEFAULT - Second paragraph: Another default-spaced paragraph showing the compact layout. This demonstrates the clear visual difference that paragraph spacing makes in document layout and readability.
+
+═══════════════════════════════════════════════════════════
+
+Line Spacing Values Explained
+
+Line spacing is measured in twentieths of a point (DXA):
+
+• line: 240 = Single spacing (12pt)
+
+• line: 360 = 1.5 line spacing (18pt)
+
+• line: 480 = Double spacing (24pt)
+
+• line: 276 = 1.15 spacing (Word default, 13.8pt)
+
+Line Rule Options
+
+• lineRule: 'auto' - Spacing adjusts automatically based on font size
+
+• lineRule: 'exact' - Fixed spacing regardless of content
+
+• lineRule: 'atLeast' - Minimum spacing, can expand if needed
+
+5. Inline vs Style-based: When to Use Each
+
+Use Inline Formatting When:
+
+• Formatting is unique and won't be repeated
+
+• Making quick, one-off emphasis like making a single word bold or italic
+
+• Creating document-specific formatting that doesn't need consistency
+
+Use Style-based Formatting When:
+
+• Formatting will be reused throughout the document
+
+• You need consistent formatting across multiple elements
+
+• Working with templates or professional documents
+
+• You want easy global updates (change style definition once, affects all instances)
+
+Summary
+
+This document demonstrates both inline formatting (applied directly to text) and style-based formatting (referenced from styles.xml). Both approaches are valid and serve different purposes in document creation.

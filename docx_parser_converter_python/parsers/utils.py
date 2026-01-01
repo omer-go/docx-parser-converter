@@ -207,7 +207,7 @@ def get_local_name(element: Element) -> str:
         element: XML element.
 
     Returns:
-        Tag name without namespace prefix.
+        Tag name without namespace prefix, or empty string for non-element nodes.
 
     Example:
         >>> # For element with tag "{http://...}pPr"
@@ -215,6 +215,9 @@ def get_local_name(element: Element) -> str:
         'pPr'
     """
     tag = element.tag
+    # Handle comments and processing instructions where tag is callable
+    if not isinstance(tag, str):
+        return ""
     if "}" in tag:
         return tag.split("}")[1]
     return tag

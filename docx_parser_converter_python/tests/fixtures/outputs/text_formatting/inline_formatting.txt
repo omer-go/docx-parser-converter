@@ -1,0 +1,458 @@
+DOCX Inline Formatting Demo
+
+This document demonstrates inline run properties (w:rPr) applied directly in document.xml without using styles.xml. Each section shows the style name, a styled sample, the corresponding run XML, and a note about CSS equivalence or approximation.
+
+Bold
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:b/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: font-weight: bold;
+
+Italic
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:i/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: font-style: italic;
+
+Bold + Italic
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:b/><w:i/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: font-weight: bold; font-style: italic;
+
+Underline single
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="single"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: solid;
+
+Underline words
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="words"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; (CSS underlines spaces as well).
+
+Underline double
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="double"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: double;
+
+Underline dotted
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dotted"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: dotted;
+
+Underline thick
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="thick"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-thickness: 0.2em;
+
+Underline dottedHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dottedHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-style: dotted; text-decoration-thickness: 0.2em;
+
+Underline dash
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dash"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: dashed;
+
+Underline dashedHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dashedHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: text-decoration-line: underline; text-decoration-style: dashed; text-decoration-thickness: 0.2em;
+
+Underline dashLong
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dashLong"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;
+
+Underline dashLongHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dashLongHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed; text-decoration-thickness: 0.2em;
+
+Underline dotDash
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dotDash"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;
+
+Underline dashDotHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dashDotHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed; text-decoration-thickness: 0.2em;
+
+Underline dotDotDash
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dotDotDash"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;
+
+Underline dashDotDotHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="dashDotDotHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: dashed;
+
+Underline wave
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="wave"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: underline; text-decoration-style: wavy;
+
+Underline wavyHeavy
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="wavyHeavy"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: wavy; text-decoration-thickness: 0.2em;
+
+Underline wavyDouble
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="wavyDouble"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No exact CSS; approximate with: text-decoration-line: underline; text-decoration-style: wavy;
+
+Underline none
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:u w:val="none"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: none;
+
+Strikethrough
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:strike/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-decoration-line: line-through;
+
+Double strikethrough
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:dstrike/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: text-decoration-line: line-through; text-decoration-style: double;
+
+All caps
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:caps/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: text-transform: uppercase;
+
+Small caps
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:smallCaps/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: font-variant: small-caps;
+
+Superscript
+
+Regular Text vs. Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:vertAlign w:val="superscript"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: vertical-align: super; font-size: smaller;
+
+Subscript
+
+Regular Text vs. Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:vertAlign w:val="subscript"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: vertical-align: sub; font-size: smaller;
+
+Highlight (yellow - excplicit name)
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:highlight w:val="yellow"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: background-color: yellow;
+
+Text color (red - FF0000 hex)
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:color w:val="FF0000"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: color: #FF0000;
+
+Larger font size (36 half-points)
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:sz w:val="36"/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Direct CSS: font-size: 18pt;
+
+Outline
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:outline/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: No direct CSS; common approximation: -webkit-text-stroke: 1px currentColor; color: transparent;
+
+Shadow
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:shadow/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+
+Emboss
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:emboss/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate with multiple text-shadow values to simulate raised effect.
+
+Imprint
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:imprint/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate with multiple text-shadow values to simulate inset effect.
+
+Hidden (vanish)
+
+Sample Text
+
+Run XML:
+
+<w:r>
+  <w:rPr><w:vanish/></w:rPr>
+  <w:t>Sample Text</w:t>
+</w:r>
+
+CSS mapping: Approximate CSS: visibility: hidden; (or display: none;).
