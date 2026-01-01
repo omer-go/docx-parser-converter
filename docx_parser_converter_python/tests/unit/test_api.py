@@ -7,7 +7,6 @@ import tempfile
 from pathlib import Path
 
 from api import ConversionConfig, docx_to_html, docx_to_text
-
 from models.document.document import Body, Document
 from models.document.paragraph import Paragraph
 from models.document.run import Run

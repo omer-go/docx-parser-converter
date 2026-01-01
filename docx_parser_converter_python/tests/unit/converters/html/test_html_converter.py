@@ -325,6 +325,251 @@ class TestNumberingConversion:
 
 
 # =============================================================================
+# HTML List Prefix Tests (Regression Tests)
+# =============================================================================
+
+
+class TestHTMLListPrefixes:
+    """Tests for list prefixes in HTML output.
+
+    These tests ensure that numbered and bulleted list paragraphs
+    display the correct prefixes (bullets, numbers) in HTML output.
+    """
+
+    def test_numbered_list_prefix_in_html(self) -> None:
+        """Numbered list paragraph shows number prefix in HTML."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        # Create numbering definitions
+        level = Level(ilvl=0, num_fmt="decimal", lvl_text="%1.")
+        abstract = AbstractNumbering(abstract_num_id=1, lvl=[level])
+        instance = NumberingInstance(num_id=1, abstract_num_id=1)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        # Create paragraph with numbering
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=0)),
+                        content=[Run(content=[Text(value="First item")])],
+                    )
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        # The numbered prefix should appear in the output
+        assert "First item" in result
+        assert "1." in result
+
+    def test_bulleted_list_prefix_in_html(self) -> None:
+        """Bulleted list paragraph shows bullet prefix in HTML."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        # Create bullet numbering
+        level = Level(ilvl=0, num_fmt="bullet", lvl_text="•")
+        abstract = AbstractNumbering(abstract_num_id=2, lvl=[level])
+        instance = NumberingInstance(num_id=2, abstract_num_id=2)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        # Create paragraph with bullet
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=2, ilvl=0)),
+                        content=[Run(content=[Text(value="Bullet item")])],
+                    )
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        # The bullet should appear in the output
+        assert "Bullet item" in result
+        assert "•" in result
+
+    def test_multi_level_numbered_list(self) -> None:
+        """Multi-level numbered list shows correct prefixes."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        # Create multi-level numbering
+        # Using %1 as the placeholder for current level's counter
+        levels = [
+            Level(ilvl=0, num_fmt="decimal", lvl_text="%1."),
+            Level(ilvl=1, num_fmt="lowerLetter", lvl_text="%1)"),  # %1 refers to current level
+        ]
+        abstract = AbstractNumbering(abstract_num_id=3, lvl=levels)
+        instance = NumberingInstance(num_id=3, abstract_num_id=3)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=3, ilvl=0)),
+                        content=[Run(content=[Text(value="Level 0 item")])],
+                    ),
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=3, ilvl=1)),
+                        content=[Run(content=[Text(value="Level 1 item")])],
+                    ),
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        # Both level prefixes should appear
+        assert "Level 0 item" in result
+        assert "Level 1 item" in result
+        assert "1." in result
+        # Level 1 uses lowerLetter format - a, b, c...
+        assert "a)" in result
+
+    def test_sequential_numbered_items(self) -> None:
+        """Sequential numbered items increment correctly."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        level = Level(ilvl=0, num_fmt="decimal", lvl_text="%1.")
+        abstract = AbstractNumbering(abstract_num_id=4, lvl=[level])
+        instance = NumberingInstance(num_id=4, abstract_num_id=4)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=4, ilvl=0)),
+                        content=[Run(content=[Text(value="Item one")])],
+                    ),
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=4, ilvl=0)),
+                        content=[Run(content=[Text(value="Item two")])],
+                    ),
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=4, ilvl=0)),
+                        content=[Run(content=[Text(value="Item three")])],
+                    ),
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        # All items and sequential numbers should appear
+        assert "Item one" in result
+        assert "Item two" in result
+        assert "Item three" in result
+        assert "1." in result
+        assert "2." in result
+        assert "3." in result
+
+    def test_roman_numeral_list(self) -> None:
+        """Roman numeral list shows correct prefixes."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        level = Level(ilvl=0, num_fmt="lowerRoman", lvl_text="%1.")
+        abstract = AbstractNumbering(abstract_num_id=5, lvl=[level])
+        instance = NumberingInstance(num_id=5, abstract_num_id=5)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=5, ilvl=0)),
+                        content=[Run(content=[Text(value="Roman item")])],
+                    ),
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        assert "Roman item" in result
+        assert "i." in result
+
+    def test_list_prefix_with_custom_separator(self) -> None:
+        """List with custom separator (parenthesis) shows correctly."""
+        from models.numbering.abstract_numbering import AbstractNumbering
+        from models.numbering.level import Level
+        from models.numbering.numbering import Numbering
+        from models.numbering.numbering_instance import NumberingInstance
+
+        level = Level(ilvl=0, num_fmt="decimal", lvl_text="%1)")
+        abstract = AbstractNumbering(abstract_num_id=6, lvl=[level])
+        instance = NumberingInstance(num_id=6, abstract_num_id=6)
+        numbering = Numbering(abstract_num=[abstract], num=[instance])
+
+        from models.document.paragraph import NumberingProperties
+
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=6, ilvl=0)),
+                        content=[Run(content=[Text(value="Paren item")])],
+                    ),
+                ]
+            )
+        )
+
+        converter = HTMLConverter(numbering=numbering)
+        result = converter.convert(doc)
+
+        assert "Paren item" in result
+        assert "1)" in result
+
+    def test_no_prefix_when_numbering_missing(self) -> None:
+        """Paragraph without numbering has no list prefix."""
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="No list")])])])
+        )
+
+        converter = HTMLConverter(numbering=None)
+        result = converter.convert(doc)
+
+        assert "No list" in result
+        # Should not have list-marker span (which would indicate a list prefix)
+        assert "list-marker" not in result
+        assert "•" not in result
+
+
+# =============================================================================
 # Table Conversion Tests
 # =============================================================================
 

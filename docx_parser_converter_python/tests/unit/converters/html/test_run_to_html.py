@@ -438,3 +438,272 @@ class TestRunToHTMLConverterClass:
         converter = RunToHTMLConverter()
         result = converter.convert_content(Text(value="Test"))
         assert "Test" in result
+
+
+# =============================================================================
+# Run Style Resolution Tests (Regression Tests)
+# =============================================================================
+
+
+class TestRunStyleResolution:
+    """Tests for run (character) style resolution via StyleResolver.
+
+    These tests ensure that when a style_resolver is provided,
+    run styles (r_style) are properly resolved and CSS is generated.
+    """
+
+    def test_run_style_resolved_with_style_resolver(self) -> None:
+        """Run with r_style is resolved when style_resolver is provided."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        # Create a character style with bold
+        style = Style(
+            style_id="Strong",
+            name="Strong",
+            type="character",
+            r_pr={"b": True},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        # Create run referencing the style
+        run = Run(
+            r_pr=RunProperties(r_style="Strong"),
+            content=[Text(value="Bold text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # The style's bold should be applied
+        assert "Bold text" in result
+        # Should have bold formatting - either <strong> or font-weight: bold
+        assert "strong>" in result.lower() or "font-weight" in result
+
+    def test_run_style_with_italic(self) -> None:
+        """Run style with italic is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Emphasis",
+            name="Emphasis",
+            type="character",
+            r_pr={"i": True},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="Emphasis"),
+            content=[Text(value="Italic text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # Should have italic formatting
+        assert "Italic text" in result
+        assert "em>" in result.lower() or "font-style" in result
+
+    def test_run_style_with_color(self) -> None:
+        """Run style with text color is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="RedText",
+            name="Red Text",
+            type="character",
+            r_pr={"color": {"val": "FF0000"}},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="RedText"),
+            content=[Text(value="Red text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # Should have red color
+        assert "Red text" in result
+        assert "FF0000" in result.upper() or "color" in result
+
+    def test_run_style_with_font_size(self) -> None:
+        """Run style with font size is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Large",
+            name="Large",
+            type="character",
+            r_pr={"sz": 32},  # 16pt
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="Large"),
+            content=[Text(value="Large text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # Should have font-size
+        assert "Large text" in result
+        assert "16pt" in result or "font-size" in result
+
+    def test_direct_run_formatting_overrides_style(self) -> None:
+        """Direct run formatting overrides style properties."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        # Style has blue color
+        style = Style(
+            style_id="BlueText",
+            name="Blue Text",
+            type="character",
+            r_pr={"color": {"val": "0000FF"}},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        # Run has style but also direct red color
+        run = Run(
+            r_pr=RunProperties(r_style="BlueText", color=Color(val="FF0000")),
+            content=[Text(value="Red text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # Direct formatting (red) should override style (blue)
+        assert "Red text" in result
+        assert "FF0000" in result.upper()
+
+    def test_missing_run_style_handled_gracefully(self) -> None:
+        """Reference to missing run style is handled gracefully."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.styles import Styles
+
+        styles = Styles(style=[])  # No styles defined
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="NonexistentStyle"),
+            content=[Text(value="Content")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        # Should still render content without error
+        assert "Content" in result
+
+    def test_none_style_resolver_works(self) -> None:
+        """Run renders correctly without style resolver."""
+        run = Run(
+            r_pr=RunProperties(r_style="Strong", b=True),
+            content=[Text(value="Bold content")],
+        )
+
+        # No style_resolver - direct formatting still applies
+        result = run_to_html(run, style_resolver=None)
+
+        assert "Bold content" in result
+
+    def test_run_style_with_underline(self) -> None:
+        """Run style with underline is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="UnderlinedText",
+            name="Underlined",
+            type="character",
+            r_pr={"u": {"val": "single"}},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="UnderlinedText"),
+            content=[Text(value="Underlined text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        assert "Underlined text" in result
+        assert "underline" in result
+
+    def test_run_style_with_highlight(self) -> None:
+        """Run style with highlight is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Highlighted",
+            name="Highlighted",
+            type="character",
+            r_pr={"highlight": "yellow"},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        run = Run(
+            r_pr=RunProperties(r_style="Highlighted"),
+            content=[Text(value="Highlighted text")],
+        )
+
+        result = run_to_html(run, style_resolver=style_resolver)
+
+        assert "Highlighted text" in result
+        assert "background" in result
+
+    def test_combined_paragraph_and_run_styles(self) -> None:
+        """Test that both paragraph and run styles can be resolved together."""
+        from converters.common.style_resolver import StyleResolver
+        from converters.html.paragraph_to_html import paragraph_to_html
+        from models.document.paragraph import Paragraph, ParagraphProperties
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        # Create both paragraph and character styles
+        para_style = Style(
+            style_id="Centered",
+            name="Centered",
+            type="paragraph",
+            p_pr={"jc": "center"},
+        )
+        char_style = Style(
+            style_id="Bold",
+            name="Bold",
+            type="character",
+            r_pr={"b": True},
+        )
+        styles = Styles(style=[para_style, char_style])
+        style_resolver = StyleResolver(styles)
+
+        # Create paragraph with both styles
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Centered"),
+            content=[
+                Run(
+                    r_pr=RunProperties(r_style="Bold"),
+                    content=[Text(value="Centered bold text")],
+                )
+            ],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        # Both styles should be applied
+        assert "Centered bold text" in result
+        assert "center" in result

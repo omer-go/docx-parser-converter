@@ -10,7 +10,6 @@ from pathlib import Path
 import pytest
 
 from api import ConversionConfig, docx_to_html, docx_to_text
-
 from core.exceptions import (
     DocxNotFoundError,
     DocxValidationError,

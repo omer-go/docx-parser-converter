@@ -961,3 +961,183 @@ class TestParagraphToHTMLConverterClass:
         run = Run(content=[Text(value="Test")])
         result = paragraph_content_to_html(run)
         assert "Test" in result
+
+
+# =============================================================================
+# Style Resolution Tests (Regression Tests)
+# =============================================================================
+
+
+class TestParagraphStyleResolution:
+    """Tests for paragraph style resolution via StyleResolver.
+
+    These tests ensure that when a style_resolver is provided,
+    paragraph styles (p_style) are properly resolved and CSS is generated.
+    """
+
+    def test_paragraph_style_resolved_with_style_resolver(self) -> None:
+        """Paragraph with p_style is resolved when style_resolver is provided."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        # Create a style with center alignment
+        style = Style(
+            style_id="Heading1",
+            name="Heading 1",
+            type="paragraph",
+            p_pr={"jc": "center"},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        # Create paragraph referencing the style
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Heading1"),
+            content=[Run(content=[Text(value="Styled heading")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        # The style's center alignment should be applied
+        assert "text-align" in result
+        assert "center" in result
+
+    def test_paragraph_style_with_indentation(self) -> None:
+        """Paragraph style with indentation is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Quote",
+            name="Quote",
+            type="paragraph",
+            p_pr={"ind": {"left": 720, "right": 720}},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Quote"),
+            content=[Run(content=[Text(value="Quoted text")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        # The style's indentation should be applied
+        assert "margin-left" in result
+        assert "margin-right" in result
+
+    def test_direct_formatting_overrides_style(self) -> None:
+        """Direct paragraph formatting overrides style properties."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        # Style has left alignment
+        style = Style(
+            style_id="Normal",
+            name="Normal",
+            type="paragraph",
+            p_pr={"jc": "left"},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        # Paragraph has style but also direct right alignment
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Normal", jc="right"),
+            content=[Run(content=[Text(value="Right aligned")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        # Direct formatting (right) should override style (left)
+        assert "text-align" in result
+        assert "right" in result
+
+    def test_missing_style_handled_gracefully(self) -> None:
+        """Reference to missing style is handled gracefully."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.styles import Styles
+
+        styles = Styles(style=[])  # No styles defined
+        style_resolver = StyleResolver(styles)
+
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="NonexistentStyle"),
+            content=[Run(content=[Text(value="Content")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        # Should still render content without error
+        assert "Content" in result
+
+    def test_none_style_resolver_works(self) -> None:
+        """Paragraph renders correctly without style resolver."""
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Heading1", jc="center"),
+            content=[Run(content=[Text(value="Content")])],
+        )
+
+        # No style_resolver - direct formatting still applies
+        result = paragraph_to_html(para, style_resolver=None)
+
+        assert "Content" in result
+        assert "center" in result
+
+    def test_style_with_spacing(self) -> None:
+        """Paragraph style with spacing is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Spaced",
+            name="Spaced Paragraph",
+            type="paragraph",
+            p_pr={"spacing": {"before": 240, "after": 120}},
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Spaced"),
+            content=[Run(content=[Text(value="Spaced content")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        assert "margin-top" in result
+        assert "margin-bottom" in result
+
+    def test_style_with_border(self) -> None:
+        """Paragraph style with border is resolved."""
+        from converters.common.style_resolver import StyleResolver
+        from models.styles.style import Style
+        from models.styles.styles import Styles
+
+        style = Style(
+            style_id="Boxed",
+            name="Boxed",
+            type="paragraph",
+            p_pr={
+                "p_bdr": {
+                    "top": {"val": "single", "sz": 8, "color": "000000"},
+                    "bottom": {"val": "single", "sz": 8, "color": "000000"},
+                }
+            },
+        )
+        styles = Styles(style=[style])
+        style_resolver = StyleResolver(styles)
+
+        para = Paragraph(
+            p_pr=ParagraphProperties(p_style="Boxed"),
+            content=[Run(content=[Text(value="Boxed content")])],
+        )
+
+        result = paragraph_to_html(para, style_resolver=style_resolver)
+
+        assert "border" in result

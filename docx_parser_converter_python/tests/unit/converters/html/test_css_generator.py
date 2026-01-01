@@ -739,3 +739,111 @@ class TestCSSEdgeCases:
         # Should handle gracefully with negative value
         assert "margin-left" in result
         assert "-36pt" in result["margin-left"]
+
+
+# =============================================================================
+# Underline Style Variants Tests (Regression Tests)
+# =============================================================================
+
+
+class TestUnderlineStyleVariants:
+    """Tests for underline style variants generating correct CSS text-decoration-style.
+
+    These tests ensure that different DOCX underline styles (double, wave, dotted, etc.)
+    are properly converted to CSS text-decoration-style values.
+    """
+
+    def test_single_underline_no_style(self) -> None:
+        """Single underline uses solid style (default, no explicit style needed)."""
+        r_pr = RunProperties(u=Underline(val="single"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        # Single underline should not have extra style (uses default solid)
+        assert "double" not in result["text-decoration"]
+        assert "wavy" not in result["text-decoration"]
+
+    def test_double_underline_generates_double_style(self) -> None:
+        """Double underline generates 'underline double' CSS."""
+        r_pr = RunProperties(u=Underline(val="double"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        assert "double" in result["text-decoration"]
+
+    def test_wave_underline_generates_wavy_style(self) -> None:
+        """Wave underline generates 'underline wavy' CSS."""
+        r_pr = RunProperties(u=Underline(val="wave"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        assert "wavy" in result["text-decoration"]
+
+    def test_dotted_underline_generates_dotted_style(self) -> None:
+        """Dotted underline generates 'underline dotted' CSS."""
+        r_pr = RunProperties(u=Underline(val="dotted"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        assert "dotted" in result["text-decoration"]
+
+    def test_dash_underline_generates_dashed_style(self) -> None:
+        """Dash underline generates 'underline dashed' CSS."""
+        r_pr = RunProperties(u=Underline(val="dash"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        assert "dashed" in result["text-decoration"]
+
+    def test_wavy_heavy_underline(self) -> None:
+        """Wavy heavy underline also uses wavy style."""
+        r_pr = RunProperties(u=Underline(val="wavyHeavy"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "wavy" in result["text-decoration"]
+
+    def test_dotted_heavy_underline(self) -> None:
+        """Dotted heavy underline uses dotted style."""
+        r_pr = RunProperties(u=Underline(val="dottedHeavy"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "dotted" in result["text-decoration"]
+
+    def test_dash_long_underline(self) -> None:
+        """Dash long underline uses dashed style."""
+        r_pr = RunProperties(u=Underline(val="dashLong"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "dashed" in result["text-decoration"]
+
+    def test_thick_underline_uses_solid(self) -> None:
+        """Thick underline uses solid style (no direct CSS equivalent for thickness)."""
+        r_pr = RunProperties(u=Underline(val="thick"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+        # Thick uses solid (default), no special style
+        # It shouldn't have wavy/double/dotted/dashed
+        text_dec = result["text-decoration"]
+        assert "double" not in text_dec
+        assert "wavy" not in text_dec
+        assert "dotted" not in text_dec
+        assert "dashed" not in text_dec
+
+    def test_words_underline_uses_solid(self) -> None:
+        """Words underline (underline words only) uses solid style."""
+        r_pr = RunProperties(u=Underline(val="words"))
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        assert "underline" in result["text-decoration"]
+
+    def test_underline_with_strikethrough_and_style(self) -> None:
+        """Combined underline with style and strikethrough."""
+        r_pr = RunProperties(u=Underline(val="double"), strike=True)
+        result = run_properties_to_css(r_pr)
+        assert "text-decoration" in result
+        # Both underline and line-through should be present
+        text_dec = result["text-decoration"]
+        assert "underline" in text_dec
+        assert "line-through" in text_dec
+        assert "double" in text_dec
