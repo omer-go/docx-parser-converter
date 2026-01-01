@@ -307,9 +307,9 @@ class TestNumberingConversion:
 
     def test_multi_level_list(self) -> None:
         """Multi-level nested list."""
-        # Multi-level lists are tracked by level
+        # Multi-level lists are tracked by NumberingTracker
         converter = HTMLConverter()
-        assert converter._numbering_counters == {}
+        assert converter._numbering_tracker is not None
 
     def test_list_continuation(self) -> None:
         """List continues across paragraphs."""
@@ -412,10 +412,10 @@ class TestHTMLListPrefixes:
         from models.numbering.numbering_instance import NumberingInstance
 
         # Create multi-level numbering
-        # Using %1 as the placeholder for current level's counter
+        # In OOXML, %1 refers to level 0's counter, %2 to level 1's, etc.
         levels = [
             Level(ilvl=0, num_fmt="decimal", lvl_text="%1."),
-            Level(ilvl=1, num_fmt="lowerLetter", lvl_text="%1)"),  # %1 refers to current level
+            Level(ilvl=1, num_fmt="lowerLetter", lvl_text="%2)"),  # %2 refers to level 1's counter
         ]
         abstract = AbstractNumbering(abstract_num_id=3, lvl=levels)
         instance = NumberingInstance(num_id=3, abstract_num_id=3)

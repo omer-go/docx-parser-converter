@@ -9,13 +9,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import BinaryIO
 
+from converters.common.numbering_tracker import NumberingTracker
 from converters.common.style_resolver import StyleResolver
 from converters.html.css_generator import CSSGenerator
 from converters.html.html_document import HTMLDocumentBuilder
 from converters.html.paragraph_to_html import paragraph_to_html
 from converters.html.run_to_html import run_to_html
 from converters.html.table_to_html import table_to_html
-from converters.text.numbering_to_text import format_number
 from models.document.document import Document
 from models.document.paragraph import Paragraph
 from models.document.run import Run
@@ -117,7 +117,9 @@ class HTMLConverter:
         self.numbering = numbering
         self.relationships = relationships or {}
         self.css_generator = CSSGenerator()
-        self._numbering_counters: dict[tuple[int, int], int] = {}
+
+        # Create numbering tracker for list counter management
+        self._numbering_tracker = NumberingTracker(numbering)
 
         # Create style resolver for style inheritance
         doc_defaults = styles.doc_defaults if styles else None
@@ -135,8 +137,8 @@ class HTMLConverter:
         if document is None:
             return self._wrap_content("")
 
-        # Reset numbering counters for new document
-        self._numbering_counters.clear()
+        # Reset numbering tracker for new document
+        self._numbering_tracker.reset()
 
         # Convert body content
         content_parts = []
@@ -165,13 +167,15 @@ class HTMLConverter:
         Returns:
             HTML string
         """
-        # Get numbering prefix if applicable
+        # Get numbering prefix and indentation if applicable
         numbering_prefix = self._get_numbering_prefix(paragraph)
+        numbering_indent_pt = self._get_numbering_indentation(paragraph)
 
         return paragraph_to_html(
             paragraph,
             relationships=self.relationships,
             numbering_prefix=numbering_prefix,
+            numbering_indent_pt=numbering_indent_pt,
             use_semantic_tags=self.config.use_semantic_tags,
             css_generator=self.css_generator,
             style_resolver=self.style_resolver,
@@ -213,6 +217,9 @@ class HTMLConverter:
     def _get_numbering_prefix(self, para: Paragraph | None) -> str | None:
         """Get numbering prefix for paragraph.
 
+        Uses NumberingTracker for proper handling of start values,
+        multi-level placeholders, and different number formats.
+
         Args:
             para: Paragraph element
 
@@ -226,43 +233,14 @@ class HTMLConverter:
         if num_pr.num_id is None or num_pr.ilvl is None:
             return None
 
-        key = (num_pr.num_id, num_pr.ilvl)
+        # Get the formatted number from the numbering tracker
+        prefix = self._numbering_tracker.get_number(num_pr.num_id, num_pr.ilvl)
+        if not prefix:
+            return None
 
-        # Increment counter
-        current = self._numbering_counters.get(key, 0) + 1
-        self._numbering_counters[key] = current
-
-        # Get format from numbering definitions
-        num_fmt = "decimal"
-        lvl_text = "%1."
-        suff = "tab"
-
-        if self.numbering:
-            # Find the numbering instance
-            for num_instance in self.numbering.num:
-                if num_instance.num_id == num_pr.num_id:
-                    # Find the abstract numbering
-                    for abstract in self.numbering.abstract_num:
-                        if abstract.abstract_num_id == num_instance.abstract_num_id:
-                            # Find the level
-                            for level in abstract.lvl:
-                                if level.ilvl == num_pr.ilvl:
-                                    num_fmt = level.num_fmt or "decimal"
-                                    lvl_text = level.lvl_text or "%1."
-                                    suff = level.suff or "tab"
-                                    break
-                            break
-                    break
-
-        # Format the prefix
-        if num_fmt == "bullet":
-            prefix = lvl_text if lvl_text else "•"
-        else:
-            formatted = format_number(current, num_fmt)
-            if "%1" in lvl_text:
-                prefix = lvl_text.replace("%1", formatted)
-            else:
-                prefix = formatted + lvl_text
+        # Get suffix from level definition
+        level = self._numbering_tracker.get_level(num_pr.num_id, num_pr.ilvl)
+        suff = level.suff if level and level.suff else "tab"
 
         # Get suffix
         if suff == "tab":
@@ -273,6 +251,37 @@ class HTMLConverter:
             suffix = ""
 
         return prefix + suffix
+
+    def _get_numbering_indentation(self, para: Paragraph | None) -> float | None:
+        """Get left indentation in points from numbering level.
+
+        Args:
+            para: Paragraph element
+
+        Returns:
+            Left indentation in points, or None if not applicable
+        """
+        if para is None or para.p_pr is None or para.p_pr.num_pr is None:
+            return None
+
+        num_pr = para.p_pr.num_pr
+        if num_pr.num_id is None or num_pr.ilvl is None:
+            return None
+
+        # Get level definition
+        level = self._numbering_tracker.get_level(num_pr.num_id, num_pr.ilvl)
+        if level is None or level.p_pr is None:
+            return None
+
+        # Extract indentation from level's paragraph properties
+        # The level parser stores indentation directly in p_pr (not nested under "ind")
+        p_pr = level.p_pr
+        if isinstance(p_pr, dict) and "left" in p_pr:
+            left_twips = p_pr["left"]
+            if isinstance(left_twips, (int, float)):
+                # Convert twips to points (1 point = 20 twips)
+                return left_twips / 20
+        return None
 
     def _wrap_content(self, content: str) -> str:
         """Wrap content in HTML document structure.

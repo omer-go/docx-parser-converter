@@ -166,6 +166,7 @@ def paragraph_to_html(
     *,
     relationships: dict[str, str] | None = None,
     numbering_prefix: str | None = None,
+    numbering_indent_pt: float | None = None,
     use_semantic_tags: bool = True,
     use_headings: bool = False,
     css_generator: CSSGenerator | None = None,
@@ -177,6 +178,7 @@ def paragraph_to_html(
         para: Paragraph model instance
         relationships: Dict mapping r:id to URL for hyperlinks
         numbering_prefix: List number/bullet prefix to prepend
+        numbering_indent_pt: Left indentation in points from numbering level
         use_semantic_tags: Use semantic tags (<strong>, <em>)
         use_headings: Use heading tags (<h1>-<h6>) for outline levels
         css_generator: CSS generator instance
@@ -212,6 +214,10 @@ def paragraph_to_html(
 
     # Generate CSS from direct paragraph properties
     css_props = paragraph_properties_to_css(para.p_pr)
+
+    # Apply numbering indentation if provided (overrides other left margin)
+    if numbering_indent_pt is not None:
+        css_props["margin-left"] = f"{numbering_indent_pt}pt"
 
     # Resolve paragraph style if present and merge with direct formatting
     if style_resolver and para.p_pr and para.p_pr.p_style:
