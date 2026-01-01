@@ -87,10 +87,10 @@ class TestFontToCSS:
         assert result == "Arial"
 
     def test_font_family_with_spaces(self) -> None:
-        """Font names with spaces are quoted."""
+        """Font names with spaces are quoted with single quotes for HTML compatibility."""
         r_fonts = RunFonts(ascii="Times New Roman")
         result = font_family_to_css(r_fonts)
-        assert result == '"Times New Roman"'
+        assert result == "'Times New Roman'"
 
     def test_font_size_half_points(self) -> None:
         """Font size in half-points converts to pt."""
@@ -712,10 +712,10 @@ class TestCSSEdgeCases:
 
     def test_special_characters_escaped(self) -> None:
         """Special characters in font names are handled."""
-        # Font names with semicolons would be quoted
+        # Font names with spaces are quoted with single quotes
         r_fonts = RunFonts(ascii="Font Name")
         result = font_family_to_css(r_fonts)
-        assert result == '"Font Name"'
+        assert result == "'Font Name'"
 
     def test_very_large_size(self) -> None:
         """Very large font sizes."""
@@ -744,6 +744,69 @@ class TestCSSEdgeCases:
 # =============================================================================
 # Underline Style Variants Tests (Regression Tests)
 # =============================================================================
+
+
+# =============================================================================
+# Font Quoting Tests (Regression Tests)
+# =============================================================================
+
+
+class TestFontQuotingForHTML:
+    """Tests for font quoting that ensures HTML attribute compatibility.
+
+    Font names with spaces must use single quotes so they work correctly
+    inside double-quoted HTML style attributes.
+    """
+
+    def test_single_word_font_not_quoted(self) -> None:
+        """Single-word font names are not quoted."""
+        r_fonts = RunFonts(ascii="Arial")
+        result = font_family_to_css(r_fonts)
+        assert result == "Arial"
+        assert "'" not in result
+        assert '"' not in result
+
+    def test_multi_word_font_uses_single_quotes(self) -> None:
+        """Multi-word font names use single quotes for HTML compatibility."""
+        r_fonts = RunFonts(ascii="Times New Roman")
+        result = font_family_to_css(r_fonts)
+        assert result == "'Times New Roman'"
+        # Must use single quotes, not double quotes
+        assert result.startswith("'")
+        assert result.endswith("'")
+        assert '"' not in result
+
+    def test_courier_new_quoted_correctly(self) -> None:
+        """Courier New font is quoted with single quotes."""
+        r_fonts = RunFonts(ascii="Courier New")
+        result = font_family_to_css(r_fonts)
+        assert result == "'Courier New'"
+
+    def test_comic_sans_ms_quoted_correctly(self) -> None:
+        """Comic Sans MS font is quoted with single quotes."""
+        r_fonts = RunFonts(ascii="Comic Sans MS")
+        result = font_family_to_css(r_fonts)
+        assert result == "'Comic Sans MS'"
+
+    def test_font_in_html_style_attribute(self) -> None:
+        """Font family can be used inside HTML style attribute."""
+        r_fonts = RunFonts(ascii="Times New Roman")
+        font_css = font_family_to_css(r_fonts)
+
+        # Simulate building an HTML style attribute
+        style_attr = f'style="font-family: {font_css}; font-size: 12pt"'
+
+        # The attribute should be valid (no broken quotes)
+        assert style_attr.count('"') == 2  # Only opening and closing quotes
+        assert "'Times New Roman'" in style_attr
+
+    def test_run_properties_with_spaced_font(self) -> None:
+        """RunProperties with spaced font generates valid CSS."""
+        r_pr = RunProperties(r_fonts=RunFonts(ascii="Times New Roman"))
+        result = run_properties_to_css(r_pr)
+
+        assert "font-family" in result
+        assert result["font-family"] == "'Times New Roman'"
 
 
 class TestUnderlineStyleVariants:

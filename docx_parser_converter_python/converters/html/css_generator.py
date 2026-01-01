@@ -269,9 +269,9 @@ def font_family_to_css(fonts: RunFonts | None) -> str | None:
     if font_name is None:
         return None
 
-    # Quote font names with spaces
+    # Quote font names with spaces (use single quotes for HTML attribute compatibility)
     if " " in font_name:
-        return f'"{font_name}"'
+        return f"'{font_name}'"
 
     return font_name
 
