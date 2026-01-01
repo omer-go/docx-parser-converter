@@ -1,4 +1,5 @@
 """Parser for section properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.section import (
@@ -143,7 +144,9 @@ def parse_document_grid(element: Element | None) -> DocumentGrid | None:
     )
 
 
-def parse_header_footer_reference(element: Element | None, is_header: bool = True) -> HeaderFooterReference | None:
+def parse_header_footer_reference(
+    element: Element | None, is_header: bool = True
+) -> HeaderFooterReference | None:
     """Parse <w:headerReference> or <w:footerReference> element.
 
     XML Example:

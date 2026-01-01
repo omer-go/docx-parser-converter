@@ -1,6 +1,5 @@
 """Unit tests for styles parsers."""
 
-
 from parsers.styles.document_defaults_parser import (
     parse_document_defaults,
     parse_paragraph_properties_default,
@@ -48,13 +47,13 @@ class TestLatentStyleExceptionParser:
         attribute-based toggles, which checks for presence rather than value.
         This is a known limitation - all toggle attributes return True if present.
         """
-        xml = '''<w:lsdException
+        xml = """<w:lsdException
             w:name="heading 1"
             w:locked="0"
             w:uiPriority="9"
             w:semiHidden="0"
             w:unhideWhenUsed="0"
-            w:qFormat="1"/>'''
+            w:qFormat="1"/>"""
         element = make_element(xml)
         result = parse_latent_style_exception(element)
 
@@ -69,11 +68,11 @@ class TestLatentStyleExceptionParser:
 
     def test_hidden_style(self) -> None:
         """Test latent style exception for a hidden style."""
-        xml = '''<w:lsdException
+        xml = """<w:lsdException
             w:name="Placeholder Text"
             w:semiHidden="1"
             w:unhideWhenUsed="1"
-            w:uiPriority="99"/>'''
+            w:uiPriority="99"/>"""
         element = make_element(xml)
         result = parse_latent_style_exception(element)
 
@@ -118,13 +117,13 @@ class TestLatentStylesParser:
         Note: Same limitation as lsdException - toggle attributes return True
         when present regardless of value.
         """
-        xml = '''<w:latentStyles
+        xml = """<w:latentStyles
             w:defLockedState="0"
             w:defUIPriority="99"
             w:defSemiHidden="0"
             w:defUnhideWhenUsed="0"
             w:defQFormat="0"
-            w:count="376"/>'''
+            w:count="376"/>"""
         element = make_element(xml)
         result = parse_latent_styles(element)
 
@@ -140,11 +139,11 @@ class TestLatentStylesParser:
 
     def test_with_exceptions(self) -> None:
         """Test latent styles with exception elements."""
-        xml = '''<w:latentStyles w:defUIPriority="99" w:count="376">
+        xml = """<w:latentStyles w:defUIPriority="99" w:count="376">
             <w:lsdException w:name="Normal" w:uiPriority="0" w:qFormat="1"/>
             <w:lsdException w:name="heading 1" w:uiPriority="9" w:qFormat="1"/>
             <w:lsdException w:name="heading 2" w:uiPriority="9" w:semiHidden="1"/>
-        </w:latentStyles>'''
+        </w:latentStyles>"""
         element = make_element(xml)
         result = parse_latent_styles(element)
 
@@ -181,13 +180,13 @@ class TestRunPropertiesDefaultParser:
 
     def test_with_run_properties(self) -> None:
         """Test run properties default with nested rPr."""
-        xml = '''<w:rPrDefault>
+        xml = """<w:rPrDefault>
             <w:rPr>
                 <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
                 <w:sz w:val="24"/>
                 <w:szCs w:val="24"/>
             </w:rPr>
-        </w:rPrDefault>'''
+        </w:rPrDefault>"""
         element = make_element(xml)
         result = parse_run_properties_default(element)
 
@@ -198,11 +197,11 @@ class TestRunPropertiesDefaultParser:
 
     def test_with_language_settings(self) -> None:
         """Test run properties default with language settings."""
-        xml = '''<w:rPrDefault>
+        xml = """<w:rPrDefault>
             <w:rPr>
                 <w:lang w:val="en-US" w:eastAsia="ja-JP" w:bidi="ar-SA"/>
             </w:rPr>
-        </w:rPrDefault>'''
+        </w:rPrDefault>"""
         element = make_element(xml)
         result = parse_run_properties_default(element)
 
@@ -235,11 +234,11 @@ class TestParagraphPropertiesDefaultParser:
 
     def test_with_spacing(self) -> None:
         """Test paragraph properties default with spacing."""
-        xml = '''<w:pPrDefault>
+        xml = """<w:pPrDefault>
             <w:pPr>
                 <w:spacing w:after="160" w:line="259" w:lineRule="auto"/>
             </w:pPr>
-        </w:pPrDefault>'''
+        </w:pPrDefault>"""
         element = make_element(xml)
         result = parse_paragraph_properties_default(element)
 
@@ -274,13 +273,13 @@ class TestDocumentDefaultsParser:
 
     def test_with_run_default_only(self) -> None:
         """Test document defaults with only run properties default."""
-        xml = '''<w:docDefaults>
+        xml = """<w:docDefaults>
             <w:rPrDefault>
                 <w:rPr>
                     <w:sz w:val="22"/>
                 </w:rPr>
             </w:rPrDefault>
-        </w:docDefaults>'''
+        </w:docDefaults>"""
         element = make_element(xml)
         result = parse_document_defaults(element)
 
@@ -291,7 +290,7 @@ class TestDocumentDefaultsParser:
 
     def test_with_both_defaults(self) -> None:
         """Test document defaults with both run and paragraph defaults."""
-        xml = '''<w:docDefaults>
+        xml = """<w:docDefaults>
             <w:rPrDefault>
                 <w:rPr>
                     <w:rFonts w:ascii="Calibri"/>
@@ -303,7 +302,7 @@ class TestDocumentDefaultsParser:
                     <w:spacing w:after="200" w:line="276" w:lineRule="auto"/>
                 </w:pPr>
             </w:pPrDefault>
-        </w:docDefaults>'''
+        </w:docDefaults>"""
         element = make_element(xml)
         result = parse_document_defaults(element)
 
@@ -338,7 +337,7 @@ class TestTableStylePropertiesParser:
 
     def test_first_row_condition(self) -> None:
         """Test table style properties for first row."""
-        xml = '''<w:tblStylePr w:type="firstRow">
+        xml = """<w:tblStylePr w:type="firstRow">
             <w:rPr>
                 <w:b/>
                 <w:color w:val="FFFFFF"/>
@@ -346,7 +345,7 @@ class TestTableStylePropertiesParser:
             <w:tcPr>
                 <w:shd w:val="clear" w:fill="4472C4"/>
             </w:tcPr>
-        </w:tblStylePr>'''
+        </w:tblStylePr>"""
         element = make_element(xml)
         result = parse_table_style_properties(element)
 
@@ -359,11 +358,11 @@ class TestTableStylePropertiesParser:
 
     def test_last_column_condition(self) -> None:
         """Test table style properties for last column."""
-        xml = '''<w:tblStylePr w:type="lastCol">
+        xml = """<w:tblStylePr w:type="lastCol">
             <w:rPr>
                 <w:b/>
             </w:rPr>
-        </w:tblStylePr>'''
+        </w:tblStylePr>"""
         element = make_element(xml)
         result = parse_table_style_properties(element)
 
@@ -377,11 +376,11 @@ class TestTableStylePropertiesParser:
 
     def test_band1_horizontal(self) -> None:
         """Test table style properties for banded row."""
-        xml = '''<w:tblStylePr w:type="band1Horz">
+        xml = """<w:tblStylePr w:type="band1Horz">
             <w:tcPr>
                 <w:shd w:val="clear" w:fill="D9E2F3"/>
             </w:tcPr>
-        </w:tblStylePr>'''
+        </w:tblStylePr>"""
         element = make_element(xml)
         result = parse_table_style_properties(element)
 
@@ -457,7 +456,7 @@ class TestStyleParser:
 
     def test_complete_paragraph_style(self) -> None:
         """Test paragraph style with all common elements."""
-        xml = '''<w:style w:type="paragraph" w:styleId="Heading1" w:default="0">
+        xml = """<w:style w:type="paragraph" w:styleId="Heading1" w:default="0">
             <w:name w:val="heading 1"/>
             <w:aliases w:val="H1,Heading One"/>
             <w:basedOn w:val="Normal"/>
@@ -474,7 +473,7 @@ class TestStyleParser:
                 <w:b/>
                 <w:sz w:val="32"/>
             </w:rPr>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -494,7 +493,7 @@ class TestStyleParser:
 
     def test_character_style(self) -> None:
         """Test character style."""
-        xml = '''<w:style w:type="character" w:styleId="BoldEmphasis">
+        xml = """<w:style w:type="character" w:styleId="BoldEmphasis">
             <w:name w:val="Bold Emphasis"/>
             <w:basedOn w:val="DefaultParagraphFont"/>
             <w:uiPriority w:val="22"/>
@@ -502,7 +501,7 @@ class TestStyleParser:
                 <w:b/>
                 <w:i/>
             </w:rPr>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -515,7 +514,7 @@ class TestStyleParser:
 
     def test_table_style(self) -> None:
         """Test table style with conditional formatting."""
-        xml = '''<w:style w:type="table" w:styleId="TableGrid">
+        xml = """<w:style w:type="table" w:styleId="TableGrid">
             <w:name w:val="Table Grid"/>
             <w:basedOn w:val="TableNormal"/>
             <w:uiPriority w:val="39"/>
@@ -539,7 +538,7 @@ class TestStyleParser:
                     <w:b/>
                 </w:rPr>
             </w:tblStylePr>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -572,12 +571,12 @@ class TestStyleParser:
 
     def test_hidden_style(self) -> None:
         """Test hidden style properties."""
-        xml = '''<w:style w:type="paragraph" w:styleId="HiddenStyle">
+        xml = """<w:style w:type="paragraph" w:styleId="HiddenStyle">
             <w:name w:val="Hidden Style"/>
             <w:hidden/>
             <w:semiHidden/>
             <w:unhideWhenUsed/>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -588,10 +587,10 @@ class TestStyleParser:
 
     def test_locked_style(self) -> None:
         """Test locked style."""
-        xml = '''<w:style w:type="paragraph" w:styleId="LockedStyle">
+        xml = """<w:style w:type="paragraph" w:styleId="LockedStyle">
             <w:name w:val="Locked Style"/>
             <w:locked/>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -600,10 +599,10 @@ class TestStyleParser:
 
     def test_auto_redefine(self) -> None:
         """Test auto-redefine style."""
-        xml = '''<w:style w:type="paragraph" w:styleId="AutoStyle">
+        xml = """<w:style w:type="paragraph" w:styleId="AutoStyle">
             <w:name w:val="Auto Style"/>
             <w:autoRedefine/>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -612,12 +611,12 @@ class TestStyleParser:
 
     def test_personal_styles(self) -> None:
         """Test personal style flags (for email)."""
-        xml = '''<w:style w:type="paragraph" w:styleId="PersonalStyle">
+        xml = """<w:style w:type="paragraph" w:styleId="PersonalStyle">
             <w:name w:val="Personal Style"/>
             <w:personal/>
             <w:personalCompose/>
             <w:personalReply/>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -628,10 +627,10 @@ class TestStyleParser:
 
     def test_numbering_style(self) -> None:
         """Test numbering style."""
-        xml = '''<w:style w:type="numbering" w:styleId="BulletList">
+        xml = """<w:style w:type="numbering" w:styleId="BulletList">
             <w:name w:val="Bullet List"/>
             <w:uiPriority w:val="99"/>
-        </w:style>'''
+        </w:style>"""
         element = make_element(xml)
         result = parse_style(element)
 
@@ -677,7 +676,7 @@ class TestStylesParser:
 
     def test_with_doc_defaults_only(self) -> None:
         """Test styles with document defaults only."""
-        xml = '''<w:styles>
+        xml = """<w:styles>
             <w:docDefaults>
                 <w:rPrDefault>
                     <w:rPr>
@@ -685,7 +684,7 @@ class TestStylesParser:
                     </w:rPr>
                 </w:rPrDefault>
             </w:docDefaults>
-        </w:styles>'''
+        </w:styles>"""
         element = make_element(xml)
         result = parse_styles(element)
 
@@ -696,11 +695,11 @@ class TestStylesParser:
 
     def test_with_latent_styles_only(self) -> None:
         """Test styles with latent styles only."""
-        xml = '''<w:styles>
+        xml = """<w:styles>
             <w:latentStyles w:defUIPriority="99" w:count="376">
                 <w:lsdException w:name="Normal" w:uiPriority="0"/>
             </w:latentStyles>
-        </w:styles>'''
+        </w:styles>"""
         element = make_element(xml)
         result = parse_styles(element)
 
@@ -712,7 +711,7 @@ class TestStylesParser:
 
     def test_with_styles_only(self) -> None:
         """Test styles with style definitions only."""
-        xml = '''<w:styles>
+        xml = """<w:styles>
             <w:style w:type="paragraph" w:styleId="Normal" w:default="1">
                 <w:name w:val="Normal"/>
             </w:style>
@@ -720,7 +719,7 @@ class TestStylesParser:
                 <w:name w:val="heading 1"/>
                 <w:basedOn w:val="Normal"/>
             </w:style>
-        </w:styles>'''
+        </w:styles>"""
         element = make_element(xml)
         result = parse_styles(element)
 
@@ -733,7 +732,7 @@ class TestStylesParser:
 
     def test_complete_styles_document(self) -> None:
         """Test complete styles document with all sections."""
-        xml = '''<w:styles>
+        xml = """<w:styles>
             <w:docDefaults>
                 <w:rPrDefault>
                     <w:rPr>
@@ -789,7 +788,7 @@ class TestStylesParser:
                     </w:tblBorders>
                 </w:tblPr>
             </w:style>
-        </w:styles>'''
+        </w:styles>"""
         element = make_element(xml)
         result = parse_styles(element)
 
@@ -833,7 +832,7 @@ class TestStylesParser:
 
     def test_filters_invalid_styles(self) -> None:
         """Test that styles without required attributes are filtered."""
-        xml = '''<w:styles>
+        xml = """<w:styles>
             <w:style w:type="paragraph" w:styleId="Valid">
                 <w:name w:val="Valid Style"/>
             </w:style>
@@ -843,7 +842,7 @@ class TestStylesParser:
             <w:style w:styleId="NoType">
                 <!-- Missing type - should be filtered -->
             </w:style>
-        </w:styles>'''
+        </w:styles>"""
         element = make_element(xml)
         result = parse_styles(element)
 

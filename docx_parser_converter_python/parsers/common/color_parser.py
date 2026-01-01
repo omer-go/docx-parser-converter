@@ -1,4 +1,5 @@
 """Parser for color elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.color import Color

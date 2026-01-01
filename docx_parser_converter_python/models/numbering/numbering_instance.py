@@ -2,6 +2,7 @@
 
 A numbering instance links a numId to an abstract numbering definition.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

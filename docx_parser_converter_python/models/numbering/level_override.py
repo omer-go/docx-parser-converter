@@ -2,6 +2,7 @@
 
 Level overrides allow a numbering instance to modify specific levels.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

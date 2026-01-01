@@ -1,4 +1,5 @@
 """Parser for hyperlink and bookmark elements."""
+
 from lxml.etree import _Element as Element
 
 from core.constants import REL_NS

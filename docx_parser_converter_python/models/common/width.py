@@ -2,6 +2,7 @@
 
 Represents width elements like <w:tblW>, <w:tcW>, <w:tblInd>.
 """
+
 from pydantic import BaseModel
 
 

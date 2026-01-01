@@ -1,4 +1,5 @@
 """Parsers package - XML to Pydantic model conversion."""
+
 from parsers.common import (
     parse_border,
     parse_color,

@@ -139,12 +139,8 @@ def missing_based_on_styles() -> Styles:
 def document_defaults() -> DocumentDefaults:
     """Document defaults for testing."""
     return DocumentDefaults(
-        r_pr_default=RunPropertiesDefault(
-            r_pr={"sz": 22, "r_fonts": {"ascii": "Times New Roman"}}
-        ),
-        p_pr_default=ParagraphPropertiesDefault(
-            p_pr={"spacing": {"after": 160, "line": 259}}
-        ),
+        r_pr_default=RunPropertiesDefault(r_pr={"sz": 22, "r_fonts": {"ascii": "Times New Roman"}}),
+        p_pr_default=ParagraphPropertiesDefault(p_pr={"spacing": {"after": 160, "line": 259}}),
     )
 
 
@@ -234,9 +230,7 @@ class TestBasicStyleResolution:
         assert result.r_pr is not None
         assert result.r_pr["sz"] == 24
 
-    def test_resolve_nonexistent_style_returns_none(
-        self, simple_styles: Styles
-    ) -> None:
+    def test_resolve_nonexistent_style_returns_none(self, simple_styles: Styles) -> None:
         """Resolving nonexistent style returns None."""
         resolver = StyleResolver(simple_styles)
         result = resolver.resolve_style("NonExistent")
@@ -335,9 +329,7 @@ class TestStyleInheritance:
 class TestCircularReferences:
     """Tests for circular reference detection and handling."""
 
-    def test_detect_simple_circular_reference(
-        self, circular_styles: Styles
-    ) -> None:
+    def test_detect_simple_circular_reference(self, circular_styles: Styles) -> None:
         """Detect A -> B -> A circular reference."""
         resolver = StyleResolver(circular_styles)
         # Should not infinite loop
@@ -347,9 +339,7 @@ class TestCircularReferences:
         assert result.p_pr is not None
         assert result.p_pr["jc"] == "center"
 
-    def test_circular_reference_breaks_at_detection(
-        self, circular_styles: Styles
-    ) -> None:
+    def test_circular_reference_breaks_at_detection(self, circular_styles: Styles) -> None:
         """Circular reference breaks at detection point."""
         resolver = StyleResolver(circular_styles)
         result = resolver.resolve_style("StyleB")
@@ -386,9 +376,7 @@ class TestCircularReferences:
 class TestMissingReferences:
     """Tests for handling missing basedOn references."""
 
-    def test_missing_based_on_uses_own_properties(
-        self, missing_based_on_styles: Styles
-    ) -> None:
+    def test_missing_based_on_uses_own_properties(self, missing_based_on_styles: Styles) -> None:
         """Style with missing basedOn uses its own properties."""
         resolver = StyleResolver(missing_based_on_styles)
         result = resolver.resolve_style("Orphan")
@@ -435,9 +423,7 @@ class TestDocumentDefaultsIntegration:
         # Style should win
         assert result["sz"] == 24
 
-    def test_defaults_fill_missing_properties(
-        self, document_defaults: DocumentDefaults
-    ) -> None:
+    def test_defaults_fill_missing_properties(self, document_defaults: DocumentDefaults) -> None:
         """Defaults fill in properties not set by style."""
         styles = Styles(
             style=[
@@ -533,9 +519,7 @@ class TestStyleTypeResolution:
         # From TableNormal (base)
         assert "tbl_cell_mar" in result
 
-    def test_paragraph_style_includes_run_properties(
-        self, inherited_styles: Styles
-    ) -> None:
+    def test_paragraph_style_includes_run_properties(self, inherited_styles: Styles) -> None:
         """Paragraph style resolution includes run properties."""
         resolver = StyleResolver(inherited_styles)
         p_props, r_props = resolver.resolve_paragraph_style_full("Heading1")
@@ -640,7 +624,7 @@ class TestStyleResolverEdgeCases:
         """Handle very deep inheritance chain (10+ levels)."""
         styles = []
         for i in range(15):
-            based_on = f"Level{i-1}" if i > 0 else None
+            based_on = f"Level{i - 1}" if i > 0 else None
             styles.append(
                 Style(
                     type="paragraph",

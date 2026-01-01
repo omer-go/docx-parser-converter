@@ -1,4 +1,5 @@
 """Parser for run properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.run import Language, RunFonts, RunProperties, Underline

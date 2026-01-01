@@ -20,6 +20,7 @@ from tests.unit.parsers.conftest import make_element
 # Tab Stop Parser Tests (<w:tab> in <w:tabs>)
 # =============================================================================
 
+
 class TestTabStopParser:
     """Tests for parse_tab_stop function.
 
@@ -100,6 +101,7 @@ class TestTabStopParser:
 # Numbering Properties Parser Tests (<w:numPr>)
 # =============================================================================
 
+
 class TestNumberingPropertiesParser:
     """Tests for parse_numbering_properties function.
 
@@ -114,12 +116,12 @@ class TestNumberingPropertiesParser:
 
     def test_parse_numbering_properties_basic(self):
         """Parse basic numbering properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numPr>
                 <w:ilvl w:val="0"/>
                 <w:numId w:val="1"/>
             </w:numPr>
-        ''')
+        """)
         result = parse_numbering_properties(elem)
         assert result is not None
         assert result.ilvl == 0
@@ -127,12 +129,12 @@ class TestNumberingPropertiesParser:
 
     def test_parse_numbering_properties_level_2(self):
         """Parse numbering at level 2."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numPr>
                 <w:ilvl w:val="2"/>
                 <w:numId w:val="5"/>
             </w:numPr>
-        ''')
+        """)
         result = parse_numbering_properties(elem)
         assert result is not None
         assert result.ilvl == 2
@@ -140,7 +142,7 @@ class TestNumberingPropertiesParser:
 
     def test_parse_numbering_properties_empty(self):
         """Parse empty numbering properties."""
-        elem = make_element('<w:numPr/>')
+        elem = make_element("<w:numPr/>")
         result = parse_numbering_properties(elem)
         assert result is not None
         assert result.ilvl is None
@@ -148,11 +150,11 @@ class TestNumberingPropertiesParser:
 
     def test_parse_numbering_properties_only_ilvl(self):
         """Parse with only ilvl (unusual but valid)."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numPr>
                 <w:ilvl w:val="1"/>
             </w:numPr>
-        ''')
+        """)
         result = parse_numbering_properties(elem)
         assert result is not None
         assert result.ilvl == 1
@@ -162,6 +164,7 @@ class TestNumberingPropertiesParser:
 # =============================================================================
 # Paragraph Properties Parser Tests (<w:pPr>)
 # =============================================================================
+
 
 class TestParagraphPropertiesParser:
     """Tests for parse_paragraph_properties function.
@@ -180,7 +183,7 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_empty(self):
         """Parse empty pPr element."""
-        elem = make_element('<w:pPr/>')
+        elem = make_element("<w:pPr/>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.p_style is None
@@ -211,28 +214,28 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_keep_next(self):
         """Parse keep with next paragraph."""
-        elem = make_element('<w:pPr><w:keepNext/></w:pPr>')
+        elem = make_element("<w:pPr><w:keepNext/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.keep_next is True
 
     def test_parse_paragraph_properties_keep_lines(self):
         """Parse keep lines together."""
-        elem = make_element('<w:pPr><w:keepLines/></w:pPr>')
+        elem = make_element("<w:pPr><w:keepLines/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.keep_lines is True
 
     def test_parse_paragraph_properties_page_break_before(self):
         """Parse page break before."""
-        elem = make_element('<w:pPr><w:pageBreakBefore/></w:pPr>')
+        elem = make_element("<w:pPr><w:pageBreakBefore/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.page_break_before is True
 
     def test_parse_paragraph_properties_widow_control(self):
         """Parse widow control."""
-        elem = make_element('<w:pPr><w:widowControl/></w:pPr>')
+        elem = make_element("<w:pPr><w:widowControl/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.widow_control is True
@@ -246,21 +249,21 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_suppress_line_numbers(self):
         """Parse suppress line numbers."""
-        elem = make_element('<w:pPr><w:suppressLineNumbers/></w:pPr>')
+        elem = make_element("<w:pPr><w:suppressLineNumbers/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.suppress_line_numbers is True
 
     def test_parse_paragraph_properties_suppress_auto_hyphens(self):
         """Parse suppress auto hyphens."""
-        elem = make_element('<w:pPr><w:suppressAutoHyphens/></w:pPr>')
+        elem = make_element("<w:pPr><w:suppressAutoHyphens/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.suppress_auto_hyphens is True
 
     def test_parse_paragraph_properties_bidi(self):
         """Parse right-to-left paragraph."""
-        elem = make_element('<w:pPr><w:bidi/></w:pPr>')
+        elem = make_element("<w:pPr><w:bidi/></w:pPr>")
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.bidi is True
@@ -282,11 +285,11 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_spacing(self):
         """Parse paragraph spacing."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:spacing w:before="240" w:after="120" w:line="276" w:lineRule="auto"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.spacing is not None
@@ -297,11 +300,11 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_indentation(self):
         """Parse paragraph indentation."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:ind w:left="720" w:right="360" w:firstLine="360"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.ind is not None
@@ -311,11 +314,11 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_hanging_indent(self):
         """Parse hanging indent."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:ind w:left="720" w:hanging="360"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.ind is not None
@@ -323,14 +326,14 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_borders(self):
         """Parse paragraph borders."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:pBdr>
                     <w:top w:val="single" w:sz="4" w:color="000000"/>
                     <w:bottom w:val="single" w:sz="4" w:color="000000"/>
                 </w:pBdr>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.p_bdr is not None
@@ -339,11 +342,11 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_shading(self):
         """Parse paragraph shading."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:shd w:val="clear" w:fill="FFFF00"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.shd is not None
@@ -351,7 +354,7 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_tabs(self):
         """Parse tab stops."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:tabs>
                     <w:tab w:val="left" w:pos="720"/>
@@ -359,7 +362,7 @@ class TestParagraphPropertiesParser:
                     <w:tab w:val="right" w:pos="9360" w:leader="dot"/>
                 </w:tabs>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.tabs is not None
@@ -370,14 +373,14 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_numbering(self):
         """Parse numbering properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:numPr>
                     <w:ilvl w:val="0"/>
                     <w:numId w:val="1"/>
                 </w:numPr>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.num_pr is not None
@@ -409,13 +412,13 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_frame(self):
         """Parse frame properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:framePr w:w="5040" w:h="2880" w:wrap="around"
                            w:hAnchor="margin" w:vAnchor="text"
                            w:x="720" w:y="360"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.frame_pr is not None
@@ -425,11 +428,11 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_drop_cap(self):
         """Parse drop cap frame."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:framePr w:dropCap="drop" w:lines="3"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.frame_pr is not None
@@ -438,14 +441,14 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_default_run_props(self):
         """Parse default run properties for paragraph."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:rPr>
                     <w:b/>
                     <w:sz w:val="28"/>
                 </w:rPr>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.r_pr is not None
@@ -454,7 +457,7 @@ class TestParagraphPropertiesParser:
 
     def test_parse_paragraph_properties_comprehensive(self):
         """Parse comprehensive paragraph properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pPr>
                 <w:pStyle w:val="Heading1"/>
                 <w:keepNext/>
@@ -465,7 +468,7 @@ class TestParagraphPropertiesParser:
                 <w:outlineLvl w:val="0"/>
                 <w:shd w:val="clear" w:fill="E0E0E0"/>
             </w:pPr>
-        ''')
+        """)
         result = parse_paragraph_properties(elem)
         assert result is not None
         assert result.p_style == "Heading1"
@@ -485,6 +488,7 @@ class TestParagraphPropertiesParser:
 # Paragraph Parser Tests (<w:p>)
 # =============================================================================
 
+
 class TestParagraphParser:
     """Tests for parse_paragraph function.
 
@@ -499,7 +503,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_empty(self):
         """Parse empty paragraph."""
-        elem = make_element('<w:p/>')
+        elem = make_element("<w:p/>")
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is None
@@ -507,13 +511,13 @@ class TestParagraphParser:
 
     def test_parse_paragraph_simple_text(self):
         """Parse paragraph with simple text."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:r>
                     <w:t>Hello World</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert len(result.content) == 1
@@ -522,7 +526,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_with_properties(self):
         """Parse paragraph with properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:pPr>
                     <w:jc w:val="center"/>
@@ -531,7 +535,7 @@ class TestParagraphParser:
                     <w:t>Centered text</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is not None
@@ -540,7 +544,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_multiple_runs(self):
         """Parse paragraph with multiple runs."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:r>
                     <w:t>First </w:t>
@@ -553,7 +557,7 @@ class TestParagraphParser:
                     <w:t> third</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert len(result.content) == 3
@@ -563,13 +567,13 @@ class TestParagraphParser:
 
     def test_parse_paragraph_properties_only(self):
         """Parse paragraph with only properties (no content)."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:pPr>
                     <w:pStyle w:val="Normal"/>
                 </w:pPr>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is not None
@@ -578,7 +582,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_heading(self):
         """Parse heading paragraph."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:pPr>
                     <w:pStyle w:val="Heading1"/>
@@ -588,7 +592,7 @@ class TestParagraphParser:
                     <w:t>Chapter 1</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is not None
@@ -597,7 +601,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_list_item(self):
         """Parse list item paragraph."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:pPr>
                     <w:numPr>
@@ -609,7 +613,7 @@ class TestParagraphParser:
                     <w:t>List item</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is not None
@@ -619,7 +623,7 @@ class TestParagraphParser:
 
     def test_parse_paragraph_with_formatting(self):
         """Parse paragraph with mixed formatting."""
-        elem = make_element('''
+        elem = make_element("""
             <w:p>
                 <w:pPr>
                     <w:jc w:val="both"/>
@@ -640,7 +644,7 @@ class TestParagraphParser:
                     <w:t>bold</w:t>
                 </w:r>
             </w:p>
-        ''')
+        """)
         result = parse_paragraph(elem)
         assert result is not None
         assert result.p_pr is not None

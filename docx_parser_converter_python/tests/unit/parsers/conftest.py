@@ -5,6 +5,7 @@ This module provides:
 - Common test fixtures
 - OOXML namespace constants
 """
+
 import pytest
 from lxml import etree
 

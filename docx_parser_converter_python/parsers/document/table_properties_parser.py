@@ -1,4 +1,5 @@
 """Parser for table properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table import TableLook, TableProperties
@@ -104,7 +105,9 @@ def parse_table_properties(element: Element | None) -> TableProperties | None:
 
     # Table description
     tbl_description_elem = find_child(element, "tblDescription")
-    tbl_description = get_attribute(tbl_description_elem, "val") if tbl_description_elem is not None else None
+    tbl_description = (
+        get_attribute(tbl_description_elem, "val") if tbl_description_elem is not None else None
+    )
 
     return TableProperties(
         tbl_style=tbl_style,

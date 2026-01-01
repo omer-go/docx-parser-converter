@@ -2,6 +2,7 @@
 
 Document defaults define base formatting applied to all content.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

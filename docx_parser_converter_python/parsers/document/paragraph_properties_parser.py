@@ -1,4 +1,5 @@
 """Parser for paragraph properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.paragraph import (
@@ -129,7 +130,9 @@ def parse_paragraph_properties(element: Element | None) -> ParagraphProperties |
 
     # Outline level
     outline_lvl_elem = find_child(element, "outlineLvl")
-    outline_lvl = get_int_attribute(outline_lvl_elem, "val") if outline_lvl_elem is not None else None
+    outline_lvl = (
+        get_int_attribute(outline_lvl_elem, "val") if outline_lvl_elem is not None else None
+    )
 
     # Numbering properties
     num_pr = parse_numbering_properties(find_child(element, "numPr"))
@@ -145,11 +148,15 @@ def parse_paragraph_properties(element: Element | None) -> ParagraphProperties |
 
     # Text direction
     text_direction_elem = find_child(element, "textDirection")
-    text_direction = get_attribute(text_direction_elem, "val") if text_direction_elem is not None else None
+    text_direction = (
+        get_attribute(text_direction_elem, "val") if text_direction_elem is not None else None
+    )
 
     # Text alignment
     text_alignment_elem = find_child(element, "textAlignment")
-    text_alignment = get_attribute(text_alignment_elem, "val") if text_alignment_elem is not None else None
+    text_alignment = (
+        get_attribute(text_alignment_elem, "val") if text_alignment_elem is not None else None
+    )
 
     # Frame properties (simplified - just check if present)
     frame_pr_elem = find_child(element, "framePr")

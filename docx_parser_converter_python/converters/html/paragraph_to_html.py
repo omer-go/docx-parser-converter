@@ -4,16 +4,20 @@ Converts Paragraph elements to HTML p tags with appropriate styling.
 """
 
 from html import escape
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from converters.html.css_generator import (
     CSSGenerator,
     paragraph_properties_to_css,
+    run_properties_to_css,
 )
 from converters.html.run_to_html import run_to_html
 from models.document.hyperlink import BookmarkEnd, BookmarkStart, Hyperlink
 from models.document.paragraph import Paragraph, ParagraphProperties
-from models.document.run import Run
+from models.document.run import Run, RunProperties
+
+if TYPE_CHECKING:
+    from converters.common.style_resolver import StyleResolver
 
 # =============================================================================
 # Hyperlink and Bookmark Conversion
@@ -26,6 +30,7 @@ def hyperlink_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert Hyperlink element to HTML anchor.
 
@@ -34,6 +39,7 @@ def hyperlink_to_html(
         relationships: Dict mapping r:id to URL
         use_semantic_tags: Use semantic tags for run content
         css_generator: CSS generator instance
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML anchor element
@@ -54,7 +60,12 @@ def hyperlink_to_html(
 
     # Convert content (runs)
     content_html = "".join(
-        run_to_html(item, use_semantic_tags=use_semantic_tags, css_generator=css_generator)
+        run_to_html(
+            item,
+            use_semantic_tags=use_semantic_tags,
+            css_generator=css_generator,
+            style_resolver=style_resolver,
+        )
         if isinstance(item, Run)
         else ""
         for item in hyperlink.content
@@ -65,7 +76,7 @@ def hyperlink_to_html(
     if hyperlink.tooltip:
         attrs.append(f'title="{escape(hyperlink.tooltip)}"')
 
-    return f'<a {" ".join(attrs)}>{content_html}</a>'
+    return f"<a {' '.join(attrs)}>{content_html}</a>"
 
 
 def bookmark_start_to_html(bookmark: BookmarkStart) -> str:
@@ -108,6 +119,7 @@ def paragraph_content_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert a paragraph content item to HTML.
 
@@ -116,18 +128,25 @@ def paragraph_content_to_html(
         relationships: Dict mapping r:id to URL for hyperlinks
         use_semantic_tags: Use semantic tags (<strong>, <em>)
         css_generator: CSS generator instance
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML representation of the content
     """
     if isinstance(content, Run):
-        return run_to_html(content, use_semantic_tags=use_semantic_tags, css_generator=css_generator)
+        return run_to_html(
+            content,
+            use_semantic_tags=use_semantic_tags,
+            css_generator=css_generator,
+            style_resolver=style_resolver,
+        )
     elif isinstance(content, Hyperlink):
         return hyperlink_to_html(
             content,
             relationships=relationships,
             use_semantic_tags=use_semantic_tags,
             css_generator=css_generator,
+            style_resolver=style_resolver,
         )
     elif isinstance(content, BookmarkStart):
         return bookmark_start_to_html(content)
@@ -150,6 +169,7 @@ def paragraph_to_html(
     use_semantic_tags: bool = True,
     use_headings: bool = False,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert Paragraph element to HTML.
 
@@ -160,6 +180,7 @@ def paragraph_to_html(
         use_semantic_tags: Use semantic tags (<strong>, <em>)
         use_headings: Use heading tags (<h1>-<h6>) for outline levels
         css_generator: CSS generator instance
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML representation of the paragraph
@@ -176,6 +197,7 @@ def paragraph_to_html(
             relationships=relationships,
             use_semantic_tags=use_semantic_tags,
             css_generator=gen,
+            style_resolver=style_resolver,
         )
         for item in para.content
     ]
@@ -188,8 +210,33 @@ def paragraph_to_html(
     # Determine tag to use
     tag = _get_paragraph_tag(para.p_pr, use_headings)
 
-    # Generate CSS from properties
+    # Generate CSS from direct paragraph properties
     css_props = paragraph_properties_to_css(para.p_pr)
+
+    # Resolve paragraph style if present and merge with direct formatting
+    if style_resolver and para.p_pr and para.p_pr.p_style:
+        # Resolve the paragraph style
+        style = style_resolver.resolve_style(para.p_pr.p_style)
+        if style and style.p_pr:
+            # Convert style's paragraph properties dict to model, then to CSS
+            if isinstance(style.p_pr, dict):
+                style_p_pr = ParagraphProperties(**style.p_pr)
+            else:
+                style_p_pr = style.p_pr
+            style_css = paragraph_properties_to_css(style_p_pr)
+            # Merge: direct formatting overrides style
+            css_props = {**style_css, **css_props}
+
+        # Also check for run properties in the paragraph style (affects default text style)
+        if style and style.r_pr:
+            # Convert style's run properties dict to model, then to CSS
+            if isinstance(style.r_pr, dict):
+                style_r_pr = RunProperties(**style.r_pr)
+            else:
+                style_r_pr = style.r_pr
+            style_r_css = run_properties_to_css(style_r_pr)
+            # Merge run properties into paragraph CSS (for inheritable properties like color, font)
+            css_props = {**style_r_css, **css_props}
 
     # Handle special attributes
     extra_attrs: list[str] = []
@@ -199,15 +246,15 @@ def paragraph_to_html(
         extra_attrs.append('dir="rtl"')
 
     # Generate style attribute
-    style = gen.generate_inline_style(css_props)
+    style_attr = gen.generate_inline_style(css_props)
 
     # Build opening tag
     attrs = []
-    if style:
-        attrs.append(f'style="{style}"')
+    if style_attr:
+        attrs.append(f'style="{style_attr}"')
     attrs.extend(extra_attrs)
 
-    attr_str = f' {" ".join(attrs)}' if attrs else ""
+    attr_str = f" {' '.join(attrs)}" if attrs else ""
 
     # Empty paragraph still gets a tag (for spacing)
     return f"<{tag}{attr_str}>{content_html}</{tag}>"

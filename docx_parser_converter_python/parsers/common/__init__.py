@@ -1,4 +1,5 @@
 """Common parsers for shared elements."""
+
 from parsers.common.border_parser import (
     parse_border,
     parse_paragraph_borders,

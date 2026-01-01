@@ -1,4 +1,5 @@
 """Parser for table cell elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table_cell import TableCell
@@ -45,6 +46,7 @@ def parse_table_cell(element: Element | None) -> TableCell | None:
         elif local_name == "tbl":
             # Nested table - import here to avoid circular import
             from parsers.document.table_parser import parse_table
+
             item = parse_table(child)
         else:
             # Skip unrecognized elements

@@ -1,4 +1,5 @@
 """Parser for paragraph elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.paragraph import Paragraph

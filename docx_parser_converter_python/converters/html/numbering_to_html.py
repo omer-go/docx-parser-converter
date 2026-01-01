@@ -8,7 +8,6 @@ Provides number formatting utilities and numbering prefix generation.
 # Number Format Constants
 # =============================================================================
 
-
 ROMAN_VALUES = [
     (1000, "M"),
     (900, "CM"),
@@ -32,17 +31,51 @@ ORDINAL_SUFFIXES = {
 }
 
 ORDINAL_TEXT = [
-    "", "First", "Second", "Third", "Fourth", "Fifth",
-    "Sixth", "Seventh", "Eighth", "Ninth", "Tenth",
-    "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth",
-    "Sixteenth", "Seventeenth", "Eighteenth", "Nineteenth", "Twentieth",
+    "",
+    "First",
+    "Second",
+    "Third",
+    "Fourth",
+    "Fifth",
+    "Sixth",
+    "Seventh",
+    "Eighth",
+    "Ninth",
+    "Tenth",
+    "Eleventh",
+    "Twelfth",
+    "Thirteenth",
+    "Fourteenth",
+    "Fifteenth",
+    "Sixteenth",
+    "Seventeenth",
+    "Eighteenth",
+    "Nineteenth",
+    "Twentieth",
 ]
 
 CARDINAL_TEXT = [
-    "", "One", "Two", "Three", "Four", "Five",
-    "Six", "Seven", "Eight", "Nine", "Ten",
-    "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen",
-    "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty",
+    "",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+    "Twenty",
 ]
 
 CHICAGO_SYMBOLS = ["*", "†", "‡", "§"]

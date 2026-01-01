@@ -21,6 +21,7 @@ from tests.unit.parsers.conftest import make_element
 # Level Parser Tests (<w:lvl>)
 # =============================================================================
 
+
 class TestLevelParser:
     """Tests for parse_level function.
 
@@ -50,14 +51,14 @@ class TestLevelParser:
 
     def test_parse_level_decimal(self):
         """Parse decimal numbered level."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:start w:val="1"/>
                 <w:numFmt w:val="decimal"/>
                 <w:lvlText w:val="%1."/>
                 <w:lvlJc w:val="left"/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.ilvl == 0
@@ -68,7 +69,7 @@ class TestLevelParser:
 
     def test_parse_level_bullet(self):
         """Parse bullet level."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:numFmt w:val="bullet"/>
                 <w:lvlText w:val=""/>
@@ -77,7 +78,7 @@ class TestLevelParser:
                     <w:rFonts w:ascii="Symbol" w:hAnsi="Symbol" w:hint="default"/>
                 </w:rPr>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.num_fmt == "bullet"
@@ -87,8 +88,15 @@ class TestLevelParser:
     def test_parse_level_num_formats(self):
         """Test various number format values."""
         num_fmts = [
-            "decimal", "upperRoman", "lowerRoman", "upperLetter", "lowerLetter",
-            "bullet", "none", "ordinal", "cardinalText"
+            "decimal",
+            "upperRoman",
+            "lowerRoman",
+            "upperLetter",
+            "lowerLetter",
+            "bullet",
+            "none",
+            "ordinal",
+            "cardinalText",
         ]
         for num_fmt in num_fmts:
             elem = make_element(f'''
@@ -102,14 +110,14 @@ class TestLevelParser:
 
     def test_parse_level_with_indentation(self):
         """Parse level with paragraph indentation."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:numFmt w:val="decimal"/>
                 <w:pPr>
                     <w:ind w:left="720" w:hanging="360"/>
                 </w:pPr>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.p_pr is not None
@@ -118,11 +126,11 @@ class TestLevelParser:
 
     def test_parse_level_suffix(self):
         """Parse level suffix."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:suff w:val="tab"/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.suff == "tab"
@@ -155,33 +163,33 @@ class TestLevelParser:
 
     def test_parse_level_restart(self):
         """Parse level restart setting."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="1">
                 <w:lvlRestart w:val="0"/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.lvl_restart == 0
 
     def test_parse_level_p_style(self):
         """Parse level with associated paragraph style."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:pStyle w:val="Heading1"/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.p_style == "Heading1"
 
     def test_parse_level_is_lgl(self):
         """Parse legal numbering style."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0">
                 <w:isLgl/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.is_lgl is True
@@ -195,19 +203,19 @@ class TestLevelParser:
 
     def test_parse_level_multilevel_text(self):
         """Parse multilevel numbering text."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="2">
                 <w:numFmt w:val="decimal"/>
                 <w:lvlText w:val="%1.%2.%3"/>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.lvl_text == "%1.%2.%3"
 
     def test_parse_level_comprehensive(self):
         """Parse comprehensive level definition."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvl w:ilvl="0" w:tplc="04090001">
                 <w:start w:val="1"/>
                 <w:numFmt w:val="decimal"/>
@@ -221,7 +229,7 @@ class TestLevelParser:
                     <w:b/>
                 </w:rPr>
             </w:lvl>
-        ''')
+        """)
         result = parse_level(elem)
         assert result is not None
         assert result.ilvl == 0
@@ -240,6 +248,7 @@ class TestLevelParser:
 # =============================================================================
 # Abstract Numbering Parser Tests (<w:abstractNum>)
 # =============================================================================
+
 
 class TestAbstractNumberingParser:
     """Tests for parse_abstract_numbering function.
@@ -270,22 +279,22 @@ class TestAbstractNumberingParser:
 
     def test_parse_abstract_numbering_with_nsid(self):
         """Parse abstract numbering with NSID."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:nsid w:val="12345678"/>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert result.nsid == "12345678"
 
     def test_parse_abstract_numbering_multi_level_type(self):
         """Parse abstract numbering with multi-level type."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:multiLevelType w:val="multilevel"/>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert result.multi_level_type == "multilevel"
@@ -305,7 +314,7 @@ class TestAbstractNumberingParser:
 
     def test_parse_abstract_numbering_with_levels(self):
         """Parse abstract numbering with levels."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:multiLevelType w:val="hybridMultilevel"/>
                 <w:lvl w:ilvl="0">
@@ -317,7 +326,7 @@ class TestAbstractNumberingParser:
                     <w:lvlText w:val="%2."/>
                 </w:lvl>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert len(result.lvl) == 2
@@ -326,29 +335,29 @@ class TestAbstractNumberingParser:
 
     def test_parse_abstract_numbering_style_link(self):
         """Parse abstract numbering with style link."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:styleLink w:val="ListNumber"/>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert result.style_link == "ListNumber"
 
     def test_parse_abstract_numbering_name(self):
         """Parse abstract numbering with name."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:name w:val="MyList"/>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert result.name == "MyList"
 
     def test_parse_abstract_numbering_comprehensive(self):
         """Parse comprehensive abstract numbering."""
-        elem = make_element('''
+        elem = make_element("""
             <w:abstractNum w:abstractNumId="0">
                 <w:nsid w:val="ABCD1234"/>
                 <w:multiLevelType w:val="multilevel"/>
@@ -367,7 +376,7 @@ class TestAbstractNumberingParser:
                     <w:lvlJc w:val="left"/>
                 </w:lvl>
             </w:abstractNum>
-        ''')
+        """)
         result = parse_abstract_numbering(elem)
         assert result is not None
         assert result.abstract_num_id == 0
@@ -381,6 +390,7 @@ class TestAbstractNumberingParser:
 # =============================================================================
 # Level Override Parser Tests (<w:lvlOverride>)
 # =============================================================================
+
 
 class TestLevelOverrideParser:
     """Tests for parse_level_override function.
@@ -403,11 +413,11 @@ class TestLevelOverrideParser:
 
     def test_parse_level_override_start(self):
         """Parse level override with start override."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvlOverride w:ilvl="0">
                 <w:startOverride w:val="5"/>
             </w:lvlOverride>
-        ''')
+        """)
         result = parse_level_override(elem)
         assert result is not None
         assert result.ilvl == 0
@@ -415,14 +425,14 @@ class TestLevelOverrideParser:
 
     def test_parse_level_override_with_level(self):
         """Parse level override with full level replacement."""
-        elem = make_element('''
+        elem = make_element("""
             <w:lvlOverride w:ilvl="0">
                 <w:lvl w:ilvl="0">
                     <w:numFmt w:val="upperRoman"/>
                     <w:lvlText w:val="%1."/>
                 </w:lvl>
             </w:lvlOverride>
-        ''')
+        """)
         result = parse_level_override(elem)
         assert result is not None
         assert result.ilvl == 0
@@ -433,6 +443,7 @@ class TestLevelOverrideParser:
 # =============================================================================
 # Numbering Instance Parser Tests (<w:num>)
 # =============================================================================
+
 
 class TestNumberingInstanceParser:
     """Tests for parse_numbering_instance function.
@@ -455,11 +466,11 @@ class TestNumberingInstanceParser:
 
     def test_parse_numbering_instance_minimal(self):
         """Parse minimal numbering instance."""
-        elem = make_element('''
+        elem = make_element("""
             <w:num w:numId="1">
                 <w:abstractNumId w:val="0"/>
             </w:num>
-        ''')
+        """)
         result = parse_numbering_instance(elem)
         assert result is not None
         assert result.num_id == 1
@@ -467,14 +478,14 @@ class TestNumberingInstanceParser:
 
     def test_parse_numbering_instance_with_override(self):
         """Parse numbering instance with level override."""
-        elem = make_element('''
+        elem = make_element("""
             <w:num w:numId="1">
                 <w:abstractNumId w:val="0"/>
                 <w:lvlOverride w:ilvl="0">
                     <w:startOverride w:val="10"/>
                 </w:lvlOverride>
             </w:num>
-        ''')
+        """)
         result = parse_numbering_instance(elem)
         assert result is not None
         assert result.num_id == 1
@@ -484,7 +495,7 @@ class TestNumberingInstanceParser:
 
     def test_parse_numbering_instance_multiple_overrides(self):
         """Parse numbering instance with multiple level overrides."""
-        elem = make_element('''
+        elem = make_element("""
             <w:num w:numId="1">
                 <w:abstractNumId w:val="0"/>
                 <w:lvlOverride w:ilvl="0">
@@ -494,7 +505,7 @@ class TestNumberingInstanceParser:
                     <w:startOverride w:val="1"/>
                 </w:lvlOverride>
             </w:num>
-        ''')
+        """)
         result = parse_numbering_instance(elem)
         assert result is not None
         assert result.lvl_override is not None
@@ -504,6 +515,7 @@ class TestNumberingInstanceParser:
 # =============================================================================
 # Numbering Parser Tests (<w:numbering>)
 # =============================================================================
+
 
 class TestNumberingParser:
     """Tests for parse_numbering function.
@@ -519,7 +531,7 @@ class TestNumberingParser:
 
     def test_parse_numbering_empty(self):
         """Parse empty numbering."""
-        elem = make_element('<w:numbering/>')
+        elem = make_element("<w:numbering/>")
         result = parse_numbering(elem)
         assert result is not None
         assert len(result.abstract_num) == 0
@@ -527,7 +539,7 @@ class TestNumberingParser:
 
     def test_parse_numbering_with_abstract_num(self):
         """Parse numbering with abstract numbering."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numbering>
                 <w:abstractNum w:abstractNumId="0">
                     <w:multiLevelType w:val="hybridMultilevel"/>
@@ -536,7 +548,7 @@ class TestNumberingParser:
                     </w:lvl>
                 </w:abstractNum>
             </w:numbering>
-        ''')
+        """)
         result = parse_numbering(elem)
         assert result is not None
         assert len(result.abstract_num) == 1
@@ -544,7 +556,7 @@ class TestNumberingParser:
 
     def test_parse_numbering_with_num(self):
         """Parse numbering with numbering instance."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numbering>
                 <w:abstractNum w:abstractNumId="0">
                     <w:lvl w:ilvl="0">
@@ -555,7 +567,7 @@ class TestNumberingParser:
                     <w:abstractNumId w:val="0"/>
                 </w:num>
             </w:numbering>
-        ''')
+        """)
         result = parse_numbering(elem)
         assert result is not None
         assert len(result.abstract_num) == 1
@@ -564,7 +576,7 @@ class TestNumberingParser:
 
     def test_parse_numbering_comprehensive(self):
         """Parse comprehensive numbering with multiple definitions."""
-        elem = make_element('''
+        elem = make_element("""
             <w:numbering>
                 <w:abstractNum w:abstractNumId="0">
                     <w:multiLevelType w:val="hybridMultilevel"/>
@@ -597,7 +609,7 @@ class TestNumberingParser:
                     </w:lvlOverride>
                 </w:num>
             </w:numbering>
-        ''')
+        """)
         result = parse_numbering(elem)
         assert result is not None
         assert len(result.abstract_num) == 2

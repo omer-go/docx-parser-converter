@@ -2,6 +2,7 @@
 
 These models represent elements that can appear inside a run (<w:r>).
 """
+
 from pydantic import BaseModel
 
 

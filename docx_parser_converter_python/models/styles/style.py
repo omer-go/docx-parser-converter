@@ -2,6 +2,7 @@
 
 Styles define reusable formatting for paragraphs, characters, tables, and numbering.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

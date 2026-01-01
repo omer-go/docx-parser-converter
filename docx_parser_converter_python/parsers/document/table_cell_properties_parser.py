@@ -1,4 +1,5 @@
 """Parser for table cell properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table_cell import TableCellMargins, TableCellProperties
@@ -70,7 +71,9 @@ def parse_table_cell_properties(element: Element | None) -> TableCellProperties 
 
     # Text direction
     text_direction_elem = find_child(element, "textDirection")
-    text_direction = get_attribute(text_direction_elem, "val") if text_direction_elem is not None else None
+    text_direction = (
+        get_attribute(text_direction_elem, "val") if text_direction_elem is not None else None
+    )
 
     # Vertical alignment
     v_align_elem = find_child(element, "vAlign")

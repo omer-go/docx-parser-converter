@@ -2,6 +2,7 @@
 
 These models represent elements from numbering.xml.
 """
+
 from models.numbering.abstract_numbering import AbstractNumbering
 from models.numbering.level import Level
 from models.numbering.level_override import LevelOverride

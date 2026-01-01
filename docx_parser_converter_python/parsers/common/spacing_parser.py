@@ -1,4 +1,5 @@
 """Parser for spacing elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.spacing import Spacing

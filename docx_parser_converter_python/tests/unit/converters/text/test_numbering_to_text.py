@@ -444,10 +444,7 @@ class TestNumberingIntegration:
     def test_typical_numbered_list(self) -> None:
         """Typical numbered list scenario."""
         converter = NumberingToTextConverter()
-        prefixes = [
-            converter.format_prefix(i, "decimal", "%1.")
-            for i in range(1, 6)
-        ]
+        prefixes = [converter.format_prefix(i, "decimal", "%1.") for i in range(1, 6)]
         assert prefixes[0] == "1.\t"
         assert prefixes[4] == "5.\t"
 

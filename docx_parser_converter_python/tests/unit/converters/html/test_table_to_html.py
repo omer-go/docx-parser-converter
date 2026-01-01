@@ -47,7 +47,7 @@ def make_simple_table(rows: int, cols: int) -> Table:
     """Create a simple table with given dimensions."""
     table_rows = []
     for r in range(rows):
-        cells = [make_cell(f"R{r+1}C{c+1}") for c in range(cols)]
+        cells = [make_cell(f"R{r + 1}C{c + 1}") for c in range(cols)]
         table_rows.append(TableRow(tc=cells))
     return Table(tr=table_rows)
 
@@ -114,7 +114,7 @@ class TestTableWidth:
         """Table with fixed width in twips."""
         table = Table(
             tbl_pr=TableProperties(tbl_w=Width(w=5760, type="dxa")),
-            tr=[TableRow(tc=[make_cell("Cell")])]
+            tr=[TableRow(tc=[make_cell("Cell")])],
         )
         result = table_to_html(table)
         assert "width" in result
@@ -123,7 +123,7 @@ class TestTableWidth:
         """Table with percentage width."""
         table = Table(
             tbl_pr=TableProperties(tbl_w=Width(w=5000, type="pct")),
-            tr=[TableRow(tc=[make_cell("Cell")])]
+            tr=[TableRow(tc=[make_cell("Cell")])],
         )
         result = table_to_html(table)
         assert "100%" in result or "width" in result
@@ -132,7 +132,7 @@ class TestTableWidth:
         """Table with auto width."""
         table = Table(
             tbl_pr=TableProperties(tbl_w=Width(w=0, type="auto")),
-            tr=[TableRow(tc=[make_cell("Cell")])]
+            tr=[TableRow(tc=[make_cell("Cell")])],
         )
         result = table_to_html(table)
         # Auto width should still render
@@ -149,28 +149,19 @@ class TestTableAlignment:
 
     def test_left_aligned_table(self) -> None:
         """Left-aligned table."""
-        table = Table(
-            tbl_pr=TableProperties(jc="left"),
-            tr=[TableRow(tc=[make_cell("Cell")])]
-        )
+        table = Table(tbl_pr=TableProperties(jc="left"), tr=[TableRow(tc=[make_cell("Cell")])])
         result = table_to_html(table)
         assert "Cell" in result
 
     def test_center_aligned_table(self) -> None:
         """Center-aligned table."""
-        table = Table(
-            tbl_pr=TableProperties(jc="center"),
-            tr=[TableRow(tc=[make_cell("Cell")])]
-        )
+        table = Table(tbl_pr=TableProperties(jc="center"), tr=[TableRow(tc=[make_cell("Cell")])])
         result = table_to_html(table)
         assert "margin-left: auto" in result or "margin: auto" in result
 
     def test_right_aligned_table(self) -> None:
         """Right-aligned table."""
-        table = Table(
-            tbl_pr=TableProperties(jc="right"),
-            tr=[TableRow(tc=[make_cell("Cell")])]
-        )
+        table = Table(tbl_pr=TableProperties(jc="right"), tr=[TableRow(tc=[make_cell("Cell")])])
         result = table_to_html(table)
         assert "margin-left" in result
 
@@ -186,11 +177,13 @@ class TestTableGrid:
     def test_grid_columns_define_widths(self) -> None:
         """Grid columns define column widths."""
         table = Table(
-            tbl_grid=TableGrid(grid_col=[
-                TableGridColumn(w=2880),
-                TableGridColumn(w=1440),
-            ]),
-            tr=[TableRow(tc=[make_cell("Wide"), make_cell("Narrow")])]
+            tbl_grid=TableGrid(
+                grid_col=[
+                    TableGridColumn(w=2880),
+                    TableGridColumn(w=1440),
+                ]
+            ),
+            tr=[TableRow(tc=[make_cell("Wide"), make_cell("Narrow")])],
         )
         result = table_to_html(table)
         assert "<colgroup>" in result
@@ -199,11 +192,13 @@ class TestTableGrid:
     def test_colgroup_generation(self) -> None:
         """Grid columns generate colgroup."""
         table = Table(
-            tbl_grid=TableGrid(grid_col=[
-                TableGridColumn(w=1440),
-                TableGridColumn(w=1440),
-            ]),
-            tr=[TableRow(tc=[make_cell("A"), make_cell("B")])]
+            tbl_grid=TableGrid(
+                grid_col=[
+                    TableGridColumn(w=1440),
+                    TableGridColumn(w=1440),
+                ]
+            ),
+            tr=[TableRow(tc=[make_cell("A"), make_cell("B")])],
         )
         result = table_to_html(table)
         assert "<colgroup>" in result
@@ -220,35 +215,34 @@ class TestCellSpanning:
     def test_horizontal_span(self) -> None:
         """Cell spanning multiple columns (colspan)."""
         cell = make_cell("Spanning", TableCellProperties(grid_span=2))
-        table = Table(tr=[
-            TableRow(tc=[cell]),
-            TableRow(tc=[make_cell("A"), make_cell("B")])
-        ])
+        table = Table(tr=[TableRow(tc=[cell]), TableRow(tc=[make_cell("A"), make_cell("B")])])
         result = table_to_html(table)
         assert 'colspan="2"' in result
 
     def test_vertical_merge_restart(self) -> None:
         """Cell starting a vertical merge (rowspan start)."""
-        first_row = TableRow(tc=[
-            make_cell("Merged", TableCellProperties(v_merge="restart")),
-            make_cell("Normal1")
-        ])
-        second_row = TableRow(tc=[
-            make_cell("", TableCellProperties(v_merge="continue")),
-            make_cell("Normal2")
-        ])
+        first_row = TableRow(
+            tc=[make_cell("Merged", TableCellProperties(v_merge="restart")), make_cell("Normal1")]
+        )
+        second_row = TableRow(
+            tc=[make_cell("", TableCellProperties(v_merge="continue")), make_cell("Normal2")]
+        )
         table = Table(tr=[first_row, second_row])
         result = table_to_html(table)
         assert 'rowspan="2"' in result
 
     def test_vertical_merge_continue(self) -> None:
         """Continuation of vertical merge should not render cell."""
-        first_row = TableRow(tc=[
-            make_cell("Merged", TableCellProperties(v_merge="restart")),
-        ])
-        second_row = TableRow(tc=[
-            make_cell("", TableCellProperties(v_merge="continue")),
-        ])
+        first_row = TableRow(
+            tc=[
+                make_cell("Merged", TableCellProperties(v_merge="restart")),
+            ]
+        )
+        second_row = TableRow(
+            tc=[
+                make_cell("", TableCellProperties(v_merge="continue")),
+            ]
+        )
         table = Table(tr=[first_row, second_row])
         result = table_to_html(table)
         # Only one td should be rendered
@@ -257,24 +251,30 @@ class TestCellSpanning:
     def test_combined_colspan_rowspan(self) -> None:
         """Cell with both colspan and rowspan."""
         cell = make_cell("Big", TableCellProperties(grid_span=2, v_merge="restart"))
-        table = Table(tr=[
-            TableRow(tc=[cell, make_cell("C")]),
-            TableRow(tc=[
-                make_cell("", TableCellProperties(v_merge="continue")),
-                make_cell("D"),
-                make_cell("E")
-            ])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[cell, make_cell("C")]),
+                TableRow(
+                    tc=[
+                        make_cell("", TableCellProperties(v_merge="continue")),
+                        make_cell("D"),
+                        make_cell("E"),
+                    ]
+                ),
+            ]
+        )
         result = table_to_html(table)
-        assert 'colspan="2"' in result or 'rowspan' in result
+        assert 'colspan="2"' in result or "rowspan" in result
 
     def test_multi_row_vertical_merge(self) -> None:
         """Vertical merge spanning 3+ rows."""
-        table = Table(tr=[
-            TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+            ]
+        )
         result = table_to_html(table)
         assert 'rowspan="3"' in result
 
@@ -291,12 +291,10 @@ class TestTableBorders:
         """All table borders."""
         border = Border(val="single", sz=8, color="000000")
         borders = TableBorders(
-            top=border, left=border, bottom=border, right=border,
-            inside_h=border, inside_v=border
+            top=border, left=border, bottom=border, right=border, inside_h=border, inside_v=border
         )
         table = Table(
-            tbl_pr=TableProperties(tbl_borders=borders),
-            tr=[TableRow(tc=[make_cell("Bordered")])]
+            tbl_pr=TableProperties(tbl_borders=borders), tr=[TableRow(tc=[make_cell("Bordered")])]
         )
         result = table_to_html(table)
         assert "border" in result
@@ -307,7 +305,7 @@ class TestTableBorders:
         border = Border(val="single", sz=4)
         table = Table(
             tbl_pr=TableProperties(tbl_borders=TableBorders(top=border)),
-            tr=[TableRow(tc=[make_cell("Cell")])]
+            tr=[TableRow(tc=[make_cell("Cell")])],
         )
         result = table_to_html(table)
         assert "border-collapse" in result
@@ -317,8 +315,7 @@ class TestTableBorders:
         border = Border(val="single", sz=4, color="000000")
         borders = TableBorders(inside_h=border, inside_v=border)
         table = Table(
-            tbl_pr=TableProperties(tbl_borders=borders),
-            tr=[TableRow(tc=[make_cell("Cell")])]
+            tbl_pr=TableProperties(tbl_borders=borders), tr=[TableRow(tc=[make_cell("Cell")])]
         )
         result = table_to_html(table)
         assert "Cell" in result
@@ -326,10 +323,8 @@ class TestTableBorders:
     def test_no_borders(self) -> None:
         """Table without borders."""
         table = Table(
-            tbl_pr=TableProperties(
-                tbl_borders=TableBorders(top=Border(val="nil"))
-            ),
-            tr=[TableRow(tc=[make_cell("Borderless")])]
+            tbl_pr=TableProperties(tbl_borders=TableBorders(top=Border(val="nil"))),
+            tr=[TableRow(tc=[make_cell("Borderless")])],
         )
         result = table_to_html(table)
         assert "Borderless" in result
@@ -341,8 +336,7 @@ class TestTableBorders:
             bottom=Border(val="double", sz=8),
         )
         table = Table(
-            tbl_pr=TableProperties(tbl_borders=borders),
-            tr=[TableRow(tc=[make_cell("Mixed")])]
+            tbl_pr=TableProperties(tbl_borders=borders), tr=[TableRow(tc=[make_cell("Mixed")])]
         )
         result = table_to_html(table)
         assert "Mixed" in result
@@ -358,21 +352,27 @@ class TestCellBorders:
 
     def test_cell_borders_override_table(self) -> None:
         """Cell borders override table borders."""
-        cell = make_cell("Special", TableCellProperties(
-            tc_borders=TableBorders(top=Border(val="double", sz=12, color="FF0000"))
-        ))
+        cell = make_cell(
+            "Special",
+            TableCellProperties(
+                tc_borders=TableBorders(top=Border(val="double", sz=12, color="FF0000"))
+            ),
+        )
         table = Table(tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         assert "border" in result
 
     def test_cell_with_no_borders(self) -> None:
         """Individual cell with no borders."""
-        cell = make_cell("Borderless", TableCellProperties(
-            tc_borders=TableBorders(
-                top=Border(val="nil"),
-                bottom=Border(val="nil"),
-            )
-        ))
+        cell = make_cell(
+            "Borderless",
+            TableCellProperties(
+                tc_borders=TableBorders(
+                    top=Border(val="nil"),
+                    bottom=Border(val="nil"),
+                )
+            ),
+        )
         table = Table(tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         assert "Borderless" in result
@@ -427,7 +427,7 @@ class TestCellShading:
         """Table-level shading."""
         table = Table(
             tbl_pr=TableProperties(shd=Shading(fill="E0E0E0")),
-            tr=[TableRow(tc=[make_cell("Gray")])]
+            tr=[TableRow(tc=[make_cell("Gray")])],
         )
         result = table_to_html(table)
         # Table shading is in the table style
@@ -436,10 +436,7 @@ class TestCellShading:
     def test_cell_shading_overrides_table(self) -> None:
         """Cell shading overrides table shading."""
         cell = make_cell("Yellow", TableCellProperties(shd=Shading(fill="FFFF00")))
-        table = Table(
-            tbl_pr=TableProperties(shd=Shading(fill="E0E0E0")),
-            tr=[TableRow(tc=[cell])]
-        )
+        table = Table(tbl_pr=TableProperties(shd=Shading(fill="E0E0E0")), tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         # Cell-level shading is definitely applied
         assert "Yellow" in result  # At minimum the content should render
@@ -459,20 +456,19 @@ class TestCellMargins:
             top=Width(w=72, type="dxa"),
             left=Width(w=115, type="dxa"),
             bottom=Width(w=72, type="dxa"),
-            right=Width(w=115, type="dxa")
+            right=Width(w=115, type="dxa"),
         )
         table = Table(
-            tbl_pr=TableProperties(tbl_cell_mar=margins),
-            tr=[TableRow(tc=[make_cell("Padded")])]
+            tbl_pr=TableProperties(tbl_cell_mar=margins), tr=[TableRow(tc=[make_cell("Padded")])]
         )
         result = table_to_html(table)
         assert "Padded" in result
 
     def test_cell_margins_override_table(self) -> None:
         """Cell margins override table defaults."""
-        cell = make_cell("Custom", TableCellProperties(
-            tc_mar=TableCellMargins(left=Width(w=200, type="dxa"))
-        ))
+        cell = make_cell(
+            "Custom", TableCellProperties(tc_mar=TableCellMargins(left=Width(w=200, type="dxa")))
+        )
         table = Table(tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         assert "padding" in result
@@ -543,7 +539,7 @@ class TestRowProperties:
         """Row with exact height."""
         row = TableRow(
             tr_pr=TableRowProperties(tr_height=TableRowHeight(val=720, h_rule="exact")),
-            tc=[make_cell("Tall row")]
+            tc=[make_cell("Tall row")],
         )
         table = Table(tr=[row])
         result = table_to_html(table)
@@ -553,7 +549,7 @@ class TestRowProperties:
         """Row with minimum height."""
         row = TableRow(
             tr_pr=TableRowProperties(tr_height=TableRowHeight(val=480, h_rule="atLeast")),
-            tc=[make_cell("Min height")]
+            tc=[make_cell("Min height")],
         )
         table = Table(tr=[row])
         result = table_to_html(table)
@@ -561,10 +557,7 @@ class TestRowProperties:
 
     def test_header_row(self) -> None:
         """Row marked as header (repeats on pages)."""
-        header = TableRow(
-            tr_pr=TableRowProperties(tbl_header=True),
-            tc=[make_cell("Header")]
-        )
+        header = TableRow(tr_pr=TableRowProperties(tbl_header=True), tc=[make_cell("Header")])
         data = TableRow(tc=[make_cell("Data")])
         table = Table(tr=[header, data])
         result = table_to_html(table)
@@ -572,10 +565,7 @@ class TestRowProperties:
 
     def test_row_cant_split(self) -> None:
         """Row that cannot split across pages."""
-        row = TableRow(
-            tr_pr=TableRowProperties(cant_split=True),
-            tc=[make_cell("Don't split me")]
-        )
+        row = TableRow(tr_pr=TableRowProperties(cant_split=True), tc=[make_cell("Don't split me")])
         table = Table(tr=[row])
         result = table_to_html(table)
         assert "break-inside" in result
@@ -594,7 +584,7 @@ class TestTableLook:
         look = TableLook(first_row=True)
         table = Table(
             tbl_pr=TableProperties(tbl_look=look),
-            tr=[TableRow(tc=[make_cell("Header")]), TableRow(tc=[make_cell("Data")])]
+            tr=[TableRow(tc=[make_cell("Header")]), TableRow(tc=[make_cell("Data")])],
         )
         result = table_to_html(table)
         assert "Header" in result
@@ -602,10 +592,7 @@ class TestTableLook:
     def test_last_row_formatting(self) -> None:
         """Last row formatting enabled."""
         look = TableLook(last_row=True)
-        table = Table(
-            tbl_pr=TableProperties(tbl_look=look),
-            tr=[TableRow(tc=[make_cell("Data")])]
-        )
+        table = Table(tbl_pr=TableProperties(tbl_look=look), tr=[TableRow(tc=[make_cell("Data")])])
         result = table_to_html(table)
         assert "Data" in result
 
@@ -614,7 +601,7 @@ class TestTableLook:
         look = TableLook(first_column=True)
         table = Table(
             tbl_pr=TableProperties(tbl_look=look),
-            tr=[TableRow(tc=[make_cell("First"), make_cell("Second")])]
+            tr=[TableRow(tc=[make_cell("First"), make_cell("Second")])],
         )
         result = table_to_html(table)
         assert "First" in result
@@ -624,7 +611,7 @@ class TestTableLook:
         look = TableLook(no_h_band=False)
         table = Table(
             tbl_pr=TableProperties(tbl_look=look),
-            tr=[TableRow(tc=[make_cell("Row1")]), TableRow(tc=[make_cell("Row2")])]
+            tr=[TableRow(tc=[make_cell("Row1")]), TableRow(tc=[make_cell("Row2")])],
         )
         result = table_to_html(table)
         assert "Row1" in result
@@ -634,7 +621,7 @@ class TestTableLook:
         look = TableLook(no_v_band=False)
         table = Table(
             tbl_pr=TableProperties(tbl_look=look),
-            tr=[TableRow(tc=[make_cell("A"), make_cell("B")])]
+            tr=[TableRow(tc=[make_cell("A"), make_cell("B")])],
         )
         result = table_to_html(table)
         assert "A" in result
@@ -651,8 +638,7 @@ class TestTableStyleReference:
     def test_table_style_reference(self) -> None:
         """Table references a style by ID."""
         table = Table(
-            tbl_pr=TableProperties(tbl_style="TableGrid"),
-            tr=[TableRow(tc=[make_cell("Styled")])]
+            tbl_pr=TableProperties(tbl_style="TableGrid"), tr=[TableRow(tc=[make_cell("Styled")])]
         )
         result = table_to_html(table)
         assert "Styled" in result
@@ -661,10 +647,9 @@ class TestTableStyleReference:
         """Direct properties override style properties."""
         table = Table(
             tbl_pr=TableProperties(
-                tbl_style="TableGrid",
-                tbl_borders=TableBorders(top=Border(val="nil"))
+                tbl_style="TableGrid", tbl_borders=TableBorders(top=Border(val="nil"))
             ),
-            tr=[TableRow(tc=[make_cell("Overridden")])]
+            tr=[TableRow(tc=[make_cell("Overridden")])],
         )
         result = table_to_html(table)
         assert "Overridden" in result
@@ -708,10 +693,12 @@ class TestCellContent:
 
     def test_cell_with_multiple_paragraphs(self) -> None:
         """Cell with multiple paragraphs."""
-        cell = TableCell(content=[
-            Paragraph(content=[Run(content=[Text(value="Paragraph 1")])]),
-            Paragraph(content=[Run(content=[Text(value="Paragraph 2")])])
-        ])
+        cell = TableCell(
+            content=[
+                Paragraph(content=[Run(content=[Text(value="Paragraph 1")])]),
+                Paragraph(content=[Run(content=[Text(value="Paragraph 2")])]),
+            ]
+        )
         table = Table(tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         assert "Paragraph 1" in result
@@ -729,11 +716,12 @@ class TestCellContent:
     def test_cell_with_formatted_content(self) -> None:
         """Cell with formatted paragraph content."""
         from models.document.run import RunProperties
-        cell = TableCell(content=[
-            Paragraph(content=[
-                Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])
-            ])
-        ])
+
+        cell = TableCell(
+            content=[
+                Paragraph(content=[Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])])
+            ]
+        )
         table = Table(tr=[TableRow(tc=[cell])])
         result = table_to_html(table)
         assert "Bold" in result
@@ -751,7 +739,7 @@ class TestTableLayout:
         """Table with fixed layout."""
         table = Table(
             tbl_pr=TableProperties(tbl_layout="fixed"),
-            tr=[TableRow(tc=[make_cell("Fixed layout")])]
+            tr=[TableRow(tc=[make_cell("Fixed layout")])],
         )
         result = table_to_html(table)
         assert "table-layout: fixed" in result
@@ -760,7 +748,7 @@ class TestTableLayout:
         """Table with autofit layout."""
         table = Table(
             tbl_pr=TableProperties(tbl_layout="autofit"),
-            tr=[TableRow(tc=[make_cell("Autofit layout")])]
+            tr=[TableRow(tc=[make_cell("Autofit layout")])],
         )
         result = table_to_html(table)
         assert "table-layout: auto" in result
@@ -778,7 +766,7 @@ class TestTableIndentation:
         """Table with left indentation."""
         table = Table(
             tbl_pr=TableProperties(tbl_ind=Width(w=720, type="dxa")),
-            tr=[TableRow(tc=[make_cell("Indented")])]
+            tr=[TableRow(tc=[make_cell("Indented")])],
         )
         result = table_to_html(table)
         assert "margin-left" in result
@@ -796,7 +784,7 @@ class TestTableAccessibility:
         """Table with caption."""
         table = Table(
             tbl_pr=TableProperties(tbl_caption="Sales Data 2024"),
-            tr=[TableRow(tc=[make_cell("Data")])]
+            tr=[TableRow(tc=[make_cell("Data")])],
         )
         result = table_to_html(table)
         assert "<caption>" in result or "aria-label" in result
@@ -805,7 +793,7 @@ class TestTableAccessibility:
         """Table with description."""
         table = Table(
             tbl_pr=TableProperties(tbl_description="Quarterly sales data"),
-            tr=[TableRow(tc=[make_cell("Data")])]
+            tr=[TableRow(tc=[make_cell("Data")])],
         )
         result = table_to_html(table)
         assert "Data" in result
@@ -813,8 +801,7 @@ class TestTableAccessibility:
     def test_header_row_uses_th(self) -> None:
         """Header row cells use <th> instead of <td>."""
         header = TableRow(
-            tr_pr=TableRowProperties(tbl_header=True),
-            tc=[make_cell("Name"), make_cell("Age")]
+            tr_pr=TableRowProperties(tbl_header=True), tc=[make_cell("Name"), make_cell("Age")]
         )
         table = Table(tr=[header])
         result = table_to_html(table)
@@ -824,7 +811,7 @@ class TestTableAccessibility:
         """Header cells have scope attribute."""
         header = TableRow(
             tr_pr=TableRowProperties(tbl_header=True),
-            tc=[make_cell("Column 1"), make_cell("Column 2")]
+            tc=[make_cell("Column 1"), make_cell("Column 2")],
         )
         table = Table(tr=[header])
         result = table_to_html(table)
@@ -857,21 +844,25 @@ class TestTableEdgeCases:
 
     def test_empty_cells_in_row(self) -> None:
         """Row with some empty cells."""
-        table = Table(tr=[TableRow(tc=[
-            make_cell("Data"),
-            TableCell(content=[]),
-            make_cell("More data")
-        ])])
+        table = Table(
+            tr=[TableRow(tc=[make_cell("Data"), TableCell(content=[]), make_cell("More data")])]
+        )
         result = table_to_html(table)
         assert "Data" in result
         assert "More data" in result
 
     def test_unicode_content(self) -> None:
         """Table with Unicode content."""
-        table = Table(tr=[TableRow(tc=[
-            make_cell("日本語"),
-            make_cell("العربية"),
-        ])])
+        table = Table(
+            tr=[
+                TableRow(
+                    tc=[
+                        make_cell("日本語"),
+                        make_cell("العربية"),
+                    ]
+                )
+            ]
+        )
         result = table_to_html(table)
         assert "日本語" in result
         assert "العربية" in result
@@ -885,26 +876,20 @@ class TestTableEdgeCases:
 
     def test_mixed_merge_scenarios(self) -> None:
         """Complex table with various merge patterns."""
-        table = Table(tr=[
-            TableRow(tc=[
-                make_cell("A", TableCellProperties(grid_span=2)),
-                make_cell("B")
-            ]),
-            TableRow(tc=[
-                make_cell("C"),
-                make_cell("D"),
-                make_cell("E")
-            ])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[make_cell("A", TableCellProperties(grid_span=2)), make_cell("B")]),
+                TableRow(tc=[make_cell("C"), make_cell("D"), make_cell("E")]),
+            ]
+        )
         result = table_to_html(table)
         assert 'colspan="2"' in result
 
     def test_irregular_row_lengths(self) -> None:
         """Rows with different cell counts (edge case)."""
-        table = Table(tr=[
-            TableRow(tc=[make_cell("A"), make_cell("B")]),
-            TableRow(tc=[make_cell("C")])
-        ])
+        table = Table(
+            tr=[TableRow(tc=[make_cell("A"), make_cell("B")]), TableRow(tc=[make_cell("C")])]
+        )
         result = table_to_html(table)
         assert "A" in result
         assert "C" in result
@@ -913,11 +898,9 @@ class TestTableEdgeCases:
         """Table with properties but minimal content."""
         table = Table(
             tbl_pr=TableProperties(
-                tbl_style="TableGrid",
-                tbl_w=Width(w=5000, type="pct"),
-                jc="center"
+                tbl_style="TableGrid", tbl_w=Width(w=5000, type="pct"), jc="center"
             ),
-            tr=[]
+            tr=[],
         )
         result = table_to_html(table)
         assert "<table" in result
@@ -947,52 +930,63 @@ class TestRowspanCalculation:
 
     def test_calculate_rowspan_simple(self) -> None:
         """Simple rowspan calculation for 2-row merge."""
-        table = Table(tr=[
-            TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+            ]
+        )
         rowspans = calculate_rowspans(table)
         assert rowspans[(0, 0)] == 2
 
     def test_calculate_rowspan_multiple(self) -> None:
         """Calculate multiple separate rowspans in same column."""
-        table = Table(tr=[
-            TableRow(tc=[make_cell("M1", TableCellProperties(v_merge="restart"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
-            TableRow(tc=[make_cell("M2", TableCellProperties(v_merge="restart"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[make_cell("M1", TableCellProperties(v_merge="restart"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+                TableRow(tc=[make_cell("M2", TableCellProperties(v_merge="restart"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+            ]
+        )
         rowspans = calculate_rowspans(table)
         assert rowspans[(0, 0)] == 2
         assert rowspans[(2, 0)] == 2
 
     def test_rowspan_different_columns(self) -> None:
         """Different rowspans in different columns."""
-        table = Table(tr=[
-            TableRow(tc=[
-                make_cell("Col1", TableCellProperties(v_merge="restart")),
-                make_cell("Col2", TableCellProperties(v_merge="restart"))
-            ]),
-            TableRow(tc=[
-                make_cell("", TableCellProperties(v_merge="continue")),
-                make_cell("", TableCellProperties(v_merge="continue"))
-            ]),
-            TableRow(tc=[
-                make_cell("", TableCellProperties(v_merge="continue")),
-                make_cell("Normal")
-            ])
-        ])
+        table = Table(
+            tr=[
+                TableRow(
+                    tc=[
+                        make_cell("Col1", TableCellProperties(v_merge="restart")),
+                        make_cell("Col2", TableCellProperties(v_merge="restart")),
+                    ]
+                ),
+                TableRow(
+                    tc=[
+                        make_cell("", TableCellProperties(v_merge="continue")),
+                        make_cell("", TableCellProperties(v_merge="continue")),
+                    ]
+                ),
+                TableRow(
+                    tc=[make_cell("", TableCellProperties(v_merge="continue")), make_cell("Normal")]
+                ),
+            ]
+        )
         rowspans = calculate_rowspans(table)
         assert rowspans[(0, 0)] == 3
         assert rowspans[(0, 1)] == 2
 
     def test_rowspan_ends_at_table_bottom(self) -> None:
         """Rowspan that ends at the last row."""
-        table = Table(tr=[
-            TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
-            TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))])
-        ])
+        table = Table(
+            tr=[
+                TableRow(tc=[make_cell("M", TableCellProperties(v_merge="restart"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+                TableRow(tc=[make_cell("", TableCellProperties(v_merge="continue"))]),
+            ]
+        )
         rowspans = calculate_rowspans(table)
         assert rowspans[(0, 0)] == 3
 
@@ -1020,10 +1014,7 @@ class TestTableHTMLOutputMode:
         """Inline style mode produces style attributes."""
         converter = TableToHTMLConverter(use_inline_styles=True)
         # Table with properties to trigger style generation
-        table = Table(
-            tbl_pr=TableProperties(jc="center"),
-            tr=[TableRow(tc=[make_cell("Cell")])]
-        )
+        table = Table(tbl_pr=TableProperties(jc="center"), tr=[TableRow(tc=[make_cell("Cell")])])
         result = converter.convert(table)
         assert "style=" in result
 
@@ -1054,10 +1045,7 @@ class TestTableToHTMLConverterClass:
 
     def test_converter_with_options(self) -> None:
         """Initialize with options."""
-        converter = TableToHTMLConverter(
-            use_semantic_tags=False,
-            use_classes=True
-        )
+        converter = TableToHTMLConverter(use_semantic_tags=False, use_classes=True)
         assert converter.use_semantic_tags is False
         assert converter.use_classes is True
 

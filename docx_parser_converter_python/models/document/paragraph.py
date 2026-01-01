@@ -2,6 +2,7 @@
 
 A paragraph is a block of text with consistent paragraph-level formatting.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

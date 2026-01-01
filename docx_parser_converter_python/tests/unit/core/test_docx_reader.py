@@ -1,4 +1,5 @@
 """Tests for docx_reader module."""
+
 import io
 import zipfile
 from pathlib import Path

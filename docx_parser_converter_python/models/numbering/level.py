@@ -2,6 +2,7 @@
 
 A level defines formatting and behavior for a single level within a numbering.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

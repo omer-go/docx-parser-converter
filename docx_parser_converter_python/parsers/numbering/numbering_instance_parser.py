@@ -1,4 +1,5 @@
 """Parser for numbering instance elements."""
+
 from lxml.etree import _Element as Element
 
 from models.numbering.level_override import LevelOverride
@@ -31,7 +32,9 @@ def parse_level_override(element: Element | None) -> LevelOverride | None:
 
     # Start override
     start_override_elem = find_child(element, "startOverride")
-    start_override = get_int_attribute(start_override_elem, "val") if start_override_elem is not None else None
+    start_override = (
+        get_int_attribute(start_override_elem, "val") if start_override_elem is not None else None
+    )
 
     # Level override (full level replacement)
     lvl = parse_level(find_child(element, "lvl"))
@@ -70,7 +73,9 @@ def parse_numbering_instance(element: Element | None) -> NumberingInstance | Non
 
     # Reference to abstract numbering
     abstract_num_id_elem = find_child(element, "abstractNumId")
-    abstract_num_id = get_int_attribute(abstract_num_id_elem, "val") if abstract_num_id_elem is not None else None
+    abstract_num_id = (
+        get_int_attribute(abstract_num_id_elem, "val") if abstract_num_id_elem is not None else None
+    )
 
     # Level overrides
     lvl_overrides = None

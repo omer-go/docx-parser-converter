@@ -1,4 +1,5 @@
 """Parser for table row elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table_row import TableRow

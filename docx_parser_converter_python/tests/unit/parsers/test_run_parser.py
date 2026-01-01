@@ -41,6 +41,7 @@ from tests.unit.parsers.conftest import make_element
 # Text Parser Tests (<w:t>)
 # =============================================================================
 
+
 class TestTextParser:
     """Tests for parse_text function.
 
@@ -55,7 +56,7 @@ class TestTextParser:
 
     def test_parse_text_simple(self):
         """Parse simple text content."""
-        elem = make_element('<w:t>Hello World</w:t>')
+        elem = make_element("<w:t>Hello World</w:t>")
         result = parse_text(elem)
         assert result is not None
         assert result.value == "Hello World"
@@ -63,7 +64,7 @@ class TestTextParser:
 
     def test_parse_text_empty(self):
         """Parse empty text element."""
-        elem = make_element('<w:t></w:t>')
+        elem = make_element("<w:t></w:t>")
         result = parse_text(elem)
         assert result is not None
         assert result.value == ""
@@ -78,7 +79,7 @@ class TestTextParser:
 
     def test_parse_text_special_characters(self):
         """Parse text with special characters."""
-        elem = make_element('<w:t>Text &amp; more &lt;text&gt;</w:t>')
+        elem = make_element("<w:t>Text &amp; more &lt;text&gt;</w:t>")
         result = parse_text(elem)
         assert result is not None
         assert result.value == "Text & more <text>"
@@ -87,6 +88,7 @@ class TestTextParser:
 # =============================================================================
 # Break Parser Tests (<w:br>)
 # =============================================================================
+
 
 class TestBreakParser:
     """Tests for parse_break function.
@@ -102,7 +104,7 @@ class TestBreakParser:
 
     def test_parse_break_line(self):
         """Parse line break (no type attribute)."""
-        elem = make_element('<w:br/>')
+        elem = make_element("<w:br/>")
         result = parse_break(elem)
         assert result is not None
         assert result.type is None
@@ -144,6 +146,7 @@ class TestBreakParser:
 # Tab/CR/Hyphen Parser Tests
 # =============================================================================
 
+
 class TestTabCharParser:
     """Tests for parse_tab_char function."""
 
@@ -154,7 +157,7 @@ class TestTabCharParser:
 
     def test_parse_tab_char(self):
         """Parse tab character."""
-        elem = make_element('<w:tab/>')
+        elem = make_element("<w:tab/>")
         result = parse_tab_char(elem)
         assert result is not None
         assert isinstance(result, TabChar)
@@ -170,7 +173,7 @@ class TestCarriageReturnParser:
 
     def test_parse_cr(self):
         """Parse carriage return."""
-        elem = make_element('<w:cr/>')
+        elem = make_element("<w:cr/>")
         result = parse_carriage_return(elem)
         assert result is not None
         assert isinstance(result, CarriageReturn)
@@ -186,7 +189,7 @@ class TestSoftHyphenParser:
 
     def test_parse_soft_hyphen(self):
         """Parse soft hyphen."""
-        elem = make_element('<w:softHyphen/>')
+        elem = make_element("<w:softHyphen/>")
         result = parse_soft_hyphen(elem)
         assert result is not None
         assert isinstance(result, SoftHyphen)
@@ -202,7 +205,7 @@ class TestNoBreakHyphenParser:
 
     def test_parse_no_break_hyphen(self):
         """Parse no-break hyphen."""
-        elem = make_element('<w:noBreakHyphen/>')
+        elem = make_element("<w:noBreakHyphen/>")
         result = parse_no_break_hyphen(elem)
         assert result is not None
         assert isinstance(result, NoBreakHyphen)
@@ -211,6 +214,7 @@ class TestNoBreakHyphenParser:
 # =============================================================================
 # Symbol Parser Tests (<w:sym>)
 # =============================================================================
+
 
 class TestSymbolParser:
     """Tests for parse_symbol function.
@@ -243,6 +247,7 @@ class TestSymbolParser:
 # =============================================================================
 # Field Character Parser Tests (<w:fldChar>)
 # =============================================================================
+
 
 class TestFieldCharParser:
     """Tests for parse_field_char function.
@@ -289,6 +294,7 @@ class TestFieldCharParser:
 # Instruction Text Parser Tests (<w:instrText>)
 # =============================================================================
 
+
 class TestInstrTextParser:
     """Tests for parse_instr_text function.
 
@@ -320,6 +326,7 @@ class TestInstrTextParser:
 # =============================================================================
 # Footnote/Endnote Reference Parser Tests
 # =============================================================================
+
 
 class TestFootnoteReferenceParser:
     """Tests for parse_footnote_reference function."""
@@ -357,6 +364,7 @@ class TestEndnoteReferenceParser:
 # Run Content Item Parser Tests (Dispatcher)
 # =============================================================================
 
+
 class TestRunContentItemParser:
     """Tests for parse_run_content_item function."""
 
@@ -367,21 +375,21 @@ class TestRunContentItemParser:
 
     def test_parse_run_content_item_text(self):
         """Dispatch to text parser."""
-        elem = make_element('<w:t>Hello</w:t>')
+        elem = make_element("<w:t>Hello</w:t>")
         result = parse_run_content_item(elem)
         assert result is not None
         assert isinstance(result, Text)
 
     def test_parse_run_content_item_break(self):
         """Dispatch to break parser."""
-        elem = make_element('<w:br/>')
+        elem = make_element("<w:br/>")
         result = parse_run_content_item(elem)
         assert result is not None
         assert isinstance(result, Break)
 
     def test_parse_run_content_item_unknown(self):
         """Unknown element returns None."""
-        elem = make_element('<w:unknown/>')
+        elem = make_element("<w:unknown/>")
         result = parse_run_content_item(elem)
         assert result is None
 
@@ -389,6 +397,7 @@ class TestRunContentItemParser:
 # =============================================================================
 # Run Fonts Parser Tests (<w:rFonts>)
 # =============================================================================
+
 
 class TestRunFontsParser:
     """Tests for parse_run_fonts function.
@@ -437,6 +446,7 @@ class TestRunFontsParser:
 # Language Parser Tests (<w:lang>)
 # =============================================================================
 
+
 class TestLanguageParser:
     """Tests for parse_language function.
 
@@ -469,6 +479,7 @@ class TestLanguageParser:
 # =============================================================================
 # Underline Parser Tests (<w:u>)
 # =============================================================================
+
 
 class TestUnderlineParser:
     """Tests for parse_underline function.
@@ -508,10 +519,24 @@ class TestUnderlineParser:
     def test_parse_underline_styles(self):
         """Test various underline style values."""
         styles = [
-            "single", "words", "double", "thick", "dotted", "dottedHeavy",
-            "dash", "dashedHeavy", "dashLong", "dashLongHeavy", "dotDash",
-            "dashDotHeavy", "dotDotDash", "dashDotDotHeavy", "wave", "wavyHeavy",
-            "wavyDouble", "none"
+            "single",
+            "words",
+            "double",
+            "thick",
+            "dotted",
+            "dottedHeavy",
+            "dash",
+            "dashedHeavy",
+            "dashLong",
+            "dashLongHeavy",
+            "dotDash",
+            "dashDotHeavy",
+            "dotDotDash",
+            "dashDotDotHeavy",
+            "wave",
+            "wavyHeavy",
+            "wavyDouble",
+            "none",
         ]
         for style in styles:
             elem = make_element(f'<w:u w:val="{style}"/>')
@@ -523,6 +548,7 @@ class TestUnderlineParser:
 # =============================================================================
 # Run Properties Parser Tests (<w:rPr>)
 # =============================================================================
+
 
 class TestRunPropertiesParser:
     """Tests for parse_run_properties function.
@@ -540,7 +566,7 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_empty(self):
         """Parse empty rPr element."""
-        elem = make_element('<w:rPr/>')
+        elem = make_element("<w:rPr/>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.b is None
@@ -548,7 +574,7 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_bold(self):
         """Parse bold run property."""
-        elem = make_element('<w:rPr><w:b/></w:rPr>')
+        elem = make_element("<w:rPr><w:b/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.b is True
@@ -562,14 +588,14 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_italic(self):
         """Parse italic run property."""
-        elem = make_element('<w:rPr><w:i/></w:rPr>')
+        elem = make_element("<w:rPr><w:i/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.i is True
 
     def test_parse_run_properties_bold_italic(self):
         """Parse bold and italic together."""
-        elem = make_element('<w:rPr><w:b/><w:i/></w:rPr>')
+        elem = make_element("<w:rPr><w:b/><w:i/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.b is True
@@ -607,9 +633,23 @@ class TestRunPropertiesParser:
     def test_parse_run_properties_highlight_colors(self):
         """Test all highlight color values."""
         colors = [
-            "black", "blue", "cyan", "darkBlue", "darkCyan", "darkGray",
-            "darkGreen", "darkMagenta", "darkRed", "darkYellow", "green",
-            "lightGray", "magenta", "none", "red", "white", "yellow"
+            "black",
+            "blue",
+            "cyan",
+            "darkBlue",
+            "darkCyan",
+            "darkGray",
+            "darkGreen",
+            "darkMagenta",
+            "darkRed",
+            "darkYellow",
+            "green",
+            "lightGray",
+            "magenta",
+            "none",
+            "red",
+            "white",
+            "yellow",
         ]
         for color in colors:
             elem = make_element(f'<w:rPr><w:highlight w:val="{color}"/></w:rPr>')
@@ -619,42 +659,42 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_caps(self):
         """Parse all caps."""
-        elem = make_element('<w:rPr><w:caps/></w:rPr>')
+        elem = make_element("<w:rPr><w:caps/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.caps is True
 
     def test_parse_run_properties_small_caps(self):
         """Parse small caps."""
-        elem = make_element('<w:rPr><w:smallCaps/></w:rPr>')
+        elem = make_element("<w:rPr><w:smallCaps/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.small_caps is True
 
     def test_parse_run_properties_strike(self):
         """Parse strikethrough."""
-        elem = make_element('<w:rPr><w:strike/></w:rPr>')
+        elem = make_element("<w:rPr><w:strike/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.strike is True
 
     def test_parse_run_properties_dstrike(self):
         """Parse double strikethrough."""
-        elem = make_element('<w:rPr><w:dstrike/></w:rPr>')
+        elem = make_element("<w:rPr><w:dstrike/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.dstrike is True
 
     def test_parse_run_properties_effects(self):
         """Parse text effects (outline, shadow, emboss, imprint)."""
-        elem = make_element('''
+        elem = make_element("""
             <w:rPr>
                 <w:outline/>
                 <w:shadow/>
                 <w:emboss/>
                 <w:imprint/>
             </w:rPr>
-        ''')
+        """)
         result = parse_run_properties(elem)
         assert result is not None
         assert result.outline is True
@@ -664,14 +704,14 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_vanish(self):
         """Parse hidden text."""
-        elem = make_element('<w:rPr><w:vanish/></w:rPr>')
+        elem = make_element("<w:rPr><w:vanish/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.vanish is True
 
     def test_parse_run_properties_spec_vanish(self):
         """Parse special vanish."""
-        elem = make_element('<w:rPr><w:specVanish/></w:rPr>')
+        elem = make_element("<w:rPr><w:specVanish/></w:rPr>")
         result = parse_run_properties(elem)
         assert result is not None
         assert result.spec_vanish is True
@@ -745,9 +785,7 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_border(self):
         """Parse character border."""
-        elem = make_element(
-            '<w:rPr><w:bdr w:val="single" w:sz="4" w:color="000000"/></w:rPr>'
-        )
+        elem = make_element('<w:rPr><w:bdr w:val="single" w:sz="4" w:color="000000"/></w:rPr>')
         result = parse_run_properties(elem)
         assert result is not None
         assert result.bdr is not None
@@ -755,9 +793,7 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_shading(self):
         """Parse character shading."""
-        elem = make_element(
-            '<w:rPr><w:shd w:val="clear" w:fill="FFFF00"/></w:rPr>'
-        )
+        elem = make_element('<w:rPr><w:shd w:val="clear" w:fill="FFFF00"/></w:rPr>')
         result = parse_run_properties(elem)
         assert result is not None
         assert result.shd is not None
@@ -773,7 +809,7 @@ class TestRunPropertiesParser:
 
     def test_parse_run_properties_comprehensive(self):
         """Parse comprehensive run properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:rPr>
                 <w:rStyle w:val="Emphasis"/>
                 <w:rFonts w:ascii="Arial" w:hAnsi="Arial"/>
@@ -784,7 +820,7 @@ class TestRunPropertiesParser:
                 <w:color w:val="0000FF"/>
                 <w:highlight w:val="yellow"/>
             </w:rPr>
-        ''')
+        """)
         result = parse_run_properties(elem)
         assert result is not None
         assert result.r_style == "Emphasis"
@@ -804,6 +840,7 @@ class TestRunPropertiesParser:
 # Run Parser Tests (<w:r>)
 # =============================================================================
 
+
 class TestRunParser:
     """Tests for parse_run function.
 
@@ -818,7 +855,7 @@ class TestRunParser:
 
     def test_parse_run_simple_text(self):
         """Parse run with simple text."""
-        elem = make_element('<w:r><w:t>Hello World</w:t></w:r>')
+        elem = make_element("<w:r><w:t>Hello World</w:t></w:r>")
         result = parse_run(elem)
         assert result is not None
         assert len(result.content) == 1
@@ -827,12 +864,12 @@ class TestRunParser:
 
     def test_parse_run_with_properties(self):
         """Parse run with properties and text."""
-        elem = make_element('''
+        elem = make_element("""
             <w:r>
                 <w:rPr><w:b/></w:rPr>
                 <w:t>Bold text</w:t>
             </w:r>
-        ''')
+        """)
         result = parse_run(elem)
         assert result is not None
         assert result.r_pr is not None
@@ -842,13 +879,13 @@ class TestRunParser:
 
     def test_parse_run_multiple_content(self):
         """Parse run with multiple content elements."""
-        elem = make_element('''
+        elem = make_element("""
             <w:r>
                 <w:t>Before</w:t>
                 <w:tab/>
                 <w:t>After</w:t>
             </w:r>
-        ''')
+        """)
         result = parse_run(elem)
         assert result is not None
         assert len(result.content) == 3
@@ -858,13 +895,13 @@ class TestRunParser:
 
     def test_parse_run_with_break(self):
         """Parse run with line break."""
-        elem = make_element('''
+        elem = make_element("""
             <w:r>
                 <w:t>Line 1</w:t>
                 <w:br/>
                 <w:t>Line 2</w:t>
             </w:r>
-        ''')
+        """)
         result = parse_run(elem)
         assert result is not None
         assert len(result.content) == 3
@@ -872,7 +909,7 @@ class TestRunParser:
 
     def test_parse_run_empty(self):
         """Parse empty run."""
-        elem = make_element('<w:r/>')
+        elem = make_element("<w:r/>")
         result = parse_run(elem)
         assert result is not None
         assert result.r_pr is None
@@ -880,11 +917,11 @@ class TestRunParser:
 
     def test_parse_run_properties_only(self):
         """Parse run with only properties (no content)."""
-        elem = make_element('''
+        elem = make_element("""
             <w:r>
                 <w:rPr><w:i/></w:rPr>
             </w:r>
-        ''')
+        """)
         result = parse_run(elem)
         assert result is not None
         assert result.r_pr is not None

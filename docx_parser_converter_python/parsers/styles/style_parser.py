@@ -1,4 +1,5 @@
 """Parser for style elements."""
+
 from lxml.etree import _Element as Element
 
 from models.styles.style import Style
@@ -127,7 +128,9 @@ def parse_style(element: Element | None) -> Style | None:
     default = parse_toggle(element) if get_attribute(element, "default") is not None else None
 
     # Custom style flag
-    custom_style = parse_toggle(element) if get_attribute(element, "customStyle") is not None else None
+    custom_style = (
+        parse_toggle(element) if get_attribute(element, "customStyle") is not None else None
+    )
 
     # Name
     name_elem = find_child(element, "name")
@@ -157,7 +160,9 @@ def parse_style(element: Element | None) -> Style | None:
 
     # UI priority
     ui_priority_elem = find_child(element, "uiPriority")
-    ui_priority = get_int_attribute(ui_priority_elem, "val") if ui_priority_elem is not None else None
+    ui_priority = (
+        get_int_attribute(ui_priority_elem, "val") if ui_priority_elem is not None else None
+    )
 
     # Semi-hidden
     semi_hidden = parse_toggle(find_child(element, "semiHidden"))

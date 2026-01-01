@@ -29,9 +29,9 @@ class TestBasicConversion:
 
     def test_simple_document(self) -> None:
         """Simple document with one paragraph."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Hello World")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="Hello World")])])])
+        )
         result = docx_to_html(doc)
         assert "Hello World" in result
 
@@ -50,11 +50,15 @@ class TestBasicConversion:
 
     def test_multiple_paragraphs(self) -> None:
         """Document with multiple paragraphs."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Paragraph 1")])]),
-            Paragraph(content=[Run(content=[Text(value="Paragraph 2")])]),
-            Paragraph(content=[Run(content=[Text(value="Paragraph 3")])])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(content=[Run(content=[Text(value="Paragraph 1")])]),
+                    Paragraph(content=[Run(content=[Text(value="Paragraph 2")])]),
+                    Paragraph(content=[Run(content=[Text(value="Paragraph 3")])]),
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "Paragraph 1" in result
         assert "Paragraph 2" in result
@@ -77,6 +81,7 @@ class TestFileInput:
     def test_path_object_input(self) -> None:
         """Convert from Path object raises error for non-existent file."""
         from pathlib import Path
+
         with pytest.raises(FileNotFoundError):
             docx_to_html(Path("/nonexistent/document.docx"))
 
@@ -88,12 +93,14 @@ class TestFileInput:
     def test_file_object_input(self) -> None:
         """Convert from file-like object raises NotImplementedError."""
         from io import BytesIO
+
         with pytest.raises(NotImplementedError):
             docx_to_html(BytesIO(b"fake docx bytes"))
 
     def test_bytesio_input(self) -> None:
         """Convert from BytesIO raises NotImplementedError."""
         from io import BytesIO
+
         with pytest.raises(NotImplementedError):
             docx_to_html(BytesIO(b"fake docx bytes"))
 
@@ -108,17 +115,13 @@ class TestOutputOptions:
 
     def test_return_string(self) -> None:
         """Return HTML as string."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         result = docx_to_html(doc)
         assert isinstance(result, str)
 
     def test_write_to_file(self, tmp_path) -> None:
         """Write output to file."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         output_path = tmp_path / "output.html"
         docx_to_html(doc, output_path=output_path)
         content = output_path.read_text()
@@ -127,9 +130,7 @@ class TestOutputOptions:
 
     def test_write_to_path_object(self, tmp_path) -> None:
         """Write output to Path object."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         output_path = tmp_path / "output.html"
         docx_to_html(doc, output_path=output_path)
         assert output_path.exists()
@@ -146,12 +147,16 @@ class TestConversionConfig:
     def test_inline_styles_mode(self) -> None:
         """Inline styles mode (default)."""
         config = ConversionConfig(style_mode="inline")
-        doc = Document(body=Body(content=[
-            Paragraph(
-                p_pr=ParagraphProperties(jc="center"),
-                content=[Run(content=[Text(value="Centered")])]
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(jc="center"),
+                        content=[Run(content=[Text(value="Centered")])],
+                    )
+                ]
             )
-        ]))
+        )
         converter = HTMLConverter(config=config)
         result = converter.convert(doc)
         assert "style=" in result
@@ -164,12 +169,15 @@ class TestConversionConfig:
     def test_semantic_tags(self) -> None:
         """Use semantic HTML tags."""
         config = ConversionConfig(use_semantic_tags=True)
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(
-                r_pr=RunProperties(b=True),
-                content=[Text(value="Bold")]
-            )])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        content=[Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])]
+                    )
+                ]
+            )
+        )
         converter = HTMLConverter(config=config)
         result = converter.convert(doc)
         assert "<strong>" in result
@@ -208,25 +216,41 @@ class TestStyleResolution:
 
     def test_paragraph_style_applied(self) -> None:
         """Paragraph styles resolved and applied."""
-        doc = Document(body=Body(content=[
-            Paragraph(
-                p_pr=ParagraphProperties(jc="right"),
-                content=[Run(content=[Text(value="Right aligned")])]
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        p_pr=ParagraphProperties(jc="right"),
+                        content=[Run(content=[Text(value="Right aligned")])],
+                    )
+                ]
             )
-        ]))
+        )
         result = docx_to_html(doc)
         assert "text-align" in result
 
     def test_table_style_applied(self) -> None:
         """Table styles resolved and applied."""
-        doc = Document(body=Body(content=[
-            Table(
-                tbl_pr=TableProperties(jc="center"),
-                tr=[TableRow(tc=[TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Cell")])])
-                ])])]
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tbl_pr=TableProperties(jc="center"),
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Cell")])])
+                                        ]
+                                    )
+                                ]
+                            )
+                        ],
+                    )
+                ]
             )
-        ]))
+        )
         result = docx_to_html(doc)
         assert "<table" in result
 
@@ -238,12 +262,20 @@ class TestStyleResolution:
 
     def test_direct_formatting_override(self) -> None:
         """Direct formatting overrides style."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(
-                r_pr=RunProperties(b=True, i=True),
-                content=[Text(value="Bold and Italic")]
-            )])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        content=[
+                            Run(
+                                r_pr=RunProperties(b=True, i=True),
+                                content=[Text(value="Bold and Italic")],
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "Bold and Italic" in result
 
@@ -302,16 +334,30 @@ class TestTableConversion:
 
     def test_simple_table(self) -> None:
         """Simple table in document."""
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Cell 1")])])
-                ]),
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Cell 2")])])
-                ])
-            ])])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Cell 1")])])
+                                        ]
+                                    ),
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Cell 2")])])
+                                        ]
+                                    ),
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "<table" in result
         assert "Cell 1" in result
@@ -319,44 +365,68 @@ class TestTableConversion:
 
     def test_table_with_merged_cells(self) -> None:
         """Table with colspan/rowspan."""
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Merged")])])
-                ])
-            ])])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Merged")])])
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "<table" in result
 
     def test_nested_table(self) -> None:
         """Table nested in cell."""
-        inner_table = Table(tr=[TableRow(tc=[
-            TableCell(content=[
-                Paragraph(content=[Run(content=[Text(value="Inner")])])
-            ])
-        ])])
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[inner_table])
-            ])])
-        ]))
+        inner_table = Table(
+            tr=[
+                TableRow(
+                    tc=[
+                        TableCell(content=[Paragraph(content=[Run(content=[Text(value="Inner")])])])
+                    ]
+                )
+            ]
+        )
+        doc = Document(
+            body=Body(content=[Table(tr=[TableRow(tc=[TableCell(content=[inner_table])])])])
+        )
         result = docx_to_html(doc)
         # Should have two tables
         assert result.count("<table") >= 1
 
     def test_table_with_styles(self) -> None:
         """Table with style applied."""
-        doc = Document(body=Body(content=[
-            Table(
-                tbl_pr=TableProperties(jc="center"),
-                tr=[TableRow(tc=[
-                    TableCell(content=[
-                        Paragraph(content=[Run(content=[Text(value="Styled")])])
-                    ])
-                ])]
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tbl_pr=TableProperties(jc="center"),
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Styled")])])
+                                        ]
+                                    )
+                                ]
+                            )
+                        ],
+                    )
+                ]
             )
-        ]))
+        )
         result = docx_to_html(doc)
         assert "<table" in result
 
@@ -411,13 +481,27 @@ class TestHyperlinkConversion:
 
     def test_hyperlink_in_table(self) -> None:
         """Hyperlink inside table cell."""
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Link text")])])
-                ])
-            ])])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(
+                                                content=[Run(content=[Text(value="Link text")])]
+                                            )
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "Link text" in result
 
@@ -463,9 +547,7 @@ class TestSpecialContent:
 
     def test_page_break(self) -> None:
         """Page break in document."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[])]))
         result = docx_to_html(doc)
         assert "<!DOCTYPE html>" in result
 
@@ -477,9 +559,9 @@ class TestSpecialContent:
 
     def test_tab_characters(self) -> None:
         """Tab characters in content."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Before\tAfter")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="Before\tAfter")])])])
+        )
         result = docx_to_html(doc)
         assert "Before" in result
 
@@ -507,6 +589,7 @@ class TestErrorHandling:
         """Non-DOCX file raises error."""
         import tempfile
         from pathlib import Path
+
         # Create a temporary non-docx file
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
             f.write(b"not a docx")
@@ -552,8 +635,7 @@ class TestPerformance:
         """Large document converted in reasonable time."""
         # Create document with many paragraphs
         paragraphs = [
-            Paragraph(content=[Run(content=[Text(value=f"Paragraph {i}")])])
-            for i in range(100)
+            Paragraph(content=[Run(content=[Text(value=f"Paragraph {i}")])]) for i in range(100)
         ]
         doc = Document(body=Body(content=paragraphs))
         result = docx_to_html(doc)
@@ -563,11 +645,19 @@ class TestPerformance:
     def test_many_tables(self) -> None:
         """Document with many tables."""
         tables = [
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value=f"Table {i}")])])
-                ])
-            ])])
+            Table(
+                tr=[
+                    TableRow(
+                        tc=[
+                            TableCell(
+                                content=[
+                                    Paragraph(content=[Run(content=[Text(value=f"Table {i}")])])
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
             for i in range(10)
         ]
         doc = Document(body=Body(content=tables))
@@ -604,9 +694,7 @@ class TestHTMLConverterClass:
     def test_convert_document(self) -> None:
         """Convert Document model to HTML."""
         converter = HTMLConverter()
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         result = converter.convert(doc)
         assert "Test" in result
 
@@ -620,11 +708,13 @@ class TestHTMLConverterClass:
     def test_convert_table(self) -> None:
         """Convert individual table."""
         converter = HTMLConverter()
-        table = Table(tr=[TableRow(tc=[
-            TableCell(content=[
-                Paragraph(content=[Run(content=[Text(value="Cell")])])
-            ])
-        ])])
+        table = Table(
+            tr=[
+                TableRow(
+                    tc=[TableCell(content=[Paragraph(content=[Run(content=[Text(value="Cell")])])])]
+                )
+            ]
+        )
         result = converter.convert_table(table)
         assert "<table" in result
         assert "Cell" in result
@@ -641,9 +731,7 @@ class TestParserIntegration:
     def test_parse_and_convert(self) -> None:
         """Parse DOCX and convert to HTML."""
         # Full pipeline test - Document model to HTML
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         result = docx_to_html(doc)
         assert "Test" in result
 
@@ -675,9 +763,7 @@ class TestFragmentMode:
     def test_fragment_output(self) -> None:
         """Output HTML fragment without wrapper."""
         config = ConversionConfig(fragment_only=True)
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         result = docx_to_html(doc, config=config)
         # No <!DOCTYPE>, <html>, <head>, <body>
         assert "<!DOCTYPE" not in result
@@ -686,9 +772,9 @@ class TestFragmentMode:
     def test_fragment_paragraph(self) -> None:
         """Fragment mode for paragraph."""
         config = ConversionConfig(fragment_only=True)
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Just content")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="Just content")])])])
+        )
         result = docx_to_html(doc, config=config)
         assert "Just content" in result
         assert "<body" not in result
@@ -734,13 +820,25 @@ class TestAccessibility:
 
     def test_table_headers(self) -> None:
         """Table headers use <th> and scope."""
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[
-                    Paragraph(content=[Run(content=[Text(value="Header")])])
-                ])
-            ])])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Table(
+                        tr=[
+                            TableRow(
+                                tc=[
+                                    TableCell(
+                                        content=[
+                                            Paragraph(content=[Run(content=[Text(value="Header")])])
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "<table" in result
 
@@ -768,33 +866,31 @@ class TestUnicodeHandling:
 
     def test_cjk_content(self) -> None:
         """CJK (Chinese, Japanese, Korean) content."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="你好世界")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="你好世界")])])])
+        )
         result = docx_to_html(doc)
         assert "你好世界" in result
 
     def test_arabic_content(self) -> None:
         """Arabic content with RTL."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="مرحبا")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="مرحبا")])])]))
         result = docx_to_html(doc)
         assert "مرحبا" in result
 
     def test_emoji_content(self) -> None:
         """Emoji in content."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Hello 🌍")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="Hello 🌍")])])])
+        )
         result = docx_to_html(doc)
         assert "🌍" in result
 
     def test_mixed_scripts(self) -> None:
         """Mixed script content."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Hello 世界 مرحبا")])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value="Hello 世界 مرحبا")])])])
+        )
         result = docx_to_html(doc)
         assert "Hello" in result
         assert "世界" in result
@@ -810,47 +906,55 @@ class TestEdgeCases:
 
     def test_empty_paragraphs(self) -> None:
         """Document with empty paragraphs."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[]),
-            Paragraph(content=[Run(content=[Text(value="Not empty")])]),
-            Paragraph(content=[])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(content=[]),
+                    Paragraph(content=[Run(content=[Text(value="Not empty")])]),
+                    Paragraph(content=[]),
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "Not empty" in result
 
     def test_empty_runs(self) -> None:
         """Paragraphs with empty runs."""
-        doc = Document(body=Body(content=[
-            Paragraph(content=[
-                Run(content=[]),
-                Run(content=[Text(value="Content")]),
-                Run(content=[])
-            ])
-        ]))
+        doc = Document(
+            body=Body(
+                content=[
+                    Paragraph(
+                        content=[
+                            Run(content=[]),
+                            Run(content=[Text(value="Content")]),
+                            Run(content=[]),
+                        ]
+                    )
+                ]
+            )
+        )
         result = docx_to_html(doc)
         assert "Content" in result
 
     def test_deeply_nested_content(self) -> None:
         """Deeply nested tables/content."""
-        inner = Table(tr=[TableRow(tc=[
-            TableCell(content=[
-                Paragraph(content=[Run(content=[Text(value="Deep")])])
-            ])
-        ])])
-        doc = Document(body=Body(content=[
-            Table(tr=[TableRow(tc=[
-                TableCell(content=[inner])
-            ])])
-        ]))
+        inner = Table(
+            tr=[
+                TableRow(
+                    tc=[TableCell(content=[Paragraph(content=[Run(content=[Text(value="Deep")])])])]
+                )
+            ]
+        )
+        doc = Document(body=Body(content=[Table(tr=[TableRow(tc=[TableCell(content=[inner])])])]))
         result = docx_to_html(doc)
         assert "Deep" in result
 
     def test_very_long_paragraphs(self) -> None:
         """Very long paragraphs."""
         long_text = "A" * 10000
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value=long_text)])])
-        ]))
+        doc = Document(
+            body=Body(content=[Paragraph(content=[Run(content=[Text(value=long_text)])])])
+        )
         result = docx_to_html(doc)
         assert long_text in result
 
@@ -859,7 +963,7 @@ class TestEdgeCases:
         paragraphs = [
             Paragraph(
                 p_pr=ParagraphProperties(jc=["left", "center", "right"][i % 3]),
-                content=[Run(content=[Text(value=f"Style {i}")])]
+                content=[Run(content=[Text(value=f"Style {i}")])],
             )
             for i in range(20)
         ]
@@ -871,9 +975,7 @@ class TestEdgeCases:
         """Handle circular style references gracefully."""
         # Converter should handle None styles gracefully
         converter = HTMLConverter(styles=None)
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Safe")])])
-        ]))
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Safe")])])]))
         result = converter.convert(doc)
         assert "Safe" in result
 
@@ -928,9 +1030,8 @@ class TestStreamingOutput:
     def test_streaming_mode(self) -> None:
         """Stream output for large documents."""
         from converters.html.html_converter import docx_to_html_stream
-        doc = Document(body=Body(content=[
-            Paragraph(content=[Run(content=[Text(value="Test")])])
-        ]))
+
+        doc = Document(body=Body(content=[Paragraph(content=[Run(content=[Text(value="Test")])])]))
         chunks = list(docx_to_html_stream(doc))
         assert len(chunks) == 1
         assert "Test" in chunks[0]

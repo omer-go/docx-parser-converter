@@ -1,4 +1,5 @@
 """Parser for document defaults elements."""
+
 from lxml.etree import _Element as Element
 
 from models.styles.document_defaults import (
@@ -43,7 +44,9 @@ def parse_run_properties_default(element: Element | None) -> RunPropertiesDefaul
     )
 
 
-def parse_paragraph_properties_default(element: Element | None) -> ParagraphPropertiesDefault | None:
+def parse_paragraph_properties_default(
+    element: Element | None,
+) -> ParagraphPropertiesDefault | None:
     """Parse <w:pPrDefault> element.
 
     XML Example:

@@ -4,7 +4,7 @@ Converts Run elements to HTML span elements with appropriate styling.
 """
 
 from html import escape
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from converters.html.css_generator import CSSGenerator, run_properties_to_css
 from models.document.run import Run, RunProperties
@@ -19,6 +19,9 @@ from models.document.run_content import (
     TabChar,
     Text,
 )
+
+if TYPE_CHECKING:
+    from converters.common.style_resolver import StyleResolver
 
 # =============================================================================
 # Run Content Conversion Functions
@@ -233,6 +236,7 @@ def run_to_html(
     *,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert Run element to HTML.
 
@@ -240,6 +244,7 @@ def run_to_html(
         run: Run model instance
         use_semantic_tags: Use semantic tags (<strong>, <em>) instead of spans
         css_generator: CSS generator instance (uses default if not provided)
+        style_resolver: Style resolver for character style inheritance
 
     Returns:
         HTML representation of the run
@@ -261,9 +266,23 @@ def run_to_html(
     if run.r_pr is None:
         return content_html
 
-    # Generate CSS from properties
+    # Generate CSS from direct run properties
     gen = css_generator or CSSGenerator()
     css_props = run_properties_to_css(run.r_pr)
+
+    # Resolve character style if present and merge with direct formatting
+    if style_resolver and run.r_pr.r_style:
+        # Resolve the character style
+        style = style_resolver.resolve_style(run.r_pr.r_style)
+        if style and style.r_pr:
+            # Convert style's run properties dict to model, then to CSS
+            if isinstance(style.r_pr, dict):
+                style_r_pr = RunProperties(**style.r_pr)
+            else:
+                style_r_pr = style.r_pr
+            style_css = run_properties_to_css(style_r_pr)
+            # Merge: direct formatting overrides style
+            css_props = {**style_css, **css_props}
 
     # Check if we should use semantic tags
     if use_semantic_tags:

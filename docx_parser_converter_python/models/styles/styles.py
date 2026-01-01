@@ -2,6 +2,7 @@
 
 The Styles model is the root container for all style definitions.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

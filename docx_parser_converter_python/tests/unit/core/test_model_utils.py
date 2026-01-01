@@ -333,10 +333,10 @@ class TestMergeEdgeCases:
         current_override = override["l1"]
 
         for i in range(50):
-            current_base[f"l{i+2}"] = {}
-            current_override[f"l{i+2}"] = {}
-            current_base = current_base[f"l{i+2}"]
-            current_override = current_override[f"l{i+2}"]
+            current_base[f"l{i + 2}"] = {}
+            current_override[f"l{i + 2}"] = {}
+            current_base = current_base[f"l{i + 2}"]
+            current_override = current_override[f"l{i + 2}"]
 
         current_base["value"] = "base"
         current_override["value"] = "override"
@@ -346,7 +346,7 @@ class TestMergeEdgeCases:
         # Navigate to the deepest level
         current = result
         for i in range(51):
-            current = current[f"l{i+1}"]
+            current = current[f"l{i + 1}"]
         assert current["value"] == "override"
 
 

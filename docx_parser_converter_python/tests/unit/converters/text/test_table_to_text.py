@@ -27,9 +27,7 @@ def make_cell(text: str, width: int | None = None) -> TableCell:
     """Create a simple table cell with text."""
     return TableCell(
         tc_pr=TableCellProperties(tc_w=Width(w=width)) if width else None,
-        content=[
-            Paragraph(content=[Run(content=[Text(value=text)])])
-        ],
+        content=[Paragraph(content=[Run(content=[Text(value=text)])])],
     )
 
 
@@ -61,10 +59,12 @@ class TestBasicTableConversion:
 
     def test_simple_table(self) -> None:
         """Simple 2x2 table."""
-        table = make_table([
-            make_row([make_cell("A1"), make_cell("B1")]),
-            make_row([make_cell("A2"), make_cell("B2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("A1"), make_cell("B1")]),
+                make_row([make_cell("A2"), make_cell("B2")]),
+            ]
+        )
         result = table_to_text(table)
         assert "A1" in result
         assert "B1" in result
@@ -84,17 +84,13 @@ class TestBasicTableConversion:
 
     def test_single_cell_table(self) -> None:
         """Single cell table."""
-        table = make_table([
-            make_row([make_cell("Only cell")])
-        ])
+        table = make_table([make_row([make_cell("Only cell")])])
         result = table_to_text(table)
         assert "Only cell" in result
 
     def test_single_row_table(self) -> None:
         """Single row table."""
-        table = make_table([
-            make_row([make_cell("A"), make_cell("B"), make_cell("C")])
-        ])
+        table = make_table([make_row([make_cell("A"), make_cell("B"), make_cell("C")])])
         result = table_to_text(table)
         assert "A" in result
         assert "B" in result
@@ -111,10 +107,12 @@ class TestAsciiBoxMode:
 
     def test_ascii_box_simple_table(self) -> None:
         """Simple table in ASCII box mode."""
-        table = make_table([
-            make_row([make_cell("A1"), make_cell("B1")]),
-            make_row([make_cell("A2"), make_cell("B2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("A1"), make_cell("B1")]),
+                make_row([make_cell("A2"), make_cell("B2")]),
+            ]
+        )
         converter = TableToTextConverter(mode="ascii")
         result = converter.convert(table)
         # Should have box drawing characters
@@ -146,10 +144,12 @@ class TestAsciiBoxMode:
 
     def test_ascii_box_alignment(self) -> None:
         """ASCII box mode aligns columns."""
-        table = make_table([
-            make_row([make_cell("Short"), make_cell("Much longer text")]),
-            make_row([make_cell("A"), make_cell("B")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("Short"), make_cell("Much longer text")]),
+                make_row([make_cell("A"), make_cell("B")]),
+            ]
+        )
         converter = TableToTextConverter(mode="ascii")
         result = converter.convert(table)
         lines = result.strip().split("\n")
@@ -167,9 +167,7 @@ class TestAsciiBoxMode:
                 Paragraph(content=[Run(content=[Text(value="Line 2")])]),
             ]
         )
-        table = make_table([
-            make_row([cell, make_cell("Single")])
-        ])
+        table = make_table([make_row([cell, make_cell("Single")])])
         converter = TableToTextConverter(mode="ascii")
         result = converter.convert(table)
         assert "Line 1" in result
@@ -187,10 +185,12 @@ class TestTabSeparatedMode:
 
     def test_tab_separated_simple(self) -> None:
         """Simple table in tab-separated mode."""
-        table = make_table([
-            make_row([make_cell("A1"), make_cell("B1")]),
-            make_row([make_cell("A2"), make_cell("B2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("A1"), make_cell("B1")]),
+                make_row([make_cell("A2"), make_cell("B2")]),
+            ]
+        )
         converter = TableToTextConverter(mode="tabs")
         result = converter.convert(table)
         assert "A1\tB1" in result
@@ -198,10 +198,12 @@ class TestTabSeparatedMode:
 
     def test_tab_separated_newlines(self) -> None:
         """Tab-separated mode uses newlines between rows."""
-        table = make_table([
-            make_row([make_cell("Row1")]),
-            make_row([make_cell("Row2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("Row1")]),
+                make_row([make_cell("Row2")]),
+            ]
+        )
         converter = TableToTextConverter(mode="tabs")
         result = converter.convert(table)
         assert "Row1" in result
@@ -210,18 +212,14 @@ class TestTabSeparatedMode:
 
     def test_tab_separated_many_columns(self) -> None:
         """Tab-separated mode with many columns."""
-        table = make_table([
-            make_row([make_cell(f"C{i}") for i in range(5)])
-        ])
+        table = make_table([make_row([make_cell(f"C{i}") for i in range(5)])])
         converter = TableToTextConverter(mode="tabs")
         result = converter.convert(table)
         assert result.strip() == "C0\tC1\tC2\tC3\tC4"
 
     def test_tab_separated_empty_cells(self) -> None:
         """Tab-separated mode preserves empty cells."""
-        table = make_table([
-            make_row([make_cell("A"), make_cell(""), make_cell("C")])
-        ])
+        table = make_table([make_row([make_cell("A"), make_cell(""), make_cell("C")])])
         converter = TableToTextConverter(mode="tabs")
         result = converter.convert(table)
         # Should have two tabs (between A and empty, between empty and C)
@@ -238,10 +236,12 @@ class TestPlainTextMode:
 
     def test_plain_simple_table(self) -> None:
         """Simple table in plain mode."""
-        table = make_table([
-            make_row([make_cell("A1"), make_cell("B1")]),
-            make_row([make_cell("A2"), make_cell("B2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("A1"), make_cell("B1")]),
+                make_row([make_cell("A2"), make_cell("B2")]),
+            ]
+        )
         converter = TableToTextConverter(mode="plain")
         result = converter.convert(table)
         assert "A1" in result
@@ -254,9 +254,7 @@ class TestPlainTextMode:
 
     def test_plain_space_separated(self) -> None:
         """Plain mode separates cells with spaces."""
-        table = make_table([
-            make_row([make_cell("Cell1"), make_cell("Cell2")])
-        ])
+        table = make_table([make_row([make_cell("Cell1"), make_cell("Cell2")])])
         converter = TableToTextConverter(mode="plain")
         result = converter.convert(table)
         # Cells should be separated somehow (space or newline)
@@ -289,9 +287,7 @@ class TestAutoMode:
 
     def test_auto_without_borders_uses_tabs(self) -> None:
         """Auto mode without borders uses tab-separated."""
-        table = make_table([
-            make_row([make_cell("A"), make_cell("B")])
-        ])
+        table = make_table([make_row([make_cell("A"), make_cell("B")])])
         converter = TableToTextConverter(mode="auto")
         result = converter.convert(table)
         assert "A" in result
@@ -323,14 +319,14 @@ class TestCellMerging:
         """Horizontally merged cells (colspan)."""
         merged_cell = TableCell(
             tc_pr=TableCellProperties(grid_span=2),
-            content=[
-                Paragraph(content=[Run(content=[Text(value="Merged")])])
-            ],
+            content=[Paragraph(content=[Run(content=[Text(value="Merged")])])],
         )
-        table = make_table([
-            make_row([merged_cell]),
-            make_row([make_cell("A"), make_cell("B")]),
-        ])
+        table = make_table(
+            [
+                make_row([merged_cell]),
+                make_row([make_cell("A"), make_cell("B")]),
+            ]
+        )
         result = table_to_text(table)
         assert "Merged" in result
         assert "A" in result
@@ -340,18 +336,18 @@ class TestCellMerging:
         """Vertically merged cells (rowspan)."""
         merge_start = TableCell(
             tc_pr=TableCellProperties(v_merge="restart"),
-            content=[
-                Paragraph(content=[Run(content=[Text(value="Spanning")])])
-            ],
+            content=[Paragraph(content=[Run(content=[Text(value="Spanning")])])],
         )
         merge_cont = TableCell(
             tc_pr=TableCellProperties(v_merge="continue"),
             content=[],
         )
-        table = make_table([
-            make_row([merge_start, make_cell("B1")]),
-            make_row([merge_cont, make_cell("B2")]),
-        ])
+        table = make_table(
+            [
+                make_row([merge_start, make_cell("B1")]),
+                make_row([merge_cont, make_cell("B2")]),
+            ]
+        )
         result = table_to_text(table)
         assert "Spanning" in result
         assert "B1" in result
@@ -437,39 +433,38 @@ class TestTableEdgeCases:
 
     def test_uneven_rows(self) -> None:
         """Table with uneven row lengths."""
-        table = make_table([
-            make_row([make_cell("A1"), make_cell("B1"), make_cell("C1")]),
-            make_row([make_cell("A2")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("A1"), make_cell("B1"), make_cell("C1")]),
+                make_row([make_cell("A2")]),
+            ]
+        )
         result = table_to_text(table)
         assert "A1" in result
         assert "A2" in result
 
     def test_empty_cells(self) -> None:
         """Table with empty cells."""
-        table = make_table([
-            make_row([make_cell(""), make_cell("B")]),
-            make_row([make_cell("A"), make_cell("")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell(""), make_cell("B")]),
+                make_row([make_cell("A"), make_cell("")]),
+            ]
+        )
         result = table_to_text(table)
         assert "A" in result
         assert "B" in result
 
     def test_very_wide_table(self) -> None:
         """Very wide table (many columns)."""
-        table = make_table([
-            make_row([make_cell(f"Col{i}") for i in range(20)])
-        ])
+        table = make_table([make_row([make_cell(f"Col{i}") for i in range(20)])])
         result = table_to_text(table)
         assert "Col0" in result
         assert "Col19" in result
 
     def test_very_tall_table(self) -> None:
         """Very tall table (many rows)."""
-        table = make_table([
-            make_row([make_cell(f"Row{i}")])
-            for i in range(50)
-        ])
+        table = make_table([make_row([make_cell(f"Row{i}")]) for i in range(50)])
         result = table_to_text(table)
         assert "Row0" in result
         assert "Row49" in result
@@ -548,10 +543,12 @@ class TestColumnWidthCalculation:
 
     def test_column_widths_based_on_content(self) -> None:
         """Column widths based on content length."""
-        table = make_table([
-            make_row([make_cell("Short"), make_cell("Much longer text here")]),
-            make_row([make_cell("A"), make_cell("B")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell("Short"), make_cell("Much longer text here")]),
+                make_row([make_cell("A"), make_cell("B")]),
+            ]
+        )
         converter = TableToTextConverter(mode="ascii")
         result = converter.convert(table)
         # The longer content should determine column width
@@ -564,9 +561,11 @@ class TestColumnWidthCalculation:
 
     def test_minimum_column_width(self) -> None:
         """Empty columns have minimum width."""
-        table = make_table([
-            make_row([make_cell(""), make_cell("B")]),
-        ])
+        table = make_table(
+            [
+                make_row([make_cell(""), make_cell("B")]),
+            ]
+        )
         converter = TableToTextConverter(mode="ascii")
         result = converter.convert(table)
         # Should still render both columns

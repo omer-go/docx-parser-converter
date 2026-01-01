@@ -2,6 +2,7 @@
 
 The Numbering model is the root container for all numbering definitions.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

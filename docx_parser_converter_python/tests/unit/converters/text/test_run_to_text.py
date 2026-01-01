@@ -126,11 +126,7 @@ class TestBreakHandling:
 
     def test_run_with_line_break(self) -> None:
         """Run with line break includes newline."""
-        run = Run(content=[
-            Text(value="Line 1"),
-            Break(),
-            Text(value="Line 2")
-        ])
+        run = Run(content=[Text(value="Line 1"), Break(), Text(value="Line 2")])
         result = run_to_text(run)
         assert result == "Line 1\nLine 2"
 
@@ -150,11 +146,7 @@ class TestTabHandling:
 
     def test_run_with_tab(self) -> None:
         """Run with tab includes tab character."""
-        run = Run(content=[
-            Text(value="Column1"),
-            TabChar(),
-            Text(value="Column2")
-        ])
+        run = Run(content=[Text(value="Column1"), TabChar(), Text(value="Column2")])
         result = run_to_text(run)
         assert result == "Column1\tColumn2"
 
@@ -197,50 +189,35 @@ class TestMarkdownMode:
 
     def test_bold_markdown(self) -> None:
         """Bold text wrapped in markdown markers."""
-        run = Run(
-            r_pr=RunProperties(b=True),
-            content=[Text(value="bold")]
-        )
+        run = Run(r_pr=RunProperties(b=True), content=[Text(value="bold")])
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
         assert result == "**bold**"
 
     def test_italic_markdown(self) -> None:
         """Italic text wrapped in markdown markers."""
-        run = Run(
-            r_pr=RunProperties(i=True),
-            content=[Text(value="italic")]
-        )
+        run = Run(r_pr=RunProperties(i=True), content=[Text(value="italic")])
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
         assert result == "*italic*"
 
     def test_bold_italic_markdown(self) -> None:
         """Bold italic text wrapped in markdown markers."""
-        run = Run(
-            r_pr=RunProperties(b=True, i=True),
-            content=[Text(value="bold italic")]
-        )
+        run = Run(r_pr=RunProperties(b=True, i=True), content=[Text(value="bold italic")])
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
         assert result == "***bold italic***"
 
     def test_strikethrough_markdown(self) -> None:
         """Strikethrough text wrapped in markdown markers."""
-        run = Run(
-            r_pr=RunProperties(strike=True),
-            content=[Text(value="deleted")]
-        )
+        run = Run(r_pr=RunProperties(strike=True), content=[Text(value="deleted")])
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
         assert result == "~~deleted~~"
 
     def test_underline_markdown(self) -> None:
         """Underline text (no standard markdown, could use underscore)."""
-        run = Run(
-            r_pr=RunProperties(u=Underline(val="single")),
-            content=[Text(value="underlined")]
-        )
+        run = Run(r_pr=RunProperties(u=Underline(val="single")), content=[Text(value="underlined")])
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
         # Underline has no markdown equivalent, could be unchanged or use _
@@ -249,8 +226,7 @@ class TestMarkdownMode:
     def test_code_font_markdown(self) -> None:
         """Monospace font text wrapped in backticks."""
         run = Run(
-            r_pr=RunProperties(r_fonts=RunFonts(ascii="Courier New")),
-            content=[Text(value="code")]
+            r_pr=RunProperties(r_fonts=RunFonts(ascii="Courier New")), content=[Text(value="code")]
         )
         converter = RunToTextConverter(use_markdown=True)
         result = converter.convert(run)
@@ -268,20 +244,14 @@ class TestPlainMode:
 
     def test_bold_plain(self) -> None:
         """Bold text has no markers in plain mode."""
-        run = Run(
-            r_pr=RunProperties(b=True),
-            content=[Text(value="bold")]
-        )
+        run = Run(r_pr=RunProperties(b=True), content=[Text(value="bold")])
         converter = RunToTextConverter(use_markdown=False)
         result = converter.convert(run)
         assert result == "bold"
 
     def test_italic_plain(self) -> None:
         """Italic text has no markers in plain mode."""
-        run = Run(
-            r_pr=RunProperties(i=True),
-            content=[Text(value="italic")]
-        )
+        run = Run(r_pr=RunProperties(i=True), content=[Text(value="italic")])
         converter = RunToTextConverter(use_markdown=False)
         result = converter.convert(run)
         assert result == "italic"
@@ -296,7 +266,7 @@ class TestPlainMode:
                 u=Underline(val="single"),
                 color=Color(val="FF0000"),
             ),
-            content=[Text(value="formatted")]
+            content=[Text(value="formatted")],
         )
         result = run_to_text(run)
         assert result == "formatted"
@@ -324,13 +294,15 @@ class TestRunEdgeCases:
 
     def test_mixed_content_types(self) -> None:
         """Mixed text, breaks, and tabs."""
-        run = Run(content=[
-            Text(value="Part 1"),
-            Break(),
-            Text(value="Part 2"),
-            TabChar(),
-            Text(value="Part 3"),
-        ])
+        run = Run(
+            content=[
+                Text(value="Part 1"),
+                Break(),
+                Text(value="Part 2"),
+                TabChar(),
+                Text(value="Part 3"),
+            ]
+        )
         result = run_to_text(run)
         assert "Part 1" in result
         assert "Part 2" in result
@@ -353,24 +325,13 @@ class TestRunEdgeCases:
 
     def test_multiple_consecutive_breaks(self) -> None:
         """Multiple consecutive breaks."""
-        run = Run(content=[
-            Text(value="Text"),
-            Break(),
-            Break(),
-            Break(),
-            Text(value="More")
-        ])
+        run = Run(content=[Text(value="Text"), Break(), Break(), Break(), Text(value="More")])
         result = run_to_text(run)
         assert result == "Text\n\n\nMore"
 
     def test_multiple_consecutive_tabs(self) -> None:
         """Multiple consecutive tabs."""
-        run = Run(content=[
-            Text(value="Col1"),
-            TabChar(),
-            TabChar(),
-            Text(value="Col2")
-        ])
+        run = Run(content=[Text(value="Col1"), TabChar(), TabChar(), Text(value="Col2")])
         result = run_to_text(run)
         assert result == "Col1\t\tCol2"
 

@@ -3,6 +3,7 @@
 This module provides functions for extracting and parsing XML content
 from DOCX archives.
 """
+
 import logging
 import zipfile
 

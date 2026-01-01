@@ -1,4 +1,5 @@
 """Parser for styles root element."""
+
 from lxml.etree import _Element as Element
 
 from models.styles.styles import Styles

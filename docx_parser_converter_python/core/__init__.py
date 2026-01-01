@@ -5,6 +5,7 @@ This module provides the foundational utilities for working with DOCX files:
 - Extracting XML parts from the archive
 - Handling errors with custom exceptions
 """
+
 from core.constants import (
     DOCUMENT_XML_PATH,
     LOGGER_NAME,

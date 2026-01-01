@@ -132,8 +132,7 @@ def _parse_docx(
         path = Path(source)
         if not path.suffix.lower() == ".docx":
             raise DocxValidationError(
-                f"Unsupported file format: {path.suffix}",
-                "Expected .docx file"
+                f"Unsupported file format: {path.suffix}", "Expected .docx file"
             )
 
     try:

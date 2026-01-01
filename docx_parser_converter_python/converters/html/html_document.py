@@ -131,9 +131,7 @@ class HTMLDocument:
 
         # Viewport for responsive
         if self.responsive:
-            parts.append(
-                '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
-            )
+            parts.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
 
         # Title
         title_text = escape(self.title) if self.title else ""
@@ -145,9 +143,7 @@ class HTMLDocument:
 
         # Description meta
         if self.description:
-            parts.append(
-                f'<meta name="description" content="{escape(self.description)}">'
-            )
+            parts.append(f'<meta name="description" content="{escape(self.description)}">')
 
         # Keywords meta
         if self.keywords:
@@ -156,9 +152,7 @@ class HTMLDocument:
 
         # Generator meta
         if self.include_generator_meta:
-            parts.append(
-                '<meta name="generator" content="docx-parser-converter">'
-            )
+            parts.append('<meta name="generator" content="docx-parser-converter">')
 
         # External stylesheets
         for stylesheet in self.stylesheets:

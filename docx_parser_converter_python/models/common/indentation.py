@@ -2,6 +2,7 @@
 
 Represents the <w:ind> element used in paragraph properties.
 """
+
 from pydantic import BaseModel
 
 

@@ -94,6 +94,10 @@ LOGGER_NAME = "docx_parser_converter"
 # =============================================================================
 
 # MIME types for validation
-DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+DOCX_CONTENT_TYPE = (
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+)
 STYLES_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
-NUMBERING_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
+NUMBERING_CONTENT_TYPE = (
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
+)

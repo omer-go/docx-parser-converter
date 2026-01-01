@@ -2,6 +2,7 @@
 
 These are elements that can appear inside a run (<w:r>).
 """
+
 from lxml.etree import _Element as Element
 
 from models.document.run_content import (

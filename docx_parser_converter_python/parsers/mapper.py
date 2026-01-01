@@ -13,6 +13,7 @@ Usage:
         if parsed is not None:
             content.append(parsed)
 """
+
 from collections.abc import Callable
 from typing import Any, TypeVar
 
@@ -49,7 +50,9 @@ class ParserMapper:
         full_tag = f"{WORD_NS}{tag_name}"
         self._parsers[full_tag] = parser
 
-    def register_with_namespace(self, namespace: str, tag_name: str, parser: ParserFunc[Any]) -> None:
+    def register_with_namespace(
+        self, namespace: str, tag_name: str, parser: ParserFunc[Any]
+    ) -> None:
         """Register a parser with a custom namespace.
 
         Args:
@@ -106,8 +109,7 @@ class ParserMapper:
         """
         prefix_len = len(WORD_NS)
         return [
-            tag[prefix_len:] if tag.startswith(WORD_NS) else tag
-            for tag in self._parsers.keys()
+            tag[prefix_len:] if tag.startswith(WORD_NS) else tag for tag in self._parsers.keys()
         ]
 
     def __len__(self) -> int:

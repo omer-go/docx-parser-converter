@@ -19,6 +19,7 @@ from tests.unit.parsers.conftest import make_element
 # Color Parser Tests (<w:color>)
 # =============================================================================
 
+
 class TestColorParser:
     """Tests for parse_color function.
 
@@ -75,9 +76,18 @@ class TestColorParser:
     def test_parse_color_all_theme_colors(self):
         """Test various theme color values."""
         theme_colors = [
-            "dark1", "light1", "dark2", "light2",
-            "accent1", "accent2", "accent3", "accent4", "accent5", "accent6",
-            "hyperlink", "followedHyperlink"
+            "dark1",
+            "light1",
+            "dark2",
+            "light2",
+            "accent1",
+            "accent2",
+            "accent3",
+            "accent4",
+            "accent5",
+            "accent6",
+            "hyperlink",
+            "followedHyperlink",
         ]
         for tc in theme_colors:
             elem = make_element(f'<w:color w:themeColor="{tc}"/>')
@@ -89,6 +99,7 @@ class TestColorParser:
 # =============================================================================
 # Border Parser Tests (<w:top>, <w:left>, <w:bottom>, <w:right>, etc.)
 # =============================================================================
+
 
 class TestBorderParser:
     """Tests for parse_border function.
@@ -131,8 +142,18 @@ class TestBorderParser:
     def test_parse_border_styles(self):
         """Test various border style values."""
         border_styles = [
-            "nil", "none", "single", "thick", "double", "dotted", "dashed",
-            "dotDash", "dotDotDash", "triple", "wave", "doubleWave"
+            "nil",
+            "none",
+            "single",
+            "thick",
+            "double",
+            "dotted",
+            "dashed",
+            "dotDash",
+            "dotDotDash",
+            "triple",
+            "wave",
+            "doubleWave",
         ]
         for style in border_styles:
             elem = make_element(f'<w:top w:val="{style}"/>')
@@ -159,6 +180,7 @@ class TestBorderParser:
 # Paragraph Borders Parser Tests (<w:pBdr>)
 # =============================================================================
 
+
 class TestParagraphBordersParser:
     """Tests for parse_paragraph_borders function.
 
@@ -173,7 +195,7 @@ class TestParagraphBordersParser:
 
     def test_parse_paragraph_borders_empty(self):
         """Parse empty pBdr element."""
-        elem = make_element('<w:pBdr/>')
+        elem = make_element("<w:pBdr/>")
         result = parse_paragraph_borders(elem)
         assert result is not None
         assert result.top is None
@@ -183,14 +205,14 @@ class TestParagraphBordersParser:
 
     def test_parse_paragraph_borders_all_sides(self):
         """Parse pBdr with all four sides."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pBdr>
                 <w:top w:val="single" w:sz="4" w:space="1" w:color="000000"/>
                 <w:left w:val="single" w:sz="4" w:space="4" w:color="000000"/>
                 <w:bottom w:val="single" w:sz="4" w:space="1" w:color="000000"/>
                 <w:right w:val="single" w:sz="4" w:space="4" w:color="000000"/>
             </w:pBdr>
-        ''')
+        """)
         result = parse_paragraph_borders(elem)
         assert result is not None
         assert result.top is not None
@@ -201,11 +223,11 @@ class TestParagraphBordersParser:
 
     def test_parse_paragraph_borders_between(self):
         """Parse pBdr with between border (between paragraphs)."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pBdr>
                 <w:between w:val="single" w:sz="4" w:space="1" w:color="000000"/>
             </w:pBdr>
-        ''')
+        """)
         result = parse_paragraph_borders(elem)
         assert result is not None
         assert result.between is not None
@@ -213,11 +235,11 @@ class TestParagraphBordersParser:
 
     def test_parse_paragraph_borders_bar(self):
         """Parse pBdr with bar border."""
-        elem = make_element('''
+        elem = make_element("""
             <w:pBdr>
                 <w:bar w:val="single" w:sz="4" w:color="FF0000"/>
             </w:pBdr>
-        ''')
+        """)
         result = parse_paragraph_borders(elem)
         assert result is not None
         assert result.bar is not None
@@ -227,6 +249,7 @@ class TestParagraphBordersParser:
 # =============================================================================
 # Table Borders Parser Tests (<w:tblBorders>, <w:tcBorders>)
 # =============================================================================
+
 
 class TestTableBordersParser:
     """Tests for parse_table_borders function.
@@ -242,7 +265,7 @@ class TestTableBordersParser:
 
     def test_parse_table_borders_empty(self):
         """Parse empty tblBorders element."""
-        elem = make_element('<w:tblBorders/>')
+        elem = make_element("<w:tblBorders/>")
         result = parse_table_borders(elem)
         assert result is not None
         assert result.top is None
@@ -250,7 +273,7 @@ class TestTableBordersParser:
 
     def test_parse_table_borders_all_sides(self):
         """Parse tblBorders with all sides including inside borders."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblBorders>
                 <w:top w:val="single" w:sz="4" w:space="0" w:color="000000"/>
                 <w:left w:val="single" w:sz="4" w:space="0" w:color="000000"/>
@@ -259,7 +282,7 @@ class TestTableBordersParser:
                 <w:insideH w:val="single" w:sz="4" w:space="0" w:color="000000"/>
                 <w:insideV w:val="single" w:sz="4" w:space="0" w:color="000000"/>
             </w:tblBorders>
-        ''')
+        """)
         result = parse_table_borders(elem)
         assert result is not None
         assert result.top is not None
@@ -272,12 +295,12 @@ class TestTableBordersParser:
 
     def test_parse_table_borders_diagonals(self):
         """Parse table borders with diagonal borders."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcBorders>
                 <w:tl2br w:val="single" w:sz="4" w:color="FF0000"/>
                 <w:tr2bl w:val="single" w:sz="4" w:color="0000FF"/>
             </w:tcBorders>
-        ''')
+        """)
         result = parse_table_borders(elem)
         assert result is not None
         assert result.tl2br is not None
@@ -289,6 +312,7 @@ class TestTableBordersParser:
 # =============================================================================
 # Shading Parser Tests (<w:shd>)
 # =============================================================================
+
 
 class TestShadingParser:
     """Tests for parse_shading function.
@@ -323,8 +347,17 @@ class TestShadingParser:
     def test_parse_shading_patterns(self):
         """Test various shading pattern values."""
         patterns = [
-            "clear", "solid", "horzStripe", "vertStripe", "reverseDiagStripe",
-            "diagStripe", "horzCross", "diagCross", "pct10", "pct25", "pct50"
+            "clear",
+            "solid",
+            "horzStripe",
+            "vertStripe",
+            "reverseDiagStripe",
+            "diagStripe",
+            "horzCross",
+            "diagCross",
+            "pct10",
+            "pct25",
+            "pct50",
         ]
         for pattern in patterns:
             elem = make_element(f'<w:shd w:val="{pattern}" w:fill="FFFFFF"/>')
@@ -367,6 +400,7 @@ class TestShadingParser:
 # =============================================================================
 # Width Parser Tests (<w:tcW>, <w:tblW>, <w:tblInd>)
 # =============================================================================
+
 
 class TestWidthParser:
     """Tests for parse_width function.
@@ -424,6 +458,7 @@ class TestWidthParser:
 # =============================================================================
 # Spacing Parser Tests (<w:spacing>)
 # =============================================================================
+
 
 class TestSpacingParser:
     """Tests for parse_spacing function.
@@ -515,6 +550,7 @@ class TestSpacingParser:
 # =============================================================================
 # Indentation Parser Tests (<w:ind>)
 # =============================================================================
+
 
 class TestIndentationParser:
     """Tests for parse_indentation function.

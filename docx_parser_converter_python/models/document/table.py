@@ -2,6 +2,7 @@
 
 Tables contain rows, which contain cells.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

@@ -1,4 +1,5 @@
 """Tests for exceptions module."""
+
 import pytest
 
 from core.exceptions import (

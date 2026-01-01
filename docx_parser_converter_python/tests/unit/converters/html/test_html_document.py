@@ -197,29 +197,20 @@ class TestExternalResources:
 
     def test_external_stylesheet(self) -> None:
         """External stylesheet link."""
-        doc = HTMLDocument(
-            content="<p>Hello</p>",
-            stylesheets=["styles.css"]
-        )
+        doc = HTMLDocument(content="<p>Hello</p>", stylesheets=["styles.css"])
         result = doc.render()
         assert '<link rel="stylesheet" href="styles.css">' in result
 
     def test_multiple_stylesheets(self) -> None:
         """Multiple external stylesheets."""
-        doc = HTMLDocument(
-            content="<p>Hello</p>",
-            stylesheets=["base.css", "theme.css"]
-        )
+        doc = HTMLDocument(content="<p>Hello</p>", stylesheets=["base.css", "theme.css"])
         result = doc.render()
         assert 'href="base.css"' in result
         assert 'href="theme.css"' in result
 
     def test_external_script(self) -> None:
         """External script tag."""
-        doc = HTMLDocument(
-            content="<p>Hello</p>",
-            scripts=["app.js"]
-        )
+        doc = HTMLDocument(content="<p>Hello</p>", scripts=["app.js"])
         result = doc.render()
         assert '<script src="app.js">' in result
 
@@ -255,12 +246,14 @@ class TestHTMLDocumentBuilder:
 
     def test_builder_chaining(self) -> None:
         """Builder method chaining."""
-        doc = (HTMLDocumentBuilder()
+        doc = (
+            HTMLDocumentBuilder()
             .set_content("<p>Hello</p>")
             .set_title("Test")
             .set_language("en")
             .add_css("p { margin: 0; }")
-            .build())
+            .build()
+        )
         result = doc.render()
         assert "Hello" in result
         assert "Test" in result
@@ -353,8 +346,7 @@ class TestFontHandling:
     def test_google_fonts_link(self) -> None:
         """Google Fonts integration option."""
         doc = HTMLDocument(
-            content="<p>Hello</p>",
-            stylesheets=["https://fonts.googleapis.com/css?family=Roboto"]
+            content="<p>Hello</p>", stylesheets=["https://fonts.googleapis.com/css?family=Roboto"]
         )
         result = doc.render()
         assert "fonts.googleapis.com" in result
@@ -425,7 +417,7 @@ class TestHTMLValidation:
         doc = HTMLDocument(content="<p>Hello</p>", author='John "The Dev" Doe')
         result = doc.render()
         # Quotes should be escaped
-        assert '&quot;' in result or "John" in result
+        assert "&quot;" in result or "John" in result
 
 
 # =============================================================================
@@ -484,9 +476,7 @@ class TestHTMLDocumentEdgeCases:
     def test_special_characters_everywhere(self) -> None:
         """Special characters in title, content, meta."""
         doc = HTMLDocument(
-            content="<p>&amp; test</p>",
-            title="Test & Demo",
-            description="A test document"
+            content="<p>&amp; test</p>", title="Test & Demo", description="A test document"
         )
         result = doc.render()
         # Should render without errors
@@ -494,10 +484,7 @@ class TestHTMLDocumentEdgeCases:
 
     def test_script_injection_prevention(self) -> None:
         """Script injection prevented in meta tags."""
-        doc = HTMLDocument(
-            content="<p>Safe</p>",
-            title="<script>alert('xss')</script>"
-        )
+        doc = HTMLDocument(content="<p>Safe</p>", title="<script>alert('xss')</script>")
         result = doc.render()
         # Script should be escaped in title
         head_section = result.split("<body")[0]

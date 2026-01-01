@@ -2,6 +2,7 @@
 
 Represents the <w:spacing> element used in paragraph properties.
 """
+
 from pydantic import BaseModel
 
 

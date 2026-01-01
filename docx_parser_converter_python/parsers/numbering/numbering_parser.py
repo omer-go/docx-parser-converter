@@ -1,4 +1,5 @@
 """Parser for numbering root element."""
+
 from lxml.etree import _Element as Element
 
 from models.numbering.numbering import Numbering

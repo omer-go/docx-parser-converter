@@ -97,9 +97,7 @@ class StyleResolver:
                 return style
         return None
 
-    def resolve_paragraph_properties(
-        self, style_id: str | None
-    ) -> dict[str, Any]:
+    def resolve_paragraph_properties(self, style_id: str | None) -> dict[str, Any]:
         """Resolve paragraph properties for a style.
 
         Includes inherited properties from basedOn chain and
@@ -145,9 +143,7 @@ class StyleResolver:
         self._p_pr_cache[style_id] = p_pr
         return p_pr
 
-    def resolve_run_properties(
-        self, style_id: str | None
-    ) -> dict[str, Any]:
+    def resolve_run_properties(self, style_id: str | None) -> dict[str, Any]:
         """Resolve run properties for a style.
 
         Includes inherited properties from basedOn chain and
@@ -193,9 +189,7 @@ class StyleResolver:
         self._r_pr_cache[style_id] = r_pr
         return r_pr
 
-    def resolve_table_properties(
-        self, style_id: str | None
-    ) -> dict[str, Any]:
+    def resolve_table_properties(self, style_id: str | None) -> dict[str, Any]:
         """Resolve table properties for a style.
 
         Includes inherited properties from basedOn chain.
@@ -325,13 +319,9 @@ class StyleResolver:
         # Follow basedOn chain
         if style.based_on:
             if style.based_on not in self._style_map:
-                logger.warning(
-                    f"Style '{style_id}' references missing style '{style.based_on}'"
-                )
+                logger.warning(f"Style '{style_id}' references missing style '{style.based_on}'")
             else:
-                parent_chain = self._get_style_chain(
-                    style.based_on, style_type, visited
-                )
+                parent_chain = self._get_style_chain(style.based_on, style_type, visited)
                 chain.extend(parent_chain)
 
         return chain

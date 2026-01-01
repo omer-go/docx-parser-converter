@@ -3,6 +3,7 @@
 This module provides type-safe models representing the structure of DOCX documents,
 including document content, styles, and numbering definitions.
 """
+
 # Re-export common models
 from models.common import (
     Border,

@@ -1,4 +1,5 @@
 """Parser for run elements."""
+
 from lxml.etree import _Element as Element
 
 from core.constants import WORD_NS

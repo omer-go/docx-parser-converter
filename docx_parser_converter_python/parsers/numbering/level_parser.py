@@ -1,4 +1,5 @@
 """Parser for numbering level elements."""
+
 from lxml.etree import _Element as Element
 
 from models.numbering.level import Level
@@ -54,7 +55,9 @@ def parse_level(element: Element | None) -> Level | None:
 
     # Level restart
     lvl_restart_elem = find_child(element, "lvlRestart")
-    lvl_restart = get_int_attribute(lvl_restart_elem, "val") if lvl_restart_elem is not None else None
+    lvl_restart = (
+        get_int_attribute(lvl_restart_elem, "val") if lvl_restart_elem is not None else None
+    )
 
     # Associated paragraph style
     p_style_elem = find_child(element, "pStyle")
@@ -73,7 +76,11 @@ def parse_level(element: Element | None) -> Level | None:
 
     # Picture bullet ID
     lvl_pic_bullet_id_elem = find_child(element, "lvlPicBulletId")
-    lvl_pic_bullet_id = get_int_attribute(lvl_pic_bullet_id_elem, "val") if lvl_pic_bullet_id_elem is not None else None
+    lvl_pic_bullet_id = (
+        get_int_attribute(lvl_pic_bullet_id_elem, "val")
+        if lvl_pic_bullet_id_elem is not None
+        else None
+    )
 
     # Level justification
     lvl_jc_elem = find_child(element, "lvlJc")

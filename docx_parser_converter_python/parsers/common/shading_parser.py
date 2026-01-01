@@ -1,4 +1,5 @@
 """Parser for shading elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.shading import Shading

@@ -2,6 +2,7 @@
 
 Frame properties define text box and drop cap behavior for paragraphs.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

@@ -1,4 +1,5 @@
 """Tests for xml_extractor module."""
+
 from pathlib import Path
 
 import pytest
@@ -79,9 +80,7 @@ class TestExtractStylesXml:
 class TestExtractNumberingXml:
     """Tests for extract_numbering_xml function."""
 
-    def test_extracts_numbering_if_present(
-        self, lists_numbering_fixtures: Path
-    ) -> None:
+    def test_extracts_numbering_if_present(self, lists_numbering_fixtures: Path) -> None:
         """Extracts numbering element if present."""
         docx_path = lists_numbering_fixtures / "lists_basic.docx"
         if docx_path.exists():

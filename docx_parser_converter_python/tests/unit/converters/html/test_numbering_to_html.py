@@ -641,9 +641,7 @@ class TestNumberingToHTMLConverterClass:
     def test_converter_with_options(self) -> None:
         """Initialize with options."""
         converter = NumberingToHTMLConverter(
-            use_native_lists=True,
-            use_css_counters=True,
-            use_inline_prefix=False
+            use_native_lists=True, use_css_counters=True, use_inline_prefix=False
         )
         assert converter.use_native_lists is True
         assert converter.use_css_counters is True

@@ -1,4 +1,5 @@
 """Parser for abstract numbering elements."""
+
 from lxml.etree import _Element as Element
 
 from models.numbering.abstract_numbering import AbstractNumbering
@@ -37,7 +38,9 @@ def parse_abstract_numbering(element: Element | None) -> AbstractNumbering | Non
 
     # Multi-level type
     multi_level_type_elem = find_child(element, "multiLevelType")
-    multi_level_type = get_attribute(multi_level_type_elem, "val") if multi_level_type_elem is not None else None
+    multi_level_type = (
+        get_attribute(multi_level_type_elem, "val") if multi_level_type_elem is not None else None
+    )
 
     # Template ID
     tmpl_elem = find_child(element, "tmpl")
@@ -53,7 +56,9 @@ def parse_abstract_numbering(element: Element | None) -> AbstractNumbering | Non
 
     # Numbering style link (link from style)
     num_style_link_elem = find_child(element, "numStyleLink")
-    num_style_link = get_attribute(num_style_link_elem, "val") if num_style_link_elem is not None else None
+    num_style_link = (
+        get_attribute(num_style_link_elem, "val") if num_style_link_elem is not None else None
+    )
 
     # Parse levels
     levels = []

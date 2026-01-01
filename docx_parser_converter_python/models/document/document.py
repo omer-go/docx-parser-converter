@@ -2,6 +2,7 @@
 
 The document is the root element containing the body.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

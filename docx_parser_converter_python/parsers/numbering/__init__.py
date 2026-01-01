@@ -1,4 +1,5 @@
 """Numbering parsers - parse numbering.xml elements."""
+
 from parsers.numbering.abstract_numbering_parser import parse_abstract_numbering
 from parsers.numbering.level_parser import parse_level
 from parsers.numbering.numbering_instance_parser import (

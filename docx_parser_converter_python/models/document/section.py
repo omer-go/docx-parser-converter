@@ -3,6 +3,7 @@
 Section properties define page layout, margins, headers/footers, and other
 section-level formatting.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

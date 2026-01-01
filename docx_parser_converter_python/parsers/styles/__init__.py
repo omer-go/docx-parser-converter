@@ -1,4 +1,5 @@
 """Styles parsers - parse styles.xml elements."""
+
 from parsers.styles.document_defaults_parser import (
     parse_document_defaults,
     parse_paragraph_properties_default,

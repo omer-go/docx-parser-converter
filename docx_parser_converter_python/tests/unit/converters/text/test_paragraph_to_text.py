@@ -28,9 +28,7 @@ class TestBasicParagraphConversion:
 
     def test_simple_paragraph(self) -> None:
         """Simple paragraph with single run."""
-        para = Paragraph(
-            content=[Run(content=[Text(value="Hello World")])]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="Hello World")])])
         result = paragraph_to_text(para)
         assert result == "Hello World"
 
@@ -132,9 +130,7 @@ class TestNumberingHandling:
     def test_numbered_paragraph(self) -> None:
         """Numbered paragraph includes prefix."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=1, ilvl=0)
-            ),
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=0)),
             content=[Run(content=[Text(value="First item")])],
         )
         converter = ParagraphToTextConverter(
@@ -149,9 +145,7 @@ class TestNumberingHandling:
     def test_bulleted_paragraph(self) -> None:
         """Bulleted paragraph includes bullet."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=2, ilvl=0)
-            ),
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=2, ilvl=0)),
             content=[Run(content=[Text(value="Bullet point")])],
         )
         converter = ParagraphToTextConverter(
@@ -166,9 +160,7 @@ class TestNumberingHandling:
     def test_multi_level_list(self) -> None:
         """Multi-level list with indentation."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=1, ilvl=1)
-            ),
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=1)),
             content=[Run(content=[Text(value="Sub-item")])],
         )
         converter = ParagraphToTextConverter(
@@ -302,21 +294,13 @@ class TestWhitespaceHandling:
 
     def test_leading_spaces_preserved(self) -> None:
         """Leading spaces in text preserved."""
-        para = Paragraph(
-            content=[
-                Run(content=[Text(value="  Indented", space="preserve")])
-            ]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="  Indented", space="preserve")])])
         result = paragraph_to_text(para)
         assert result == "  Indented"
 
     def test_trailing_spaces_preserved(self) -> None:
         """Trailing spaces in text preserved."""
-        para = Paragraph(
-            content=[
-                Run(content=[Text(value="Text  ", space="preserve")])
-            ]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="Text  ", space="preserve")])])
         result = paragraph_to_text(para)
         assert result == "Text  "
 
@@ -343,40 +327,26 @@ class TestParagraphEdgeCases:
 
     def test_only_whitespace(self) -> None:
         """Paragraph with only whitespace."""
-        para = Paragraph(
-            content=[
-                Run(content=[Text(value="   ", space="preserve")])
-            ]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="   ", space="preserve")])])
         result = paragraph_to_text(para)
         assert result == "   "
 
     def test_unicode_content(self) -> None:
         """Paragraph with unicode content."""
-        para = Paragraph(
-            content=[
-                Run(content=[Text(value="Hello 世界 🌍")])
-            ]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="Hello 世界 🌍")])])
         result = paragraph_to_text(para)
         assert result == "Hello 世界 🌍"
 
     def test_rtl_content(self) -> None:
         """Paragraph with RTL content."""
-        para = Paragraph(
-            content=[
-                Run(content=[Text(value="مرحبا")])
-            ]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="مرحبا")])])
         result = paragraph_to_text(para)
         assert result == "مرحبا"
 
     def test_very_long_paragraph(self) -> None:
         """Very long paragraph content."""
         long_text = "A" * 10000
-        para = Paragraph(
-            content=[Run(content=[Text(value=long_text)])]
-        )
+        para = Paragraph(content=[Run(content=[Text(value=long_text)])])
         result = paragraph_to_text(para)
         assert result == long_text
 
@@ -454,8 +424,6 @@ class TestParagraphToTextConverterClass:
     def test_convert_method(self) -> None:
         """Convert method works."""
         converter = ParagraphToTextConverter()
-        para = Paragraph(
-            content=[Run(content=[Text(value="Test")])]
-        )
+        para = Paragraph(content=[Run(content=[Text(value="Test")])])
         result = converter.convert(para)
         assert result == "Test"

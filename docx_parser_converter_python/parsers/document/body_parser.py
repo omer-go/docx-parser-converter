@@ -1,4 +1,5 @@
 """Parser for document body elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.document import Body

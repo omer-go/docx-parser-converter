@@ -1,4 +1,5 @@
 """Parser for table row properties elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table_row import TableRowHeight, TableRowProperties

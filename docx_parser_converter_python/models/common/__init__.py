@@ -2,6 +2,7 @@
 
 These models represent XML elements that appear in multiple contexts.
 """
+
 from models.common.border import Border, ParagraphBorders, TableBorders
 from models.common.color import Color
 from models.common.indentation import Indentation

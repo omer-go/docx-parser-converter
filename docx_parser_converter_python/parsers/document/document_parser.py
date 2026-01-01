@@ -1,4 +1,5 @@
 """Parser for document elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.document import Document
@@ -34,6 +35,7 @@ def parse_document(element: Element | None) -> Document | None:
     if body is None:
         # Document must have a body
         from models.document.document import Body
+
         body = Body(content=[], sect_pr=None)
 
     return Document(

@@ -2,6 +2,7 @@
 
 A run is a contiguous region of text with the same formatting.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

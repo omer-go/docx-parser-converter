@@ -27,6 +27,7 @@ from tests.unit.parsers.conftest import make_element
 # Table Grid Parser Tests (<w:tblGrid>, <w:gridCol>)
 # =============================================================================
 
+
 class TestTableGridColumnParser:
     """Tests for parse_table_grid_column function.
 
@@ -48,7 +49,7 @@ class TestTableGridColumnParser:
 
     def test_parse_grid_column_no_width(self):
         """Parse grid column without width."""
-        elem = make_element('<w:gridCol/>')
+        elem = make_element("<w:gridCol/>")
         result = parse_table_grid_column(elem)
         assert result is not None
         assert result.w is None
@@ -68,20 +69,20 @@ class TestTableGridParser:
 
     def test_parse_table_grid_empty(self):
         """Parse empty table grid."""
-        elem = make_element('<w:tblGrid/>')
+        elem = make_element("<w:tblGrid/>")
         result = parse_table_grid(elem)
         assert result is not None
         assert len(result.grid_col) == 0
 
     def test_parse_table_grid_multiple_columns(self):
         """Parse table grid with multiple columns."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblGrid>
                 <w:gridCol w:w="2880"/>
                 <w:gridCol w:w="2880"/>
                 <w:gridCol w:w="2880"/>
             </w:tblGrid>
-        ''')
+        """)
         result = parse_table_grid(elem)
         assert result is not None
         assert len(result.grid_col) == 3
@@ -89,13 +90,13 @@ class TestTableGridParser:
 
     def test_parse_table_grid_varied_widths(self):
         """Parse table grid with varied column widths."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblGrid>
                 <w:gridCol w:w="1440"/>
                 <w:gridCol w:w="4320"/>
                 <w:gridCol w:w="2880"/>
             </w:tblGrid>
-        ''')
+        """)
         result = parse_table_grid(elem)
         assert result is not None
         assert result.grid_col[0].w == 1440
@@ -106,6 +107,7 @@ class TestTableGridParser:
 # =============================================================================
 # Table Cell Margins Parser Tests (<w:tcMar>, <w:tblCellMar>)
 # =============================================================================
+
 
 class TestTableCellMarginsParser:
     """Tests for parse_table_cell_margins function.
@@ -121,7 +123,7 @@ class TestTableCellMarginsParser:
 
     def test_parse_cell_margins_empty(self):
         """Parse empty cell margins."""
-        elem = make_element('<w:tcMar/>')
+        elem = make_element("<w:tcMar/>")
         result = parse_table_cell_margins(elem)
         assert result is not None
         assert result.top is None
@@ -129,14 +131,14 @@ class TestTableCellMarginsParser:
 
     def test_parse_cell_margins_all_sides(self):
         """Parse cell margins with all sides."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcMar>
                 <w:top w:w="72" w:type="dxa"/>
                 <w:left w:w="115" w:type="dxa"/>
                 <w:bottom w:w="72" w:type="dxa"/>
                 <w:right w:w="115" w:type="dxa"/>
             </w:tcMar>
-        ''')
+        """)
         result = parse_table_cell_margins(elem)
         assert result is not None
         assert result.top is not None
@@ -153,6 +155,7 @@ class TestTableCellMarginsParser:
 # Table Cell Properties Parser Tests (<w:tcPr>)
 # =============================================================================
 
+
 class TestTableCellPropertiesParser:
     """Tests for parse_table_cell_properties function.
 
@@ -168,7 +171,7 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_empty(self):
         """Parse empty cell properties."""
-        elem = make_element('<w:tcPr/>')
+        elem = make_element("<w:tcPr/>")
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_w is None
@@ -176,11 +179,11 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_width(self):
         """Parse cell width."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcPr>
                 <w:tcW w:w="2880" w:type="dxa"/>
             </w:tcPr>
-        ''')
+        """)
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_w is not None
@@ -189,11 +192,11 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_shading(self):
         """Parse cell shading."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcPr>
                 <w:shd w:val="clear" w:fill="FFFF00"/>
             </w:tcPr>
-        ''')
+        """)
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.shd is not None
@@ -238,42 +241,42 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_vmerge_continue(self):
         """Parse vertical merge continue (no val attribute)."""
-        elem = make_element('<w:tcPr><w:vMerge/></w:tcPr>')
+        elem = make_element("<w:tcPr><w:vMerge/></w:tcPr>")
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.v_merge == "continue"
 
     def test_parse_cell_properties_no_wrap(self):
         """Parse no wrap."""
-        elem = make_element('<w:tcPr><w:noWrap/></w:tcPr>')
+        elem = make_element("<w:tcPr><w:noWrap/></w:tcPr>")
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.no_wrap is True
 
     def test_parse_cell_properties_fit_text(self):
         """Parse fit text."""
-        elem = make_element('<w:tcPr><w:tcFitText/></w:tcPr>')
+        elem = make_element("<w:tcPr><w:tcFitText/></w:tcPr>")
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_fit_text is True
 
     def test_parse_cell_properties_hide_mark(self):
         """Parse hide mark (for merged cells)."""
-        elem = make_element('<w:tcPr><w:hideMark/></w:tcPr>')
+        elem = make_element("<w:tcPr><w:hideMark/></w:tcPr>")
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.hide_mark is True
 
     def test_parse_cell_properties_borders(self):
         """Parse cell borders."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcPr>
                 <w:tcBorders>
                     <w:top w:val="single" w:sz="4" w:color="000000"/>
                     <w:bottom w:val="single" w:sz="4" w:color="000000"/>
                 </w:tcBorders>
             </w:tcPr>
-        ''')
+        """)
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_borders is not None
@@ -281,14 +284,14 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_margins(self):
         """Parse cell margins."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcPr>
                 <w:tcMar>
                     <w:top w:w="72" w:type="dxa"/>
                     <w:left w:w="115" w:type="dxa"/>
                 </w:tcMar>
             </w:tcPr>
-        ''')
+        """)
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_mar is not None
@@ -297,7 +300,7 @@ class TestTableCellPropertiesParser:
 
     def test_parse_cell_properties_comprehensive(self):
         """Parse comprehensive cell properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tcPr>
                 <w:tcW w:w="2880" w:type="dxa"/>
                 <w:gridSpan w:val="2"/>
@@ -306,7 +309,7 @@ class TestTableCellPropertiesParser:
                 <w:vAlign w:val="center"/>
                 <w:noWrap/>
             </w:tcPr>
-        ''')
+        """)
         result = parse_table_cell_properties(elem)
         assert result is not None
         assert result.tc_w is not None
@@ -323,6 +326,7 @@ class TestTableCellPropertiesParser:
 # Table Cell Parser Tests (<w:tc>)
 # =============================================================================
 
+
 class TestTableCellParser:
     """Tests for parse_table_cell function.
 
@@ -337,7 +341,7 @@ class TestTableCellParser:
 
     def test_parse_table_cell_empty(self):
         """Parse empty table cell."""
-        elem = make_element('<w:tc/>')
+        elem = make_element("<w:tc/>")
         result = parse_table_cell(elem)
         assert result is not None
         assert result.tc_pr is None
@@ -345,7 +349,7 @@ class TestTableCellParser:
 
     def test_parse_table_cell_simple(self):
         """Parse simple table cell with text."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tc>
                 <w:p>
                     <w:r>
@@ -353,14 +357,14 @@ class TestTableCellParser:
                     </w:r>
                 </w:p>
             </w:tc>
-        ''')
+        """)
         result = parse_table_cell(elem)
         assert result is not None
         assert len(result.content) == 1
 
     def test_parse_table_cell_with_properties(self):
         """Parse table cell with properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tc>
                 <w:tcPr>
                     <w:tcW w:w="2880" w:type="dxa"/>
@@ -370,7 +374,7 @@ class TestTableCellParser:
                     <w:r><w:t>Highlighted cell</w:t></w:r>
                 </w:p>
             </w:tc>
-        ''')
+        """)
         result = parse_table_cell(elem)
         assert result is not None
         assert result.tc_pr is not None
@@ -381,12 +385,12 @@ class TestTableCellParser:
 
     def test_parse_table_cell_multiple_paragraphs(self):
         """Parse table cell with multiple paragraphs."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tc>
                 <w:p><w:r><w:t>First paragraph</w:t></w:r></w:p>
                 <w:p><w:r><w:t>Second paragraph</w:t></w:r></w:p>
             </w:tc>
-        ''')
+        """)
         result = parse_table_cell(elem)
         assert result is not None
         assert len(result.content) == 2
@@ -395,6 +399,7 @@ class TestTableCellParser:
 # =============================================================================
 # Table Row Height Parser Tests (<w:trHeight>)
 # =============================================================================
+
 
 class TestTableRowHeightParser:
     """Tests for parse_table_row_height function.
@@ -443,6 +448,7 @@ class TestTableRowHeightParser:
 # Table Row Properties Parser Tests (<w:trPr>)
 # =============================================================================
 
+
 class TestTableRowPropertiesParser:
     """Tests for parse_table_row_properties function.
 
@@ -457,7 +463,7 @@ class TestTableRowPropertiesParser:
 
     def test_parse_row_properties_empty(self):
         """Parse empty row properties."""
-        elem = make_element('<w:trPr/>')
+        elem = make_element("<w:trPr/>")
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.tr_height is None
@@ -465,11 +471,11 @@ class TestTableRowPropertiesParser:
 
     def test_parse_row_properties_height(self):
         """Parse row with height."""
-        elem = make_element('''
+        elem = make_element("""
             <w:trPr>
                 <w:trHeight w:val="720" w:hRule="exact"/>
             </w:trPr>
-        ''')
+        """)
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.tr_height is not None
@@ -478,14 +484,14 @@ class TestTableRowPropertiesParser:
 
     def test_parse_row_properties_header(self):
         """Parse header row."""
-        elem = make_element('<w:trPr><w:tblHeader/></w:trPr>')
+        elem = make_element("<w:trPr><w:tblHeader/></w:trPr>")
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.tbl_header is True
 
     def test_parse_row_properties_cant_split(self):
         """Parse can't split row."""
-        elem = make_element('<w:trPr><w:cantSplit/></w:trPr>')
+        elem = make_element("<w:trPr><w:cantSplit/></w:trPr>")
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.cant_split is True
@@ -499,11 +505,11 @@ class TestTableRowPropertiesParser:
 
     def test_parse_row_properties_cell_spacing(self):
         """Parse row cell spacing."""
-        elem = make_element('''
+        elem = make_element("""
             <w:trPr>
                 <w:tblCellSpacing w:w="72" w:type="dxa"/>
             </w:trPr>
-        ''')
+        """)
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.tbl_cell_spacing is not None
@@ -511,14 +517,14 @@ class TestTableRowPropertiesParser:
 
     def test_parse_row_properties_comprehensive(self):
         """Parse comprehensive row properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:trPr>
                 <w:trHeight w:val="720" w:hRule="exact"/>
                 <w:tblHeader/>
                 <w:cantSplit/>
                 <w:jc w:val="center"/>
             </w:trPr>
-        ''')
+        """)
         result = parse_table_row_properties(elem)
         assert result is not None
         assert result.tr_height is not None
@@ -531,6 +537,7 @@ class TestTableRowPropertiesParser:
 # =============================================================================
 # Table Row Parser Tests (<w:tr>)
 # =============================================================================
+
 
 class TestTableRowParser:
     """Tests for parse_table_row function.
@@ -546,7 +553,7 @@ class TestTableRowParser:
 
     def test_parse_table_row_empty(self):
         """Parse empty table row."""
-        elem = make_element('<w:tr/>')
+        elem = make_element("<w:tr/>")
         result = parse_table_row(elem)
         assert result is not None
         assert result.tr_pr is None
@@ -554,40 +561,40 @@ class TestTableRowParser:
 
     def test_parse_table_row_single_cell(self):
         """Parse row with single cell."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tr>
                 <w:tc>
                     <w:p><w:r><w:t>Cell</w:t></w:r></w:p>
                 </w:tc>
             </w:tr>
-        ''')
+        """)
         result = parse_table_row(elem)
         assert result is not None
         assert len(result.tc) == 1
 
     def test_parse_table_row_multiple_cells(self):
         """Parse row with multiple cells."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tr>
                 <w:tc><w:p><w:r><w:t>Cell 1</w:t></w:r></w:p></w:tc>
                 <w:tc><w:p><w:r><w:t>Cell 2</w:t></w:r></w:p></w:tc>
                 <w:tc><w:p><w:r><w:t>Cell 3</w:t></w:r></w:p></w:tc>
             </w:tr>
-        ''')
+        """)
         result = parse_table_row(elem)
         assert result is not None
         assert len(result.tc) == 3
 
     def test_parse_table_row_with_properties(self):
         """Parse row with properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tr>
                 <w:trPr>
                     <w:tblHeader/>
                 </w:trPr>
                 <w:tc><w:p><w:r><w:t>Header</w:t></w:r></w:p></w:tc>
             </w:tr>
-        ''')
+        """)
         result = parse_table_row(elem)
         assert result is not None
         assert result.tr_pr is not None
@@ -597,6 +604,7 @@ class TestTableRowParser:
 # =============================================================================
 # Table Look Parser Tests (<w:tblLook>)
 # =============================================================================
+
 
 class TestTableLookParser:
     """Tests for parse_table_look function.
@@ -643,6 +651,7 @@ class TestTableLookParser:
 # Table Properties Parser Tests (<w:tblPr>)
 # =============================================================================
 
+
 class TestTablePropertiesParser:
     """Tests for parse_table_properties function.
 
@@ -658,7 +667,7 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_empty(self):
         """Parse empty table properties."""
-        elem = make_element('<w:tblPr/>')
+        elem = make_element("<w:tblPr/>")
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_style is None
@@ -672,11 +681,11 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_width(self):
         """Parse table width."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblW w:w="5000" w:type="pct"/>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_w is not None
@@ -692,11 +701,11 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_indentation(self):
         """Parse table indentation."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblInd w:w="720" w:type="dxa"/>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_ind is not None
@@ -704,7 +713,7 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_borders(self):
         """Parse table borders."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblBorders>
                     <w:top w:val="single" w:sz="4" w:color="000000"/>
@@ -715,7 +724,7 @@ class TestTablePropertiesParser:
                     <w:insideV w:val="single" w:sz="4" w:color="000000"/>
                 </w:tblBorders>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_borders is not None
@@ -740,7 +749,7 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_cell_margins(self):
         """Parse default cell margins."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblCellMar>
                     <w:top w:w="72" w:type="dxa"/>
@@ -749,7 +758,7 @@ class TestTablePropertiesParser:
                     <w:right w:w="115" w:type="dxa"/>
                 </w:tblCellMar>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_cell_mar is not None
@@ -774,11 +783,11 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_look(self):
         """Parse table look."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblLook w:firstRow="1" w:firstColumn="1" w:noVBand="1"/>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_look is not None
@@ -786,7 +795,7 @@ class TestTablePropertiesParser:
 
     def test_parse_table_properties_comprehensive(self):
         """Parse comprehensive table properties."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tblPr>
                 <w:tblStyle w:val="TableGrid"/>
                 <w:tblW w:w="5000" w:type="pct"/>
@@ -794,7 +803,7 @@ class TestTablePropertiesParser:
                 <w:tblLayout w:type="fixed"/>
                 <w:tblLook w:firstRow="1" w:noVBand="1"/>
             </w:tblPr>
-        ''')
+        """)
         result = parse_table_properties(elem)
         assert result is not None
         assert result.tbl_style == "TableGrid"
@@ -810,6 +819,7 @@ class TestTablePropertiesParser:
 # Table Parser Tests (<w:tbl>)
 # =============================================================================
 
+
 class TestTableParser:
     """Tests for parse_table function.
 
@@ -824,7 +834,7 @@ class TestTableParser:
 
     def test_parse_table_empty(self):
         """Parse empty table."""
-        elem = make_element('<w:tbl/>')
+        elem = make_element("<w:tbl/>")
         result = parse_table(elem)
         assert result is not None
         assert result.tbl_pr is None
@@ -833,7 +843,7 @@ class TestTableParser:
 
     def test_parse_table_simple(self):
         """Parse simple 2x2 table."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tbl>
                 <w:tblPr>
                     <w:tblStyle w:val="TableGrid"/>
@@ -851,7 +861,7 @@ class TestTableParser:
                     <w:tc><w:p><w:r><w:t>B2</w:t></w:r></w:p></w:tc>
                 </w:tr>
             </w:tbl>
-        ''')
+        """)
         result = parse_table(elem)
         assert result is not None
         assert result.tbl_pr is not None
@@ -863,7 +873,7 @@ class TestTableParser:
 
     def test_parse_table_with_header(self):
         """Parse table with header row."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tbl>
                 <w:tblPr>
                     <w:tblLook w:firstRow="1"/>
@@ -879,7 +889,7 @@ class TestTableParser:
                     <w:tc><w:p><w:r><w:t>Data</w:t></w:r></w:p></w:tc>
                 </w:tr>
             </w:tbl>
-        ''')
+        """)
         result = parse_table(elem)
         assert result is not None
         assert result.tbl_pr is not None
@@ -890,7 +900,7 @@ class TestTableParser:
 
     def test_parse_table_merged_cells(self):
         """Parse table with merged cells."""
-        elem = make_element('''
+        elem = make_element("""
             <w:tbl>
                 <w:tblGrid>
                     <w:gridCol w:w="2880"/>
@@ -903,7 +913,7 @@ class TestTableParser:
                     </w:tc>
                 </w:tr>
             </w:tbl>
-        ''')
+        """)
         result = parse_table(elem)
         assert result is not None
         assert result.tr[0].tc[0].tc_pr is not None

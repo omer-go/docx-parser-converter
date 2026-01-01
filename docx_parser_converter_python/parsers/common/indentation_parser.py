@@ -1,4 +1,5 @@
 """Parser for indentation elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.indentation import Indentation

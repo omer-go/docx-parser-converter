@@ -2,6 +2,7 @@
 
 Represents border elements used in paragraphs, tables, and cells.
 """
+
 from pydantic import BaseModel
 
 

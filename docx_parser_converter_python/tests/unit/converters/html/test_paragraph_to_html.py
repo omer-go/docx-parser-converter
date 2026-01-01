@@ -55,21 +55,22 @@ class TestBasicParagraphConversion:
 
     def test_paragraph_with_multiple_runs(self) -> None:
         """Paragraph with multiple runs."""
-        para = Paragraph(content=[
-            Run(content=[Text(value="Hello ")]),
-            Run(content=[Text(value="World")])
-        ])
+        para = Paragraph(
+            content=[Run(content=[Text(value="Hello ")]), Run(content=[Text(value="World")])]
+        )
         result = paragraph_to_html(para)
         assert "Hello " in result
         assert "World" in result
 
     def test_paragraph_preserves_run_order(self) -> None:
         """Runs appear in original order."""
-        para = Paragraph(content=[
-            Run(content=[Text(value="First")]),
-            Run(content=[Text(value="Second")]),
-            Run(content=[Text(value="Third")])
-        ])
+        para = Paragraph(
+            content=[
+                Run(content=[Text(value="First")]),
+                Run(content=[Text(value="Second")]),
+                Run(content=[Text(value="Third")]),
+            ]
+        )
         result = paragraph_to_html(para)
         first_pos = result.index("First")
         second_pos = result.index("Second")
@@ -88,8 +89,7 @@ class TestParagraphAlignment:
     def test_left_alignment(self) -> None:
         """Left alignment."""
         para = Paragraph(
-            p_pr=ParagraphProperties(jc="left"),
-            content=[Run(content=[Text(value="Left")])]
+            p_pr=ParagraphProperties(jc="left"), content=[Run(content=[Text(value="Left")])]
         )
         result = paragraph_to_html(para)
         # left is default, may or may not include explicit text-align
@@ -98,8 +98,7 @@ class TestParagraphAlignment:
     def test_center_alignment(self) -> None:
         """Center alignment."""
         para = Paragraph(
-            p_pr=ParagraphProperties(jc="center"),
-            content=[Run(content=[Text(value="Centered")])]
+            p_pr=ParagraphProperties(jc="center"), content=[Run(content=[Text(value="Centered")])]
         )
         result = paragraph_to_html(para)
         assert "text-align" in result
@@ -108,8 +107,7 @@ class TestParagraphAlignment:
     def test_right_alignment(self) -> None:
         """Right alignment."""
         para = Paragraph(
-            p_pr=ParagraphProperties(jc="right"),
-            content=[Run(content=[Text(value="Right")])]
+            p_pr=ParagraphProperties(jc="right"), content=[Run(content=[Text(value="Right")])]
         )
         result = paragraph_to_html(para)
         assert "text-align" in result
@@ -119,7 +117,7 @@ class TestParagraphAlignment:
         """Justify alignment."""
         para = Paragraph(
             p_pr=ParagraphProperties(jc="both"),
-            content=[Run(content=[Text(value="Justified text")])]
+            content=[Run(content=[Text(value="Justified text")])],
         )
         result = paragraph_to_html(para)
         assert "text-align" in result
@@ -129,7 +127,7 @@ class TestParagraphAlignment:
         """Distribute alignment (rare, but should work)."""
         para = Paragraph(
             p_pr=ParagraphProperties(jc="distribute"),
-            content=[Run(content=[Text(value="Distributed")])]
+            content=[Run(content=[Text(value="Distributed")])],
         )
         result = paragraph_to_html(para)
         # Distribute typically maps to justify
@@ -148,7 +146,7 @@ class TestParagraphSpacing:
         """Space before paragraph."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(before=240)),  # 12pt
-            content=[Run(content=[Text(value="Spaced")])]
+            content=[Run(content=[Text(value="Spaced")])],
         )
         result = paragraph_to_html(para)
         assert "margin-top" in result
@@ -157,7 +155,7 @@ class TestParagraphSpacing:
         """Space after paragraph."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(after=240)),  # 12pt
-            content=[Run(content=[Text(value="Spaced")])]
+            content=[Run(content=[Text(value="Spaced")])],
         )
         result = paragraph_to_html(para)
         assert "margin-bottom" in result
@@ -166,7 +164,7 @@ class TestParagraphSpacing:
         """Single line spacing."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(line=240, line_rule="auto")),
-            content=[Run(content=[Text(value="Single spaced")])]
+            content=[Run(content=[Text(value="Single spaced")])],
         )
         result = paragraph_to_html(para)
         # Single spacing (1.0) might not add line-height
@@ -176,7 +174,7 @@ class TestParagraphSpacing:
         """Double line spacing."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(line=480, line_rule="auto")),
-            content=[Run(content=[Text(value="Double spaced")])]
+            content=[Run(content=[Text(value="Double spaced")])],
         )
         result = paragraph_to_html(para)
         assert "line-height" in result
@@ -185,7 +183,7 @@ class TestParagraphSpacing:
         """Exact line spacing."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(line=300, line_rule="exact")),
-            content=[Run(content=[Text(value="Exact spacing")])]
+            content=[Run(content=[Text(value="Exact spacing")])],
         )
         result = paragraph_to_html(para)
         assert "line-height" in result
@@ -194,7 +192,7 @@ class TestParagraphSpacing:
         """At least line spacing."""
         para = Paragraph(
             p_pr=ParagraphProperties(spacing=Spacing(line=300, line_rule="atLeast")),
-            content=[Run(content=[Text(value="At least spacing")])]
+            content=[Run(content=[Text(value="At least spacing")])],
         )
         result = paragraph_to_html(para)
         # atLeast uses min-height instead of line-height
@@ -213,7 +211,7 @@ class TestParagraphIndentation:
         """Left indentation."""
         para = Paragraph(
             p_pr=ParagraphProperties(ind=Indentation(left=720)),  # 0.5in
-            content=[Run(content=[Text(value="Indented")])]
+            content=[Run(content=[Text(value="Indented")])],
         )
         result = paragraph_to_html(para)
         assert "margin-left" in result
@@ -222,7 +220,7 @@ class TestParagraphIndentation:
         """Right indentation."""
         para = Paragraph(
             p_pr=ParagraphProperties(ind=Indentation(right=720)),
-            content=[Run(content=[Text(value="Right indented")])]
+            content=[Run(content=[Text(value="Right indented")])],
         )
         result = paragraph_to_html(para)
         assert "margin-right" in result
@@ -231,7 +229,7 @@ class TestParagraphIndentation:
         """First line indentation."""
         para = Paragraph(
             p_pr=ParagraphProperties(ind=Indentation(first_line=720)),
-            content=[Run(content=[Text(value="First line indented paragraph")])]
+            content=[Run(content=[Text(value="First line indented paragraph")])],
         )
         result = paragraph_to_html(para)
         assert "text-indent" in result
@@ -240,7 +238,7 @@ class TestParagraphIndentation:
         """Hanging indentation (negative first line)."""
         para = Paragraph(
             p_pr=ParagraphProperties(ind=Indentation(left=720, hanging=720)),
-            content=[Run(content=[Text(value="Hanging indent")])]
+            content=[Run(content=[Text(value="Hanging indent")])],
         )
         result = paragraph_to_html(para)
         assert "text-indent" in result
@@ -249,7 +247,7 @@ class TestParagraphIndentation:
         """Start/end indentation (for RTL support)."""
         para = Paragraph(
             p_pr=ParagraphProperties(ind=Indentation(start=720, end=360)),
-            content=[Run(content=[Text(value="RTL aware indentation")])]
+            content=[Run(content=[Text(value="RTL aware indentation")])],
         )
         result = paragraph_to_html(para)
         # Start/end get converted to left/right in CSS
@@ -270,7 +268,7 @@ class TestParagraphBorders:
             p_pr=ParagraphProperties(
                 p_bdr=ParagraphBorders(top=Border(val="single", sz=8, color="000000"))
             ),
-            content=[Run(content=[Text(value="Bordered")])]
+            content=[Run(content=[Text(value="Bordered")])],
         )
         result = paragraph_to_html(para)
         assert "border-top" in result
@@ -281,7 +279,7 @@ class TestParagraphBorders:
             p_pr=ParagraphProperties(
                 p_bdr=ParagraphBorders(bottom=Border(val="single", sz=8, color="000000"))
             ),
-            content=[Run(content=[Text(value="Bordered")])]
+            content=[Run(content=[Text(value="Bordered")])],
         )
         result = paragraph_to_html(para)
         assert "border-bottom" in result
@@ -293,7 +291,7 @@ class TestParagraphBorders:
             p_pr=ParagraphProperties(
                 p_bdr=ParagraphBorders(top=border, bottom=border, left=border, right=border)
             ),
-            content=[Run(content=[Text(value="Box border")])]
+            content=[Run(content=[Text(value="Box border")])],
         )
         result = paragraph_to_html(para)
         assert "border" in result
@@ -304,7 +302,7 @@ class TestParagraphBorders:
             p_pr=ParagraphProperties(
                 p_bdr=ParagraphBorders(bar=Border(val="single", sz=8, color="FF0000"))
             ),
-            content=[Run(content=[Text(value="With bar")])]
+            content=[Run(content=[Text(value="With bar")])],
         )
         result = paragraph_to_html(para)
         # Bar is converted to border
@@ -323,7 +321,7 @@ class TestParagraphShading:
         """Background fill color."""
         para = Paragraph(
             p_pr=ParagraphProperties(shd=Shading(fill="FFFF00")),
-            content=[Run(content=[Text(value="Yellow background")])]
+            content=[Run(content=[Text(value="Yellow background")])],
         )
         result = paragraph_to_html(para)
         assert "background" in result
@@ -331,10 +329,8 @@ class TestParagraphShading:
     def test_pattern_shading(self) -> None:
         """Pattern shading (less common)."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                shd=Shading(val="pct25", color="000000", fill="FFFFFF")
-            ),
-            content=[Run(content=[Text(value="Patterned")])]
+            p_pr=ParagraphProperties(shd=Shading(val="pct25", color="000000", fill="FFFFFF")),
+            content=[Run(content=[Text(value="Patterned")])],
         )
         result = paragraph_to_html(para)
         assert "Patterned" in result
@@ -343,7 +339,7 @@ class TestParagraphShading:
         """Clear/nil shading."""
         para = Paragraph(
             p_pr=ParagraphProperties(shd=Shading(val="clear")),
-            content=[Run(content=[Text(value="No shading")])]
+            content=[Run(content=[Text(value="No shading")])],
         )
         result = paragraph_to_html(para)
         # Should not add background style for clear
@@ -360,10 +356,7 @@ class TestHyperlinkConversion:
 
     def test_external_hyperlink(self) -> None:
         """External hyperlink with r:id."""
-        hyperlink = Hyperlink(
-            r_id="rId1",
-            content=[Run(content=[Text(value="Click here")])]
-        )
+        hyperlink = Hyperlink(r_id="rId1", content=[Run(content=[Text(value="Click here")])])
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para, relationships={"rId1": "https://example.com"})
         assert "<a" in result
@@ -373,8 +366,7 @@ class TestHyperlinkConversion:
     def test_internal_anchor_link(self) -> None:
         """Internal link to bookmark."""
         hyperlink = Hyperlink(
-            anchor="Section1",
-            content=[Run(content=[Text(value="Go to Section 1")])]
+            anchor="Section1", content=[Run(content=[Text(value="Go to Section 1")])]
         )
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para)
@@ -383,9 +375,7 @@ class TestHyperlinkConversion:
     def test_hyperlink_with_tooltip(self) -> None:
         """Hyperlink with tooltip."""
         hyperlink = Hyperlink(
-            r_id="rId1",
-            tooltip="Visit our website",
-            content=[Run(content=[Text(value="Link")])]
+            r_id="rId1", tooltip="Visit our website", content=[Run(content=[Text(value="Link")])]
         )
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para, relationships={"rId1": "https://example.com"})
@@ -396,9 +386,7 @@ class TestHyperlinkConversion:
         """Hyperlink containing formatted runs."""
         hyperlink = Hyperlink(
             r_id="rId1",
-            content=[
-                Run(r_pr=RunProperties(b=True), content=[Text(value="Bold link")])
-            ]
+            content=[Run(r_pr=RunProperties(b=True), content=[Text(value="Bold link")])],
         )
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para, relationships={"rId1": "https://example.com"})
@@ -409,7 +397,7 @@ class TestHyperlinkConversion:
         """Hyperlink with missing relationship ID."""
         hyperlink = Hyperlink(
             r_id="rId999",  # Not in relationships
-            content=[Run(content=[Text(value="Broken link")])]
+            content=[Run(content=[Text(value="Broken link")])],
         )
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para, relationships={})
@@ -419,11 +407,13 @@ class TestHyperlinkConversion:
 
     def test_mixed_content_with_hyperlinks(self) -> None:
         """Paragraph with text before and after hyperlink."""
-        para = Paragraph(content=[
-            Run(content=[Text(value="Click ")]),
-            Hyperlink(r_id="rId1", content=[Run(content=[Text(value="here")])]),
-            Run(content=[Text(value=" for more.")])
-        ])
+        para = Paragraph(
+            content=[
+                Run(content=[Text(value="Click ")]),
+                Hyperlink(r_id="rId1", content=[Run(content=[Text(value="here")])]),
+                Run(content=[Text(value=" for more.")]),
+            ]
+        )
         result = paragraph_to_html(para, relationships={"rId1": "https://example.com"})
         assert "Click " in result
         assert "<a" in result
@@ -441,30 +431,31 @@ class TestBookmarkConversion:
 
     def test_bookmark_start(self) -> None:
         """Bookmark start creates anchor."""
-        para = Paragraph(content=[
-            BookmarkStart(id="0", name="Section1"),
-            Run(content=[Text(value="Section content")])
-        ])
+        para = Paragraph(
+            content=[
+                BookmarkStart(id="0", name="Section1"),
+                Run(content=[Text(value="Section content")]),
+            ]
+        )
         result = paragraph_to_html(para)
         assert 'id="Section1"' in result
 
     def test_bookmark_end(self) -> None:
         """Bookmark end is typically invisible."""
-        para = Paragraph(content=[
-            Run(content=[Text(value="Content")]),
-            BookmarkEnd(id="0")
-        ])
+        para = Paragraph(content=[Run(content=[Text(value="Content")]), BookmarkEnd(id="0")])
         result = paragraph_to_html(para)
         # Bookmark end should not add visible content
         assert "Content" in result
 
     def test_bookmark_range(self) -> None:
         """Complete bookmark range."""
-        para = Paragraph(content=[
-            BookmarkStart(id="0", name="Important"),
-            Run(content=[Text(value="Important content")]),
-            BookmarkEnd(id="0")
-        ])
+        para = Paragraph(
+            content=[
+                BookmarkStart(id="0", name="Important"),
+                Run(content=[Text(value="Important content")]),
+                BookmarkEnd(id="0"),
+            ]
+        )
         result = paragraph_to_html(para)
         assert 'id="Important"' in result
 
@@ -490,10 +481,8 @@ class TestNumberingConversion:
     def test_numbered_paragraph(self) -> None:
         """Paragraph with numbering prefix."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=1, ilvl=0)
-            ),
-            content=[Run(content=[Text(value="First item")])]
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=0)),
+            content=[Run(content=[Text(value="First item")])],
         )
         result = paragraph_to_html(para, numbering_prefix="1. ")
         assert "1." in result
@@ -501,10 +490,8 @@ class TestNumberingConversion:
     def test_bulleted_paragraph(self) -> None:
         """Paragraph with bullet prefix."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=2, ilvl=0)
-            ),
-            content=[Run(content=[Text(value="Bullet item")])]
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=2, ilvl=0)),
+            content=[Run(content=[Text(value="Bullet item")])],
         )
         result = paragraph_to_html(para, numbering_prefix="• ")
         assert "•" in result
@@ -512,10 +499,8 @@ class TestNumberingConversion:
     def test_nested_list_item(self) -> None:
         """Nested list item with indentation."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=1, ilvl=1)
-            ),
-            content=[Run(content=[Text(value="Nested item")])]
+            p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=1)),
+            content=[Run(content=[Text(value="Nested item")])],
         )
         result = paragraph_to_html(para, numbering_prefix="a. ")
         assert "a." in result
@@ -525,10 +510,9 @@ class TestNumberingConversion:
         """List indentation is applied correctly."""
         para = Paragraph(
             p_pr=ParagraphProperties(
-                num_pr=NumberingProperties(num_id=1, ilvl=0),
-                ind=Indentation(left=720)
+                num_pr=NumberingProperties(num_id=1, ilvl=0), ind=Indentation(left=720)
             ),
-            content=[Run(content=[Text(value="Indented list")])]
+            content=[Run(content=[Text(value="Indented list")])],
         )
         result = paragraph_to_html(para, numbering_prefix="1. ")
         assert "margin-left" in result
@@ -545,10 +529,8 @@ class TestTabStopConversion:
     def test_left_tab_stop(self) -> None:
         """Left tab stop."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                tabs=[TabStop(val="left", pos=720)]
-            ),
-            content=[Run(content=[Text(value="Tab content")])]
+            p_pr=ParagraphProperties(tabs=[TabStop(val="left", pos=720)]),
+            content=[Run(content=[Text(value="Tab content")])],
         )
         result = paragraph_to_html(para)
         # Tab stops are paragraph properties, content should render
@@ -557,10 +539,8 @@ class TestTabStopConversion:
     def test_right_tab_stop(self) -> None:
         """Right tab stop."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                tabs=[TabStop(val="right", pos=9360)]
-            ),
-            content=[Run(content=[Text(value="Right aligned")])]
+            p_pr=ParagraphProperties(tabs=[TabStop(val="right", pos=9360)]),
+            content=[Run(content=[Text(value="Right aligned")])],
         )
         result = paragraph_to_html(para)
         assert "Right aligned" in result
@@ -568,10 +548,8 @@ class TestTabStopConversion:
     def test_center_tab_stop(self) -> None:
         """Center tab stop."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                tabs=[TabStop(val="center", pos=4680)]
-            ),
-            content=[Run(content=[Text(value="Centered")])]
+            p_pr=ParagraphProperties(tabs=[TabStop(val="center", pos=4680)]),
+            content=[Run(content=[Text(value="Centered")])],
         )
         result = paragraph_to_html(para)
         assert "Centered" in result
@@ -579,10 +557,8 @@ class TestTabStopConversion:
     def test_decimal_tab_stop(self) -> None:
         """Decimal tab stop (for numbers)."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                tabs=[TabStop(val="decimal", pos=5760)]
-            ),
-            content=[Run(content=[Text(value="123.45")])]
+            p_pr=ParagraphProperties(tabs=[TabStop(val="decimal", pos=5760)]),
+            content=[Run(content=[Text(value="123.45")])],
         )
         result = paragraph_to_html(para)
         assert "123.45" in result
@@ -590,10 +566,8 @@ class TestTabStopConversion:
     def test_tab_leader(self) -> None:
         """Tab with leader character."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                tabs=[TabStop(val="right", pos=9360, leader="dot")]
-            ),
-            content=[Run(content=[Text(value="TOC entry")])]
+            p_pr=ParagraphProperties(tabs=[TabStop(val="right", pos=9360, leader="dot")]),
+            content=[Run(content=[Text(value="TOC entry")])],
         )
         result = paragraph_to_html(para)
         assert "TOC entry" in result
@@ -611,7 +585,7 @@ class TestPageBreakControl:
         """Page break before paragraph."""
         para = Paragraph(
             p_pr=ParagraphProperties(page_break_before=True),
-            content=[Run(content=[Text(value="New page")])]
+            content=[Run(content=[Text(value="New page")])],
         )
         result = paragraph_to_html(para)
         assert "page-break-before" in result
@@ -619,8 +593,7 @@ class TestPageBreakControl:
     def test_keep_with_next(self) -> None:
         """Keep with next paragraph."""
         para = Paragraph(
-            p_pr=ParagraphProperties(keep_next=True),
-            content=[Run(content=[Text(value="Heading")])]
+            p_pr=ParagraphProperties(keep_next=True), content=[Run(content=[Text(value="Heading")])]
         )
         result = paragraph_to_html(para)
         assert "break-after" in result or "page-break-after" in result
@@ -629,7 +602,7 @@ class TestPageBreakControl:
         """Keep lines together."""
         para = Paragraph(
             p_pr=ParagraphProperties(keep_lines=True),
-            content=[Run(content=[Text(value="Don't split me")])]
+            content=[Run(content=[Text(value="Don't split me")])],
         )
         result = paragraph_to_html(para)
         assert "break-inside" in result or "page-break-inside" in result
@@ -638,7 +611,7 @@ class TestPageBreakControl:
         """Widow/orphan control."""
         para = Paragraph(
             p_pr=ParagraphProperties(widow_control=True),
-            content=[Run(content=[Text(value="Protected text")])]
+            content=[Run(content=[Text(value="Protected text")])],
         )
         result = paragraph_to_html(para)
         # Widow control might add orphans/widows CSS or just be noted
@@ -657,7 +630,7 @@ class TestStyleReference:
         """Paragraph references a style by ID."""
         para = Paragraph(
             p_pr=ParagraphProperties(p_style="Heading1"),
-            content=[Run(content=[Text(value="Heading")])]
+            content=[Run(content=[Text(value="Heading")])],
         )
         result = paragraph_to_html(para)
         # Style reference doesn't directly affect output without style resolver
@@ -666,11 +639,8 @@ class TestStyleReference:
     def test_style_with_direct_override(self) -> None:
         """Direct formatting overrides style properties."""
         para = Paragraph(
-            p_pr=ParagraphProperties(
-                p_style="Normal",
-                jc="center"
-            ),
-            content=[Run(content=[Text(value="Centered")])]
+            p_pr=ParagraphProperties(p_style="Normal", jc="center"),
+            content=[Run(content=[Text(value="Centered")])],
         )
         result = paragraph_to_html(para)
         assert "center" in result
@@ -687,8 +657,7 @@ class TestBidiSupport:
     def test_rtl_paragraph(self) -> None:
         """Right-to-left paragraph."""
         para = Paragraph(
-            p_pr=ParagraphProperties(bidi=True),
-            content=[Run(content=[Text(value="مرحبا")])]
+            p_pr=ParagraphProperties(bidi=True), content=[Run(content=[Text(value="مرحبا")])]
         )
         result = paragraph_to_html(para)
         assert 'dir="rtl"' in result
@@ -696,8 +665,7 @@ class TestBidiSupport:
     def test_ltr_paragraph(self) -> None:
         """Explicit left-to-right paragraph."""
         para = Paragraph(
-            p_pr=ParagraphProperties(bidi=False),
-            content=[Run(content=[Text(value="Hello")])]
+            p_pr=ParagraphProperties(bidi=False), content=[Run(content=[Text(value="Hello")])]
         )
         result = paragraph_to_html(para)
         # LTR is default, might not need explicit attribute
@@ -716,7 +684,7 @@ class TestOutlineLevelConversion:
         """Outline level 0 maps to h1."""
         para = Paragraph(
             p_pr=ParagraphProperties(outline_lvl=0),
-            content=[Run(content=[Text(value="Main Heading")])]
+            content=[Run(content=[Text(value="Main Heading")])],
         )
         result = paragraph_to_html(para, use_headings=True)
         assert "<h1" in result
@@ -725,7 +693,7 @@ class TestOutlineLevelConversion:
         """Outline level 1 maps to h2."""
         para = Paragraph(
             p_pr=ParagraphProperties(outline_lvl=1),
-            content=[Run(content=[Text(value="Subheading")])]
+            content=[Run(content=[Text(value="Subheading")])],
         )
         result = paragraph_to_html(para, use_headings=True)
         assert "<h2" in result
@@ -734,7 +702,7 @@ class TestOutlineLevelConversion:
         """Without use_headings, outline level uses p tag."""
         para = Paragraph(
             p_pr=ParagraphProperties(outline_lvl=0),
-            content=[Run(content=[Text(value="Heading as paragraph")])]
+            content=[Run(content=[Text(value="Heading as paragraph")])],
         )
         result = paragraph_to_html(para, use_headings=False)
         assert "<p" in result
@@ -752,8 +720,7 @@ class TestParagraphHTMLOutputMode:
         """Inline style mode produces style attribute."""
         converter = ParagraphToHTMLConverter(use_inline_styles=True)
         para = Paragraph(
-            p_pr=ParagraphProperties(jc="center"),
-            content=[Run(content=[Text(value="Centered")])]
+            p_pr=ParagraphProperties(jc="center"), content=[Run(content=[Text(value="Centered")])]
         )
         result = converter.convert(para)
         assert "style=" in result
@@ -766,9 +733,7 @@ class TestParagraphHTMLOutputMode:
     def test_semantic_tag_mode(self) -> None:
         """Semantic tag mode uses appropriate tags."""
         converter = ParagraphToHTMLConverter(use_semantic_tags=True)
-        para = Paragraph(
-            content=[Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])]
-        )
+        para = Paragraph(content=[Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])])
         result = converter.convert(para)
         assert "<strong>" in result
 
@@ -804,11 +769,9 @@ class TestParagraphEdgeCases:
         """Paragraph with many properties set."""
         para = Paragraph(
             p_pr=ParagraphProperties(
-                jc="center",
-                spacing=Spacing(before=240, after=120),
-                ind=Indentation(left=720)
+                jc="center", spacing=Spacing(before=240, after=120), ind=Indentation(left=720)
             ),
-            content=[Run(content=[Text(value="Complex paragraph")])]
+            content=[Run(content=[Text(value="Complex paragraph")])],
         )
         result = paragraph_to_html(para)
         assert "center" in result
@@ -830,20 +793,14 @@ class TestParagraphEdgeCases:
 
     def test_properties_without_content(self) -> None:
         """Paragraph with properties but no content."""
-        para = Paragraph(
-            p_pr=ParagraphProperties(jc="center"),
-            content=[]
-        )
+        para = Paragraph(p_pr=ParagraphProperties(jc="center"), content=[])
         result = paragraph_to_html(para)
         assert "<p" in result
         assert "</p>" in result
 
     def test_nested_hyperlinks_not_allowed(self) -> None:
         """Hyperlinks shouldn't nest (HTML doesn't allow)."""
-        hyperlink = Hyperlink(
-            r_id="rId1",
-            content=[Run(content=[Text(value="Link text")])]
-        )
+        hyperlink = Hyperlink(r_id="rId1", content=[Run(content=[Text(value="Link text")])])
         para = Paragraph(content=[hyperlink])
         result = paragraph_to_html(para, relationships={"rId1": "https://example.com"})
         # Just verify it renders properly
@@ -851,12 +808,14 @@ class TestParagraphEdgeCases:
 
     def test_multiple_bookmarks_same_name(self) -> None:
         """Multiple bookmarks - both should render."""
-        para = Paragraph(content=[
-            BookmarkStart(id="0", name="Bookmark1"),
-            Run(content=[Text(value="First")]),
-            BookmarkStart(id="1", name="Bookmark2"),
-            Run(content=[Text(value="Second")])
-        ])
+        para = Paragraph(
+            content=[
+                BookmarkStart(id="0", name="Bookmark1"),
+                Run(content=[Text(value="First")]),
+                BookmarkStart(id="1", name="Bookmark2"),
+                Run(content=[Text(value="Second")]),
+            ]
+        )
         result = paragraph_to_html(para)
         assert 'id="Bookmark1"' in result
         assert 'id="Bookmark2"' in result
@@ -866,9 +825,9 @@ class TestParagraphEdgeCases:
         para = Paragraph(
             p_pr=ParagraphProperties(
                 spacing=Spacing(before=240, after=120, line=480, line_rule="auto"),
-                ind=Indentation(left=720, first_line=360)
+                ind=Indentation(left=720, first_line=360),
             ),
-            content=[Run(content=[Text(value="Complex formatting")])]
+            content=[Run(content=[Text(value="Complex formatting")])],
         )
         result = paragraph_to_html(para)
         assert "margin-top" in result
@@ -883,7 +842,7 @@ class TestParagraphEdgeCases:
             p_pr=ParagraphProperties(
                 r_pr={"b": True}  # Default bold for runs - stored as dict
             ),
-            content=[Run(content=[Text(value="Should render")])]
+            content=[Run(content=[Text(value="Should render")])],
         )
         result = paragraph_to_html(para)
         assert "Should render" in result
@@ -901,7 +860,7 @@ class TestLineNumbering:
         """Suppress line numbers for paragraph."""
         para = Paragraph(
             p_pr=ParagraphProperties(suppress_line_numbers=True),
-            content=[Run(content=[Text(value="No line numbers")])]
+            content=[Run(content=[Text(value="No line numbers")])],
         )
         result = paragraph_to_html(para)
         assert "No line numbers" in result
@@ -925,7 +884,7 @@ class TestTextDirection:
         """Top to bottom, right to left (vertical)."""
         para = Paragraph(
             p_pr=ParagraphProperties(text_direction="tbRl"),
-            content=[Run(content=[Text(value="Vertical")])]
+            content=[Run(content=[Text(value="Vertical")])],
         )
         result = paragraph_to_html(para)
         assert "Vertical" in result
@@ -943,7 +902,7 @@ class TestAutoHyphenation:
         """Suppress automatic hyphenation."""
         para = Paragraph(
             p_pr=ParagraphProperties(suppress_auto_hyphens=True),
-            content=[Run(content=[Text(value="No auto hyphens")])]
+            content=[Run(content=[Text(value="No auto hyphens")])],
         )
         result = paragraph_to_html(para)
         assert "No auto hyphens" in result
@@ -965,9 +924,7 @@ class TestParagraphToHTMLConverterClass:
     def test_converter_with_options(self) -> None:
         """Initialize with options."""
         converter = ParagraphToHTMLConverter(
-            use_semantic_tags=False,
-            use_classes=True,
-            use_headings=True
+            use_semantic_tags=False, use_classes=True, use_headings=True
         )
         assert converter.use_semantic_tags is False
         assert converter.use_classes is True
@@ -994,10 +951,7 @@ class TestParagraphToHTMLConverterClass:
 
     def test_hyperlink_function(self) -> None:
         """Test hyperlink_to_html function directly."""
-        hyperlink = Hyperlink(
-            r_id="rId1",
-            content=[Run(content=[Text(value="Link")])]
-        )
+        hyperlink = Hyperlink(r_id="rId1", content=[Run(content=[Text(value="Link")])])
         result = hyperlink_to_html(hyperlink, relationships={"rId1": "https://example.com"})
         assert "<a" in result
         assert "https://example.com" in result

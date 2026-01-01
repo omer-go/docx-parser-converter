@@ -4,6 +4,7 @@ Converts Table elements to HTML table structure with appropriate styling.
 """
 
 from html import escape
+from typing import TYPE_CHECKING
 
 from converters.html.css_generator import (
     CSSGenerator,
@@ -18,6 +19,9 @@ from models.document.paragraph import Paragraph
 from models.document.table import Table, TableProperties
 from models.document.table_cell import TableCell
 from models.document.table_row import TableRow, TableRowProperties
+
+if TYPE_CHECKING:
+    from converters.common.style_resolver import StyleResolver
 
 # =============================================================================
 # Table Properties to CSS
@@ -219,6 +223,7 @@ def cell_content_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert cell content to HTML.
 
@@ -227,6 +232,7 @@ def cell_content_to_html(
         relationships: Relationship map for hyperlinks
         use_semantic_tags: Use semantic tags
         css_generator: CSS generator
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML content
@@ -240,6 +246,7 @@ def cell_content_to_html(
                 relationships=relationships,
                 use_semantic_tags=use_semantic_tags,
                 css_generator=css_generator,
+                style_resolver=style_resolver,
             )
             result.append(html)
         elif isinstance(item, Table):
@@ -249,6 +256,7 @@ def cell_content_to_html(
                 relationships=relationships,
                 use_semantic_tags=use_semantic_tags,
                 css_generator=css_generator,
+                style_resolver=style_resolver,
             )
             result.append(html)
 
@@ -269,6 +277,7 @@ def cell_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert TableCell to HTML td or th element.
 
@@ -280,6 +289,7 @@ def cell_to_html(
         relationships: Relationship map
         use_semantic_tags: Use semantic tags
         css_generator: CSS generator
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML td or th element
@@ -313,7 +323,7 @@ def cell_to_html(
         attrs.append(f'style="{style}"')
 
     # Build opening tag
-    attr_str = f' {" ".join(attrs)}' if attrs else ""
+    attr_str = f" {' '.join(attrs)}" if attrs else ""
 
     # Convert content
     content_html = cell_content_to_html(
@@ -321,6 +331,7 @@ def cell_to_html(
         relationships=relationships,
         use_semantic_tags=use_semantic_tags,
         css_generator=gen,
+        style_resolver=style_resolver,
     )
 
     # If cell is empty, add non-breaking space for proper rendering
@@ -344,6 +355,7 @@ def row_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert TableRow to HTML tr element.
 
@@ -355,6 +367,7 @@ def row_to_html(
         relationships: Relationship map
         use_semantic_tags: Use semantic tags
         css_generator: CSS generator
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML tr element
@@ -370,7 +383,7 @@ def row_to_html(
     attrs: list[str] = []
     if style:
         attrs.append(f'style="{style}"')
-    attr_str = f' {" ".join(attrs)}' if attrs else ""
+    attr_str = f" {' '.join(attrs)}" if attrs else ""
 
     # Convert cells
     cells_html = []
@@ -393,6 +406,7 @@ def row_to_html(
             relationships=relationships,
             use_semantic_tags=use_semantic_tags,
             css_generator=gen,
+            style_resolver=style_resolver,
         )
         cells_html.append(cell_html)
 
@@ -410,6 +424,7 @@ def table_to_html(
     relationships: dict[str, str] | None = None,
     use_semantic_tags: bool = True,
     css_generator: CSSGenerator | None = None,
+    style_resolver: "StyleResolver | None" = None,
 ) -> str:
     """Convert Table element to HTML.
 
@@ -418,6 +433,7 @@ def table_to_html(
         relationships: Relationship map for hyperlinks
         use_semantic_tags: Use semantic tags
         css_generator: CSS generator instance
+        style_resolver: Style resolver for style inheritance
 
     Returns:
         HTML table element
@@ -449,7 +465,7 @@ def table_to_html(
     if table.tbl_pr and table.tbl_pr.tbl_caption:
         attrs.append(f'aria-label="{escape(table.tbl_pr.tbl_caption)}"')
 
-    attr_str = f' {" ".join(attrs)}' if attrs else ""
+    attr_str = f" {' '.join(attrs)}" if attrs else ""
 
     # Build colgroup if grid columns defined
     colgroup_html = ""
@@ -464,7 +480,7 @@ def table_to_html(
                     cols.append("<col>")
             else:
                 cols.append("<col>")
-        colgroup_html = f'<colgroup>{"".join(cols)}</colgroup>'
+        colgroup_html = f"<colgroup>{''.join(cols)}</colgroup>"
 
     # Build caption element
     caption_html = ""
@@ -485,6 +501,7 @@ def table_to_html(
             relationships=relationships,
             use_semantic_tags=use_semantic_tags,
             css_generator=gen,
+            style_resolver=style_resolver,
         )
         if is_header:
             header_rows.append(row_html)

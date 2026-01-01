@@ -1,4 +1,5 @@
 """Parser for border elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.border import Border, ParagraphBorders, TableBorders

@@ -72,55 +72,37 @@ class TestRunFormatting:
 
     def test_bold_text(self) -> None:
         """Bold text wrapped in <strong> or styled span."""
-        run = Run(
-            r_pr=RunProperties(b=True),
-            content=[Text(value="Bold")]
-        )
+        run = Run(r_pr=RunProperties(b=True), content=[Text(value="Bold")])
         result = run_to_html(run)
         assert "<strong>" in result or "font-weight" in result
 
     def test_italic_text(self) -> None:
         """Italic text wrapped in <em> or styled span."""
-        run = Run(
-            r_pr=RunProperties(i=True),
-            content=[Text(value="Italic")]
-        )
+        run = Run(r_pr=RunProperties(i=True), content=[Text(value="Italic")])
         result = run_to_html(run)
         assert "<em>" in result or "font-style" in result
 
     def test_underline_text(self) -> None:
         """Underlined text."""
-        run = Run(
-            r_pr=RunProperties(u=Underline(val="single")),
-            content=[Text(value="Underlined")]
-        )
+        run = Run(r_pr=RunProperties(u=Underline(val="single")), content=[Text(value="Underlined")])
         result = run_to_html(run)
         assert "underline" in result
 
     def test_strikethrough_text(self) -> None:
         """Strikethrough text."""
-        run = Run(
-            r_pr=RunProperties(strike=True),
-            content=[Text(value="Strikethrough")]
-        )
+        run = Run(r_pr=RunProperties(strike=True), content=[Text(value="Strikethrough")])
         result = run_to_html(run)
         assert "line-through" in result or "<del>" in result or "<s>" in result
 
     def test_superscript(self) -> None:
         """Superscript text."""
-        run = Run(
-            r_pr=RunProperties(vert_align="superscript"),
-            content=[Text(value="2")]
-        )
+        run = Run(r_pr=RunProperties(vert_align="superscript"), content=[Text(value="2")])
         result = run_to_html(run)
         assert "<sup>" in result or "vertical-align: super" in result
 
     def test_subscript(self) -> None:
         """Subscript text."""
-        run = Run(
-            r_pr=RunProperties(vert_align="subscript"),
-            content=[Text(value="2")]
-        )
+        run = Run(r_pr=RunProperties(vert_align="subscript"), content=[Text(value="2")])
         result = run_to_html(run)
         assert "<sub>" in result or "vertical-align: sub" in result
 
@@ -128,7 +110,7 @@ class TestRunFormatting:
         """Multiple formatting properties."""
         run = Run(
             r_pr=RunProperties(b=True, i=True, u=Underline(val="single")),
-            content=[Text(value="Bold Italic Underlined")]
+            content=[Text(value="Bold Italic Underlined")],
         )
         result = run_to_html(run)
         # All formatting should be present
@@ -137,8 +119,7 @@ class TestRunFormatting:
     def test_font_family(self) -> None:
         """Font family applied."""
         run = Run(
-            r_pr=RunProperties(r_fonts=RunFonts(ascii="Arial")),
-            content=[Text(value="Arial text")]
+            r_pr=RunProperties(r_fonts=RunFonts(ascii="Arial")), content=[Text(value="Arial text")]
         )
         result = run_to_html(run)
         assert "Arial" in result
@@ -147,53 +128,38 @@ class TestRunFormatting:
         """Font size applied."""
         run = Run(
             r_pr=RunProperties(sz=32),  # 16pt
-            content=[Text(value="Large text")]
+            content=[Text(value="Large text")],
         )
         result = run_to_html(run)
         assert "16pt" in result or "font-size" in result
 
     def test_text_color(self) -> None:
         """Text color applied."""
-        run = Run(
-            r_pr=RunProperties(color=Color(val="FF0000")),
-            content=[Text(value="Red text")]
-        )
+        run = Run(r_pr=RunProperties(color=Color(val="FF0000")), content=[Text(value="Red text")])
         result = run_to_html(run)
         assert "FF0000" in result.upper() or "#ff0000" in result.lower()
 
     def test_highlight_color(self) -> None:
         """Highlight color applied."""
-        run = Run(
-            r_pr=RunProperties(highlight="yellow"),
-            content=[Text(value="Highlighted")]
-        )
+        run = Run(r_pr=RunProperties(highlight="yellow"), content=[Text(value="Highlighted")])
         result = run_to_html(run)
         assert "background" in result
 
     def test_all_caps(self) -> None:
         """All caps text."""
-        run = Run(
-            r_pr=RunProperties(caps=True),
-            content=[Text(value="uppercase")]
-        )
+        run = Run(r_pr=RunProperties(caps=True), content=[Text(value="uppercase")])
         result = run_to_html(run)
         assert "uppercase" in result
 
     def test_small_caps(self) -> None:
         """Small caps text."""
-        run = Run(
-            r_pr=RunProperties(small_caps=True),
-            content=[Text(value="small caps")]
-        )
+        run = Run(r_pr=RunProperties(small_caps=True), content=[Text(value="small caps")])
         result = run_to_html(run)
         assert "small-caps" in result
 
     def test_hidden_text(self) -> None:
         """Hidden text (vanish)."""
-        run = Run(
-            r_pr=RunProperties(vanish=True),
-            content=[Text(value="Hidden")]
-        )
+        run = Run(r_pr=RunProperties(vanish=True), content=[Text(value="Hidden")])
         result = run_to_html(run)
         assert "display: none" in result or "visibility: hidden" in result
 
@@ -374,13 +340,15 @@ class TestRunEdgeCases:
 
     def test_mixed_content_types(self) -> None:
         """Mixed text, breaks, and tabs."""
-        run = Run(content=[
-            Text(value="Part 1"),
-            Break(),
-            Text(value="Part 2"),
-            TabChar(),
-            Text(value="Part 3"),
-        ])
+        run = Run(
+            content=[
+                Text(value="Part 1"),
+                Break(),
+                Text(value="Part 2"),
+                TabChar(),
+                Text(value="Part 3"),
+            ]
+        )
         result = run_to_html(run)
         assert "Part 1" in result
         assert "Part 2" in result
@@ -416,8 +384,7 @@ class TestRunEdgeCases:
     def test_double_underline(self) -> None:
         """Double underline style."""
         run = Run(
-            r_pr=RunProperties(u=Underline(val="double")),
-            content=[Text(value="Double underlined")]
+            r_pr=RunProperties(u=Underline(val="double")), content=[Text(value="Double underlined")]
         )
         result = run_to_html(run)
         assert "underline" in result
@@ -425,8 +392,7 @@ class TestRunEdgeCases:
     def test_wavy_underline(self) -> None:
         """Wavy underline style."""
         run = Run(
-            r_pr=RunProperties(u=Underline(val="wave")),
-            content=[Text(value="Wavy underlined")]
+            r_pr=RunProperties(u=Underline(val="wave")), content=[Text(value="Wavy underlined")]
         )
         result = run_to_html(run)
         assert "underline" in result
@@ -435,7 +401,7 @@ class TestRunEdgeCases:
         """Colored underline."""
         run = Run(
             r_pr=RunProperties(u=Underline(val="single", color="FF0000")),
-            content=[Text(value="Red underlined")]
+            content=[Text(value="Red underlined")],
         )
         result = run_to_html(run)
         assert "underline" in result

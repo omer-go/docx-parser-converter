@@ -2,6 +2,7 @@
 
 Latent styles are built-in styles that are hidden until used.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

@@ -1,4 +1,5 @@
 """Parser for width elements."""
+
 from lxml.etree import _Element as Element
 
 from models.common.width import Width

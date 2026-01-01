@@ -2,6 +2,7 @@
 
 These models represent elements from document.xml.
 """
+
 from models.document.document import Body, Document
 from models.document.frame import FrameProperties
 from models.document.hyperlink import BookmarkEnd, BookmarkStart, Hyperlink

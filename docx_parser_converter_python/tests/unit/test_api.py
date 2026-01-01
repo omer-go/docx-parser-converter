@@ -6,12 +6,7 @@ Tests the API functions and ConversionConfig without actual DOCX files.
 import tempfile
 from pathlib import Path
 
-# These imports will be available after implementation
-from docx_parser_converter_python import (
-    ConversionConfig,
-    docx_to_html,
-    docx_to_text,
-)
+from api import ConversionConfig, docx_to_html, docx_to_text
 
 from models.document.document import Body, Document
 from models.document.paragraph import Paragraph
@@ -28,9 +23,7 @@ from models.document.table_row import TableRow
 
 def make_paragraph(text: str) -> Paragraph:
     """Create a simple paragraph with text."""
-    return Paragraph(
-        content=[Run(content=[Text(value=text)])]
-    )
+    return Paragraph(content=[Run(content=[Text(value=text)])])
 
 
 def make_table(rows: list[list[str]]) -> Table:
@@ -39,13 +32,7 @@ def make_table(rows: list[list[str]]) -> Table:
         tbl_pr=None,
         tbl_grid=None,
         tr=[
-            TableRow(
-                tc=[
-                    TableCell(content=[make_paragraph(cell)])
-                    for cell in row
-                ]
-            )
-            for row in rows
+            TableRow(tc=[TableCell(content=[make_paragraph(cell)]) for cell in row]) for row in rows
         ],
     )
 
@@ -234,10 +221,12 @@ class TestDocxToHtmlWithModel:
 
     def test_multiple_paragraphs(self) -> None:
         """Document with multiple paragraphs."""
-        doc = make_document([
-            make_paragraph("First paragraph"),
-            make_paragraph("Second paragraph"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("First paragraph"),
+                make_paragraph("Second paragraph"),
+            ]
+        )
         result = docx_to_html(doc)
 
         assert "First paragraph" in result
@@ -301,10 +290,12 @@ class TestDocxToTextWithModel:
 
     def test_multiple_paragraphs(self) -> None:
         """Document with multiple paragraphs."""
-        doc = make_document([
-            make_paragraph("First"),
-            make_paragraph("Second"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("First"),
+                make_paragraph("Second"),
+            ]
+        )
         result = docx_to_text(doc)
 
         assert "First" in result

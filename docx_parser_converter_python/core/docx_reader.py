@@ -3,6 +3,7 @@
 This module provides functions for opening and validating DOCX files.
 It handles reading from file paths, bytes, and file-like objects.
 """
+
 import io
 import logging
 import zipfile
@@ -179,8 +180,7 @@ def validate_docx(zf: zipfile.ZipFile) -> None:
     except UnicodeDecodeError as e:
         # If content types can't be decoded, something is wrong
         raise DocxValidationError(
-            "Invalid [Content_Types].xml",
-            "File contains non-UTF-8 content"
+            "Invalid [Content_Types].xml", "File contains non-UTF-8 content"
         ) from e
 
     logger.debug("DOCX validation passed")

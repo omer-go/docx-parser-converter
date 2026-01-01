@@ -3,7 +3,6 @@
 Provides functions for converting DOCX formatting properties to CSS styles.
 """
 
-
 from models.common.border import Border, ParagraphBorders, TableBorders
 from models.common.color import Color
 from models.common.shading import Shading
@@ -83,6 +82,32 @@ BORDER_STYLES: dict[str, str] = {
     "outset": "outset",
     "nil": "none",
     "none": "none",
+}
+
+
+# =============================================================================
+# Underline Style Mapping
+# =============================================================================
+
+# Maps DOCX underline styles to CSS text-decoration-style values
+UNDERLINE_STYLES: dict[str, str] = {
+    "single": "solid",
+    "words": "solid",  # Underline only words (closest approximation)
+    "double": "double",
+    "thick": "solid",  # No CSS equivalent for thick, use solid
+    "dotted": "dotted",
+    "dottedHeavy": "dotted",
+    "dash": "dashed",
+    "dashedHeavy": "dashed",
+    "dashLong": "dashed",
+    "dashLongHeavy": "dashed",
+    "dotDash": "dashed",
+    "dashDotHeavy": "dashed",
+    "dotDotDash": "dashed",
+    "dashDotDotHeavy": "dashed",
+    "wave": "wavy",
+    "wavyHeavy": "wavy",
+    "wavyDouble": "wavy",  # No double-wavy in CSS
 }
 
 
@@ -506,9 +531,14 @@ def run_properties_to_css(r_pr: RunProperties | None) -> dict[str, str]:
 
     # Text decorations (underline, strikethrough)
     decorations: list[str] = []
+    decoration_style: str | None = None
 
     if r_pr.u and r_pr.u.val and r_pr.u.val.lower() not in ("none", ""):
         decorations.append("underline")
+        # Get the underline style (solid, double, dotted, dashed, wavy)
+        css_style = UNDERLINE_STYLES.get(r_pr.u.val)
+        if css_style and css_style != "solid":
+            decoration_style = css_style
 
     if r_pr.strike is True:
         decorations.append("line-through")
@@ -517,7 +547,11 @@ def run_properties_to_css(r_pr: RunProperties | None) -> dict[str, str]:
         decorations.append("line-through")
 
     if decorations:
-        result["text-decoration"] = " ".join(decorations)
+        # Build text-decoration value with style if not solid
+        if decoration_style:
+            result["text-decoration"] = f"{' '.join(decorations)} {decoration_style}"
+        else:
+            result["text-decoration"] = " ".join(decorations)
 
     # Text transform (caps)
     if r_pr.caps is True:

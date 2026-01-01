@@ -2,6 +2,7 @@
 
 These models represent elements from styles.xml.
 """
+
 from models.styles.document_defaults import (
     DocumentDefaults,
     ParagraphPropertiesDefault,

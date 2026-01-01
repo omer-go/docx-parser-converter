@@ -292,9 +292,7 @@ class TestNumberingTrackerInit:
 class TestBasicCounter:
     """Tests for basic counter functionality."""
 
-    def test_first_item_returns_start_value(
-        self, simple_numbering: Numbering
-    ) -> None:
+    def test_first_item_returns_start_value(self, simple_numbering: Numbering) -> None:
         """First item in list returns configured start value."""
         tracker = NumberingTracker(simple_numbering)
         result = tracker.get_number(num_id=1, ilvl=0)
@@ -307,9 +305,7 @@ class TestBasicCounter:
         result = tracker.get_number(num_id=1, ilvl=0)
         assert result == "2."
 
-    def test_counter_continues_incrementing(
-        self, simple_numbering: Numbering
-    ) -> None:
+    def test_counter_continues_incrementing(self, simple_numbering: Numbering) -> None:
         """Counter continues incrementing with each call."""
         tracker = NumberingTracker(simple_numbering)
         results = []
@@ -350,36 +346,28 @@ class TestNumberFormats:
         assert tracker.get_number(num_id=1, ilvl=0) == "2."
         assert tracker.get_number(num_id=1, ilvl=0) == "3."
 
-    def test_lower_letter_format(
-        self, various_formats_numbering: Numbering
-    ) -> None:
+    def test_lower_letter_format(self, various_formats_numbering: Numbering) -> None:
         """Test lowerLetter format (a, b, c...)."""
         tracker = NumberingTracker(various_formats_numbering)
         assert tracker.get_number(num_id=2, ilvl=0) == "a)"
         assert tracker.get_number(num_id=2, ilvl=0) == "b)"
         assert tracker.get_number(num_id=2, ilvl=0) == "c)"
 
-    def test_upper_letter_format(
-        self, various_formats_numbering: Numbering
-    ) -> None:
+    def test_upper_letter_format(self, various_formats_numbering: Numbering) -> None:
         """Test upperLetter format (A, B, C...)."""
         tracker = NumberingTracker(various_formats_numbering)
         assert tracker.get_number(num_id=3, ilvl=0) == "A."
         assert tracker.get_number(num_id=3, ilvl=0) == "B."
         assert tracker.get_number(num_id=3, ilvl=0) == "C."
 
-    def test_lower_roman_format(
-        self, various_formats_numbering: Numbering
-    ) -> None:
+    def test_lower_roman_format(self, various_formats_numbering: Numbering) -> None:
         """Test lowerRoman format (i, ii, iii...)."""
         tracker = NumberingTracker(various_formats_numbering)
         assert tracker.get_number(num_id=4, ilvl=0) == "i."
         assert tracker.get_number(num_id=4, ilvl=0) == "ii."
         assert tracker.get_number(num_id=4, ilvl=0) == "iii."
 
-    def test_upper_roman_format(
-        self, various_formats_numbering: Numbering
-    ) -> None:
+    def test_upper_roman_format(self, various_formats_numbering: Numbering) -> None:
         """Test upperRoman format (I, II, III...)."""
         tracker = NumberingTracker(various_formats_numbering)
         assert tracker.get_number(num_id=5, ilvl=0) == "(I)"
@@ -420,9 +408,7 @@ class TestNumberFormats:
 class TestMultiLevel:
     """Tests for multi-level numbering."""
 
-    def test_nested_level_format(
-        self, multi_level_numbering: Numbering
-    ) -> None:
+    def test_nested_level_format(self, multi_level_numbering: Numbering) -> None:
         """Test nested level text format (%1.%2.)."""
         tracker = NumberingTracker(multi_level_numbering)
 
@@ -436,9 +422,7 @@ class TestMultiLevel:
         # Level 2 (double nested)
         assert tracker.get_number(num_id=1, ilvl=2) == "1.2.1."
 
-    def test_higher_level_resets_lower(
-        self, multi_level_numbering: Numbering
-    ) -> None:
+    def test_higher_level_resets_lower(self, multi_level_numbering: Numbering) -> None:
         """Higher level increments reset lower levels."""
         tracker = NumberingTracker(multi_level_numbering)
 
@@ -472,9 +456,7 @@ class TestMultiLevel:
 class TestLevelRestart:
     """Tests for lvlRestart behavior."""
 
-    def test_restart_on_parent_increment(
-        self, restart_numbering: Numbering
-    ) -> None:
+    def test_restart_on_parent_increment(self, restart_numbering: Numbering) -> None:
         """Level restarts when parent level increments."""
         tracker = NumberingTracker(restart_numbering)
 
@@ -486,9 +468,7 @@ class TestLevelRestart:
         # lvlRestart=0 means restart on level 0 change
         assert tracker.get_number(num_id=1, ilvl=1) == "a)"
 
-    def test_restart_respects_lvl_restart_value(
-        self, restart_numbering: Numbering
-    ) -> None:
+    def test_restart_respects_lvl_restart_value(self, restart_numbering: Numbering) -> None:
         """lvlRestart specifies which level triggers restart."""
         tracker = NumberingTracker(restart_numbering)
 
@@ -510,9 +490,7 @@ class TestLevelRestart:
 class TestStartOverride:
     """Tests for startOverride in numbering instances."""
 
-    def test_start_override_changes_start(
-        self, override_numbering: Numbering
-    ) -> None:
+    def test_start_override_changes_start(self, override_numbering: Numbering) -> None:
         """startOverride changes the starting number."""
         tracker = NumberingTracker(override_numbering)
 
@@ -523,9 +501,7 @@ class TestStartOverride:
         assert tracker.get_number(num_id=2, ilvl=0) == "10."
         assert tracker.get_number(num_id=2, ilvl=0) == "11."
 
-    def test_different_instances_independent(
-        self, override_numbering: Numbering
-    ) -> None:
+    def test_different_instances_independent(self, override_numbering: Numbering) -> None:
         """Different num instances maintain independent counters."""
         tracker = NumberingTracker(override_numbering)
 
@@ -545,9 +521,7 @@ class TestStartOverride:
 class TestMultipleLists:
     """Tests for multiple independent lists."""
 
-    def test_different_num_ids_independent(
-        self, multiple_lists_numbering: Numbering
-    ) -> None:
+    def test_different_num_ids_independent(self, multiple_lists_numbering: Numbering) -> None:
         """Different numIds maintain independent counters."""
         tracker = NumberingTracker(multiple_lists_numbering)
 
@@ -577,17 +551,13 @@ class TestMultipleLists:
 class TestNumberingTrackerEdgeCases:
     """Tests for edge cases and boundary conditions."""
 
-    def test_invalid_num_id_returns_empty(
-        self, simple_numbering: Numbering
-    ) -> None:
+    def test_invalid_num_id_returns_empty(self, simple_numbering: Numbering) -> None:
         """Invalid numId returns empty string."""
         tracker = NumberingTracker(simple_numbering)
         result = tracker.get_number(num_id=999, ilvl=0)
         assert result == ""
 
-    def test_invalid_level_returns_empty(
-        self, simple_numbering: Numbering
-    ) -> None:
+    def test_invalid_level_returns_empty(self, simple_numbering: Numbering) -> None:
         """Invalid level returns empty string."""
         tracker = NumberingTracker(simple_numbering)
         result = tracker.get_number(num_id=1, ilvl=9)

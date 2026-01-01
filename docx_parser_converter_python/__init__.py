@@ -13,6 +13,7 @@ Example:
     >>> html = docx_to_html("document.docx", config=config)
     >>> text = docx_to_text("document.docx", config=config)
 """
+
 from api import ConversionConfig, docx_to_html, docx_to_text
 from core import (
     DocxEncryptedError,

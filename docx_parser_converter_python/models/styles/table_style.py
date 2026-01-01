@@ -2,6 +2,7 @@
 
 Table style properties define conditional formatting for different parts of a table.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

@@ -1,4 +1,5 @@
 """Parser for table grid elements."""
+
 from lxml.etree import _Element as Element
 
 from models.document.table import TableGrid, TableGridColumn

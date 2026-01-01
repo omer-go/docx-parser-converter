@@ -2,6 +2,7 @@
 
 Represents the <w:color> element used in run properties and other contexts.
 """
+
 from pydantic import BaseModel
 
 

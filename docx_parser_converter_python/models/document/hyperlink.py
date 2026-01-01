@@ -2,6 +2,7 @@
 
 These models represent hyperlinks and bookmarks within paragraphs.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel

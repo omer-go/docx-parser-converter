@@ -2,6 +2,7 @@
 
 Represents the <w:shd> element used in paragraphs, tables, and cells.
 """
+
 from pydantic import BaseModel
 
 

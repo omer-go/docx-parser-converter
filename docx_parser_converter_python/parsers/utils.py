@@ -3,6 +3,7 @@
 This module provides common utility functions used across all parsers,
 including attribute extraction, child element finding, and type conversion.
 """
+
 from lxml.etree import _Element as Element
 
 from core.constants import WORD_NS

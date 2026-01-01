@@ -43,15 +43,7 @@ def make_table(rows: list[list[str]]) -> Table:
         tbl_pr=None,
         tbl_grid=None,
         tr=[
-            TableRow(
-                tc=[
-                    TableCell(
-                        content=[make_paragraph(cell)]
-                    )
-                    for cell in row
-                ]
-            )
-            for row in rows
+            TableRow(tc=[TableCell(content=[make_paragraph(cell)]) for cell in row]) for row in rows
         ],
     )
 
@@ -96,11 +88,13 @@ class TestBasicDocumentConversion:
 
     def test_multiple_paragraphs(self) -> None:
         """Document with multiple paragraphs."""
-        doc = make_document([
-            make_paragraph("Paragraph 1"),
-            make_paragraph("Paragraph 2"),
-            make_paragraph("Paragraph 3"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("Paragraph 1"),
+                make_paragraph("Paragraph 2"),
+                make_paragraph("Paragraph 3"),
+            ]
+        )
         result = document_to_text(doc)
         assert "Paragraph 1" in result
         assert "Paragraph 2" in result
@@ -110,10 +104,12 @@ class TestBasicDocumentConversion:
 
     def test_paragraph_separation(self) -> None:
         """Paragraphs separated by blank line."""
-        doc = make_document([
-            make_paragraph("First"),
-            make_paragraph("Second"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("First"),
+                make_paragraph("Second"),
+            ]
+        )
         result = document_to_text(doc)
         # Check for separation (could be single or double newline)
         lines = result.strip().split("\n")
@@ -130,10 +126,12 @@ class TestTableConversion:
 
     def test_document_with_table(self) -> None:
         """Document containing a table."""
-        table = make_table([
-            ["A1", "B1"],
-            ["A2", "B2"],
-        ])
+        table = make_table(
+            [
+                ["A1", "B1"],
+                ["A2", "B2"],
+            ]
+        )
         doc = make_document(tables=[table])
         result = document_to_text(doc)
         assert "A1" in result
@@ -146,9 +144,7 @@ class TestTableConversion:
         para1 = make_paragraph("Before table")
         table = make_table([["Cell1", "Cell2"]])
         para2 = make_paragraph("After table")
-        doc = Document(
-            body=Body(content=[para1, table, para2])
-        )
+        doc = Document(body=Body(content=[para1, table, para2]))
         result = document_to_text(doc)
         assert "Before table" in result
         assert "Cell1" in result
@@ -167,16 +163,18 @@ class TestFormattingModes:
 
     def test_plain_mode(self) -> None:
         """Plain mode strips all formatting."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Run(
-                        r_pr=RunProperties(b=True),
-                        content=[Text(value="bold")],
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Run(
+                            r_pr=RunProperties(b=True),
+                            content=[Text(value="bold")],
+                        )
+                    ]
+                )
+            ]
+        )
         config = TextConverterConfig(formatting="plain")
         converter = TextConverter(config=config)
         result = converter.convert(doc)
@@ -185,16 +183,18 @@ class TestFormattingModes:
 
     def test_markdown_mode(self) -> None:
         """Markdown mode preserves formatting markers."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Run(
-                        r_pr=RunProperties(b=True),
-                        content=[Text(value="bold")],
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Run(
+                            r_pr=RunProperties(b=True),
+                            content=[Text(value="bold")],
+                        )
+                    ]
+                )
+            ]
+        )
         config = TextConverterConfig(formatting="markdown")
         converter = TextConverter(config=config)
         result = converter.convert(doc)
@@ -260,20 +260,18 @@ class TestNumberingConversion:
 
     def test_numbered_list(self) -> None:
         """Numbered list items."""
-        doc = make_document([
-            Paragraph(
-                p_pr=ParagraphProperties(
-                    num_pr=NumberingProperties(num_id=1, ilvl=0)
+        doc = make_document(
+            [
+                Paragraph(
+                    p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=0)),
+                    content=[Run(content=[Text(value="Item 1")])],
                 ),
-                content=[Run(content=[Text(value="Item 1")])],
-            ),
-            Paragraph(
-                p_pr=ParagraphProperties(
-                    num_pr=NumberingProperties(num_id=1, ilvl=0)
+                Paragraph(
+                    p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=1, ilvl=0)),
+                    content=[Run(content=[Text(value="Item 2")])],
                 ),
-                content=[Run(content=[Text(value="Item 2")])],
-            ),
-        ])
+            ]
+        )
         converter = TextConverter()
         result = converter.convert(doc)
         assert "Item 1" in result
@@ -281,14 +279,14 @@ class TestNumberingConversion:
 
     def test_bulleted_list(self) -> None:
         """Bulleted list items."""
-        doc = make_document([
-            Paragraph(
-                p_pr=ParagraphProperties(
-                    num_pr=NumberingProperties(num_id=2, ilvl=0)
+        doc = make_document(
+            [
+                Paragraph(
+                    p_pr=ParagraphProperties(num_pr=NumberingProperties(num_id=2, ilvl=0)),
+                    content=[Run(content=[Text(value="Bullet 1")])],
                 ),
-                content=[Run(content=[Text(value="Bullet 1")])],
-            ),
-        ])
+            ]
+        )
         converter = TextConverter()
         result = converter.convert(doc)
         assert "Bullet 1" in result
@@ -304,31 +302,35 @@ class TestHyperlinkConversion:
 
     def test_hyperlink_text_extracted(self) -> None:
         """Hyperlink text is extracted."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Hyperlink(
-                        r_id="rId1",
-                        content=[Run(content=[Text(value="Link text")])],
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Hyperlink(
+                            r_id="rId1",
+                            content=[Run(content=[Text(value="Link text")])],
+                        )
+                    ]
+                )
+            ]
+        )
         result = document_to_text(doc)
         assert "Link text" in result
 
     def test_hyperlink_with_url_in_markdown(self) -> None:
         """Hyperlink in markdown mode shows URL."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Hyperlink(
-                        r_id="rId1",
-                        content=[Run(content=[Text(value="Example")])],
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Hyperlink(
+                            r_id="rId1",
+                            content=[Run(content=[Text(value="Example")])],
+                        )
+                    ]
+                )
+            ]
+        )
         config = TextConverterConfig(formatting="markdown")
         converter = TextConverter(
             config=config,
@@ -373,11 +375,13 @@ class TestEmptyParagraphs:
 
     def test_empty_paragraph_preserved(self) -> None:
         """Empty paragraphs create blank lines."""
-        doc = make_document([
-            make_paragraph("Before"),
-            Paragraph(content=[]),
-            make_paragraph("After"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("Before"),
+                Paragraph(content=[]),
+                make_paragraph("After"),
+            ]
+        )
         result = document_to_text(doc)
         assert "Before" in result
         assert "After" in result
@@ -388,12 +392,14 @@ class TestEmptyParagraphs:
 
     def test_multiple_empty_paragraphs(self) -> None:
         """Multiple empty paragraphs."""
-        doc = make_document([
-            make_paragraph("Text"),
-            Paragraph(content=[]),
-            Paragraph(content=[]),
-            make_paragraph("More"),
-        ])
+        doc = make_document(
+            [
+                make_paragraph("Text"),
+                Paragraph(content=[]),
+                Paragraph(content=[]),
+                make_paragraph("More"),
+            ]
+        )
         result = document_to_text(doc)
         assert "Text" in result
         assert "More" in result
@@ -409,9 +415,7 @@ class TestWhitespaceHandling:
 
     def test_preserve_spaces(self) -> None:
         """Spaces within text preserved."""
-        doc = make_document([
-            make_paragraph("Word1  Word2")
-        ])
+        doc = make_document([make_paragraph("Word1  Word2")])
         result = document_to_text(doc)
         # Multiple spaces might be normalized or preserved
         assert "Word1" in result
@@ -540,31 +544,33 @@ class TestEdgeCases:
 
     def test_document_with_only_whitespace(self) -> None:
         """Document with only whitespace paragraphs."""
-        doc = make_document([
-            Paragraph(content=[Run(content=[Text(value="   ", space="preserve")])])
-        ])
+        doc = make_document(
+            [Paragraph(content=[Run(content=[Text(value="   ", space="preserve")])])]
+        )
         result = document_to_text(doc)
         # Should preserve or strip whitespace consistently
         assert result.strip() == "" or result == "   "
 
     def test_mixed_formatting_styles(self) -> None:
         """Document with mixed formatting styles."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Run(content=[Text(value="Normal ")]),
-                    Run(
-                        r_pr=RunProperties(b=True),
-                        content=[Text(value="bold")],
-                    ),
-                    Run(content=[Text(value=" ")]),
-                    Run(
-                        r_pr=RunProperties(i=True),
-                        content=[Text(value="italic")],
-                    ),
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Run(content=[Text(value="Normal ")]),
+                        Run(
+                            r_pr=RunProperties(b=True),
+                            content=[Text(value="bold")],
+                        ),
+                        Run(content=[Text(value=" ")]),
+                        Run(
+                            r_pr=RunProperties(i=True),
+                            content=[Text(value="italic")],
+                        ),
+                    ]
+                )
+            ]
+        )
         config = TextConverterConfig(formatting="markdown")
         converter = TextConverter(config=config)
         result = converter.convert(doc)
@@ -583,37 +589,41 @@ class TestLineBreaks:
 
     def test_line_break_within_paragraph(self) -> None:
         """Line break within paragraph."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Run(
-                        content=[
-                            Text(value="Line 1"),
-                            Break(),
-                            Text(value="Line 2"),
-                        ]
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Run(
+                            content=[
+                                Text(value="Line 1"),
+                                Break(),
+                                Text(value="Line 2"),
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
         result = document_to_text(doc)
         assert "Line 1\nLine 2" in result
 
     def test_page_break(self) -> None:
         """Page break handling."""
-        doc = make_document([
-            Paragraph(
-                content=[
-                    Run(
-                        content=[
-                            Text(value="Page 1"),
-                            Break(type="page"),
-                            Text(value="Page 2"),
-                        ]
-                    )
-                ]
-            )
-        ])
+        doc = make_document(
+            [
+                Paragraph(
+                    content=[
+                        Run(
+                            content=[
+                                Text(value="Page 1"),
+                                Break(type="page"),
+                                Text(value="Page 2"),
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
         result = document_to_text(doc)
         assert "Page 1" in result
         assert "Page 2" in result

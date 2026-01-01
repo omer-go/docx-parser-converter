@@ -167,9 +167,7 @@ class TextConverter:
 
         return converter.convert(para)
 
-    def _get_numbering_prefix(
-        self, para: Paragraph
-    ) -> tuple[tuple[int, int] | None, str, str]:
+    def _get_numbering_prefix(self, para: Paragraph) -> tuple[tuple[int, int] | None, str, str]:
         """Get numbering prefix for paragraph.
 
         Args:
