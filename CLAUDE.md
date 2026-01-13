@@ -26,7 +26,7 @@ Converts `.docx` files to HTML or plain text while preserving formatting, styles
 
 ### TypeScript Implementation
 - **Language**: TypeScript 5.2+
-- **Package Manager**: npm
+- **Package Manager**: pnpm
 - **Core Dependencies**: @xmldom/xmldom, jszip
 - **Build**: Vite (ES, UMD, IIFE outputs)
 - **Linting**: ESLint with typescript-eslint
@@ -85,13 +85,13 @@ ruff format .
 
 ```bash
 # Development server
-npm run dev
+pnpm run dev
 
 # Build
-npm run build
+pnpm run build
 
 # Lint
-npm run lint
+pnpm run lint
 ```
 
 ---

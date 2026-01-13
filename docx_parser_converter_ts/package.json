@@ -24,13 +24,13 @@
   "scripts": {
     "dev": "vite",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc --project tsconfig.json --noEmit && vite build",
+    "build": "pnpm run clean && tsc --project tsconfig.json --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --ignore-pattern '**/__tests__/**' --ignore-pattern '**/*.test.ts' --ignore-pattern 'src/docx_parsers/**' --ignore-pattern 'src/docx_to_html/**' --ignore-pattern 'src/docx_to_txt/**' --ignore-pattern 'src/-legacy/**'",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

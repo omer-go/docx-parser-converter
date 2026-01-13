@@ -46,7 +46,7 @@ pip install docx-parser-converter
 ### TypeScript/JavaScript
 
 ```bash
-npm install @omer-go/docx-parser-converter-ts
+pnpm install @omer-go/docx-parser-converter-ts
 # or
 pnpm add @omer-go/docx-parser-converter-ts
 # or
